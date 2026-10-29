@@ -9,6 +9,7 @@ import type { BrandingSettings } from "@/lib/branding";
 import { DEFAULT_BRANDING } from "@/lib/branding";
 import type { Profile } from "@/lib/types";
 import { useI18n } from "@/components/I18nProvider";
+import ThemeToggle from "@/components/ThemeToggle";
 import { LOCALES, type Locale } from "@/lib/i18n/locale";
 import type { TKey } from "@/lib/i18n/dictionaries";
 
@@ -143,7 +144,7 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <LanguageSwitcher />
+          <ThemeToggle /><LanguageSwitcher />
           <Link
             href="/devis"
             className="hidden rounded-full bg-flagred-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-flagred-700 sm:inline-flex"
@@ -204,7 +205,7 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
               </Link>
             ))}
             <div className="mt-2 flex justify-center">
-              <LanguageSwitcher />
+              <ThemeToggle /><LanguageSwitcher />
             </div>
             <Link
               href="/devis"

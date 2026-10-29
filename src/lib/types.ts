@@ -17,6 +17,10 @@ export type ServiceType =
   | "appointment_transfer"
   | "medical_supply"
   | "other";
+export type ContentType = "organ" | "blood" | "equipment" | "other";
+export type Criticality = "critical" | "urgent" | "standard";
+export type VehicleClass = "moto" | "iveco" | "other";
+export type MissionPhase = "validated" | "en_route" | "picked_up" | "in_transit" | "delivered";
 export type QuoteStatus = "draft" | "sent" | "accepted" | "declined" | "expired" | "superseded";
 export type ShipmentStatus =
   | "pending_confirmation"
@@ -89,6 +93,12 @@ export interface TransportRequest {
   mobility_notes: string | null;
   contact_phone: string | null;
   notes: string | null;
+  content_type: ContentType;
+  criticality: Criticality;
+  sla_deadline: string | null;
+  ischemia_deadline: string | null;
+  temp_min: number | null;
+  temp_max: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -144,6 +154,9 @@ export interface Shipment {
   completed_at: string | null;
   cancelled_at: string | null;
   notes: string | null;
+  phase: MissionPhase;
+  picked_up_at: string | null;
+  delivered_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -163,6 +176,7 @@ export interface Vehicle {
   organization_id: string | null;
   registration_plate: string;
   vehicle_type: VehicleType;
+  vehicle_class: VehicleClass;
   label: string | null;
   capacity: number;
   has_wheelchair_lift: boolean;
@@ -214,6 +228,7 @@ export interface Database {
   public: {
     Tables: {
       profiles: { Row: Row<Profile>; Insert: Insert<Profile>; Update: Update<Profile> };
+      shipment_temperature: { Row: { id: number; shipment_id: string; temperature: number; recorded_at: string }; Insert: { shipment_id: string; temperature: number }; Update: { temperature?: number } };
       organizations: { Row: Row<Organization>; Insert: Insert<Organization>; Update: Update<Organization> };
       organization_members: {
         Row: Row<OrganizationMember>;
@@ -320,6 +335,7 @@ export interface Database {
           recorded_at: string;
         }>;
       };
+      advance_mission_phase: { Args: { p_shipment_id: string; p_phase: MissionPhase }; Returns: Shipment };
     };
     Views: Record<string, never>;
     Enums: Record<string, never>;

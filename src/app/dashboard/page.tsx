@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import ClientDashboard from "@/components/dashboard/ClientDashboard";
 import StaffDashboard from "@/components/dashboard/StaffDashboard";
 import DriverDashboard from "@/components/dashboard/DriverDashboard";
+import DriverApp from "@/components/dashboard/DriverApp";
 import type { DriverLocation, Profile, ShipmentEvent } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,8 @@ export default async function DashboardPage() {
       ]);
 
     return (
-      <DriverDashboard
+      <DriverApp
+        driver={profile}
         assignments={assignments ?? []}
         shipments={shipments ?? []}
         requests={requests ?? []}
