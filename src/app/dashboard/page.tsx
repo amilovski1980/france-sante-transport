@@ -56,6 +56,7 @@ export default async function DashboardPage() {
   }
 
   if (role === "admin" || role === "dispatcher") {
+    redirect("/dashboard/admin");
     const [
       { data: requests },
       { data: quotes },
