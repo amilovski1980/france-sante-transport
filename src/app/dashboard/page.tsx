@@ -111,6 +111,7 @@ export default async function DashboardPage() {
       supabase.from("shipment_events").select("*").order("created_at", { ascending: true }),
     ]);
 
+  redirect("/dashboard/requests");
   return (
     <div className="space-y-6">
       <HomeHero profile={profile} pending={(requests ?? []).filter((r) => r.status === "submitted").length} active={(shipments ?? []).filter((s) => s.status === "in_progress" || s.status === "confirmed").length} />
