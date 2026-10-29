@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #04101f;
+  --color-navy-900: #061a33;
+  --color-navy-800: #0a1f44;
+  --color-navy-700: #0e2a57;
+  --color-navy-600: #16386e;
+  --color-navy-500: #1e4b93;
+  --color-navy-400: #3d6cb8;
+  --color-navy-200: #b9cbe6;
+  --color-navy-100: #dbe5f3;
+  --color-navy-50: #f0f4fa;
+  --color-flagred-700: #9d1f24;
+  --color-flagred-600: #c1272d;
+  --color-flagred-500: #d63a40;
+  --color-flagred-50: #fdf1f1;
+
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(6 26 51 / 0.06), 0 12px 32px -16px rgb(6 26 51 / 0.22);
+  --shadow-elevated: 0 2px 4px rgb(6 26 51 / 0.06), 0 24px 48px -24px rgb(6 26 51 / 0.35);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f6f7f9;
+  color: var(--color-navy-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-navy-800);
+  color: #ffffff;
+}
+
+@utility container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 76rem;
+  padding-inline: 1.25rem;
+}
+
+@utility surface { border: 1px solid #e8ebf0; background-color: #ffffff; border-radius: 1.25rem; box-shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 10px 30px -14px rgb(16 24 40 / 0.14); }
+
+@utility section-pad {
+  padding-block: 4.5rem;
+}
+
+@utility dash-bg { background-color: #f4f6fb; }
+
+@utility card-pro { border: 1px solid #e5e9f2; background-color: #ffffff; border-radius: 1rem; box-shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 8px 24px -12px rgb(16 24 40 / 0.12); }
