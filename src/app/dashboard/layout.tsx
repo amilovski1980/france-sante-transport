@@ -50,7 +50,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <section>
-      <div className="dash-bg min-h-screen"><div className="mx-auto max-w-2xl"><div className="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f131b]"><div className="flex items-center gap-2"><Avatar name={profile.full_name} email={profile.email} src={(profile as { avatar_url?: string | null }).avatar_url} size="sm" /><span className="text-sm font-semibold text-navy-900 dark:text-slate-100">{profile.full_name || profile.email}</span></div><SignOutButton /></div><div className="px-4 pb-24 pt-6">{children}</div></div><BottomNav /></div>
+      <div className="dash-bg min-h-screen"><div className="mx-auto max-w-2xl"><div className="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f131b]"><div className="flex items-center gap-2"><Avatar name={profile.full_name} email={profile.email} src={(profile as { avatar_url?: string | null }).avatar_url} size="sm" /><span className="text-sm font-semibold text-navy-900 dark:text-slate-100">{profile.full_name || profile.email}</span></div><SignOutButton /></div><div className="px-4 pb-24 pt-6">{children}</div></div><BottomNav role={profile.role} /></div>
     </section>
   );
 }

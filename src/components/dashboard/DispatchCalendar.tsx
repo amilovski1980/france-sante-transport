@@ -138,12 +138,12 @@ export default function DispatchCalendar({
       </div>
 
       {view === "week" ? (
-        <div className="grid grid-cols-1 divide-y divide-navy-100 sm:grid-cols-7 sm:divide-x sm:divide-y-0">
+        <div className="flex overflow-x-auto divide-x divide-navy-100">
           {days.map((day) => {
             const dayItems = sorted.filter((s) => sameDay(new Date(s.scheduled_at), day));
             const isToday = sameDay(day, new Date());
             return (
-              <div key={day.toISOString()} className={`min-h-[120px] p-2 ${isToday ? "bg-flagred-50/40" : ""}`}>
+              <div key={day.toISOString()} className={`min-h-[140px] w-28 shrink-0 p-2 ${isToday ? "bg-flagred-50/40" : ""}`}>
                 <p className="mb-2 text-center text-xs font-semibold text-navy-500">
                   {new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric" }).format(day)}
                 </p>
