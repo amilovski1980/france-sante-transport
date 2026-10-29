@@ -9,6 +9,7 @@ import { QuoteStatusBadge, RequestStatusBadge, ShipmentStatusBadge } from "@/com
 import ProfileEditor from "@/components/dashboard/ProfileEditor";
 import QuoteLines from "@/components/dashboard/QuoteLines";
 import ClientTrackingMap from "@/components/dashboard/ClientTrackingMap";
+import Stepper from "@/components/dashboard/Stepper";
 import { useI18n } from "@/components/I18nProvider";
 import type { Quote, Shipment, ShipmentEvent, TransportRequest } from "@/lib/types";
 
@@ -67,17 +68,19 @@ export default function ClientDashboard({
 
   if (requests.length === 0) {
     return (
-      <div className="surface mx-auto max-w-2xl p-10 text-center">
-        <h2 className="font-display text-2xl font-semibold text-navy-900">{t("cd.emptyTitle")}</h2>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-navy-700/80">
-          {t("cd.emptyBody")}
-        </p>
-        <Link
-          href="/devis"
-          className="mt-7 inline-flex rounded-full bg-flagred-600 px-7 py-3 text-sm font-semibold text-white hover:bg-flagred-700"
-        >
-          {t("cd.requestQuote")}
-        </Link>
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div className="surface overflow-hidden">
+          <div className="border-b border-navy-100 bg-navy-50/50 px-6 py-5">
+            <Stepper active={0} />
+          </div>
+          <div className="p-8 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-flagred-50 text-3xl">📦</div>
+            <h2 className="mt-4 font-display text-2xl font-semibold text-navy-900">{t("cd.emptyTitle")}</h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-navy-700/80">{t("cd.emptyBody")}</p>
+            <Link href="/devis" className="mt-6 inline-flex rounded-xl bg-slate-900 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">{t("cd.requestQuote")}</Link>
+          </div>
+        </div>
+        <ProfileEditor />
       </div>
     );
   }

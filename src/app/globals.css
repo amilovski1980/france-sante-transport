@@ -32,10 +32,9 @@ html {
   scroll-behavior: smooth;
 }
 
-.dark body {
-  background-color: #0b0f17;
-  color: #e2e8f0;
-}
+.dark body { background-color: #0b0f17 !important; color: #e2e8f0 !important; }
+.dark .surface, .dark .bg-white { background-color: #151a24 !important; border-color: #232a38 !important; color: #e2e8f0 !important; }
+.dark .bg-navy-50, .dark .bg-navy-50\/50 { background-color: #11151d !important; }
 
 body {
   background-color: #f6f7f9;
