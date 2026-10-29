@@ -21,7 +21,7 @@ export default function ProfileEditor() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState(""); const [address, setAddress] = useState(""); const [avatarUrl, setAvatarUrl] = useState(""); const [newEmail, setNewEmail] = useState("");
   const [email, setEmail] = useState("");
-  const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState(false); const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -71,6 +71,31 @@ export default function ProfileEditor() {
     }
   }
 
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Non connecte");
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+      setAvatarUrl(pub.publicUrl);
+      await updateOwnProfile({ full_name: null, phone: null, address: null, avatar_url: pub.publicUrl });
+      setSaved(true);
+      router.refresh();
+    } catch (err) {
+      setError(toUserMessage(err));
+    } finally {
+      setUploading(false);
+    }
+  }
+
   if (!loaded) {
     return (
       <div className="surface p-6 text-sm text-navy-700">{t("prof.loading")}</div>
@@ -115,7 +140,7 @@ export default function ProfileEditor() {
         />
       </div>
 
-      <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.email")}</label><input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className={inputClass} /></div> <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.address")}</label><input type="text" maxLength={300} value={address} onChange={(e) => setAddress(e.target.value)} className={inputClass} /></div> <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.avatar")}</label><input type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://..." className={inputClass} /></div> {error && <p className="text-sm text-flagred-700">{error}</p>}
+      <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.email")}</label><input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className={inputClass} /></div> <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.address")}</label><input type="text" maxLength={300} value={address} onChange={(e) => setAddress(e.target.value)} className={inputClass} /></div> <div><label className="mb-1.5 block text-sm font-semibold text-navy-800">{t("prof.avatar")}</label><input type="file" accept="image/*" disabled={uploading} onChange={handleAvatarUpload} className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-slate-800" />{uploading && <p className="mt-1 text-xs text-slate-500">Envoi en cours…</p>}</div> {error && <p className="text-sm text-flagred-700">{error}</p>}
       {saved && !error && (
         <p className="text-sm font-medium text-emerald-700">{t("prof.updated")}</p>
       )}

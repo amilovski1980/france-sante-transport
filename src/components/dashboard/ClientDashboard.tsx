@@ -74,13 +74,12 @@ export default function ClientDashboard({
             <Stepper active={0} />
           </div>
           <div className="p-8 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-flagred-50 text-3xl">📦</div>
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100"><span className="text-2xl text-slate-400">—</span></div>
             <h2 className="mt-4 font-display text-2xl font-semibold text-navy-900">{t("cd.emptyTitle")}</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-navy-700/80">{t("cd.emptyBody")}</p>
             <Link href="/devis" className="mt-6 inline-flex rounded-xl bg-slate-900 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">{t("cd.requestQuote")}</Link>
           </div>
         </div>
-        <ProfileEditor />
       </div>
     );
   }
