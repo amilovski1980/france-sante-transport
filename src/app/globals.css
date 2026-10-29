@@ -73,3 +73,6 @@ body {
   .section-pad { padding-block: 2.5rem; }
   body { font-size: 0.875rem; }
 }
+
+input, select, textarea { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+input[type="datetime-local"], input[type="date"], input[type="time"] { width: 100%; -webkit-appearance: none; appearance: none; }

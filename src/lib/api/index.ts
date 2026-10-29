@@ -66,7 +66,9 @@ export async function notify(type: NotifyType, id: string): Promise<void> {
 export async function createTransportRequest(input: CreateRequestInput): Promise<TransportRequest> {
   const request = await call<TransportRequest>(async () => {
     const supabase = createClient();
-    return supabase.from("transport_requests").insert(input).select().single();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Non connecte");
+    return supabase.from("transport_requests").insert({ ...input, client_id: user.id, status: "submitted" }).select().single();
   });
   void notify("request_received", request.id);
   return request;
