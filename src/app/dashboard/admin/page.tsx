@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import AdminSidebar from "@/components/dashboard/AdminSidebar";
-import AdminDashboard from "@/components/dashboard/AdminDashboard";
+import ControlRoom from "@/components/dashboard/ControlRoom";
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +16,6 @@ export default async function AdminHomePage() {
     supabase.from("shipments").select("*"),
   ]);
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
-      <AdminSidebar />
-      <div className="flex-1 p-6">
-        <h1 className="mb-6 text-2xl font-bold text-slate-900">Vue d'ensemble</h1>
-        <AdminDashboard requests={requests ?? []} quotes={quotes ?? []} shipments={shipments ?? []} />
-      </div>
-    </div>
+    <ControlRoom requests={requests ?? []} quotes={quotes ?? []} shipments={shipments ?? []} />
   );
 }
