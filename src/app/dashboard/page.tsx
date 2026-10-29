@@ -4,6 +4,7 @@ import ClientDashboard from "@/components/dashboard/ClientDashboard";
 import StaffDashboard from "@/components/dashboard/StaffDashboard";
 import DriverDashboard from "@/components/dashboard/DriverDashboard";
 import DriverApp from "@/components/dashboard/DriverApp";
+import HomeHero from "@/components/dashboard/HomeHero";
 import type { DriverLocation, Profile, ShipmentEvent } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -111,11 +112,14 @@ export default async function DashboardPage() {
     ]);
 
   return (
-    <ClientDashboard
-      requests={requests ?? []}
-      quotes={quotes ?? []}
-      events={events ?? []}
-      shipments={shipments ?? []}
-    />
+    <div className="space-y-6">
+      <HomeHero profile={profile} pending={(requests ?? []).filter((r) => r.status === "submitted").length} active={(shipments ?? []).filter((s) => s.status === "in_progress" || s.status === "confirmed").length} />
+      <ClientDashboard
+        requests={requests ?? []}
+        quotes={quotes ?? []}
+        events={events ?? []}
+        shipments={shipments ?? []}
+      />
+    </div>
   );
 }
