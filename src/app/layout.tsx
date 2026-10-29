@@ -34,7 +34,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}" }} /></head>
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         {customCss && <style dangerouslySetInnerHTML={{ __html: customCss }} />}
         <I18nProvider initialLocale={locale}>
