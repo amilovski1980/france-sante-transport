@@ -3,9 +3,10 @@ import { useMemo } from "react";
 import { formatMoney } from "@/components/dashboard/ClientDashboard";
 import CriticalityBadge from "@/components/dashboard/CriticalityBadge";
 import Countdown from "@/components/dashboard/Countdown";
+import LiveMap from "@/components/dashboard/LiveMap";
 import type { Quote, Shipment, TransportRequest } from "@/lib/types";
 
-export default function ControlRoom({ requests, quotes, shipments }: { requests: TransportRequest[]; quotes: Quote[]; shipments: Shipment[] }) {
+export default function ControlRoom({ requests, quotes, shipments, positions = [], drivers = [] }: { requests: TransportRequest[]; quotes: Quote[]; shipments: Shipment[]; positions?: import("@/lib/types").DriverLocation[]; drivers?: import("@/lib/types").Profile[] }) {
   const stats = useMemo(() => {
     const accepted = quotes.filter((q) => q.status === "accepted");
     const revenue = accepted.reduce((s, q) => s + Number(q.amount), 0);
@@ -27,6 +28,9 @@ export default function ControlRoom({ requests, quotes, shipments }: { requests:
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"><p className="text-xs text-slate-400">Marge estimee</p><p className="mt-2 text-2xl font-bold tabular-nums text-white">{formatMoney(stats.margin, "EUR", "fr-FR")}</p><p className="mt-1 text-xs font-semibold text-emerald-400">+14%</p></div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"><p className="text-xs text-slate-400">En attente</p><p className="mt-2 text-2xl font-bold tabular-nums text-cyan-300">{stats.pending}</p><p className="mt-1 text-xs text-slate-500">demandes</p></div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"><p className="text-xs text-slate-400">En transit</p><p className="mt-2 text-2xl font-bold tabular-nums text-orange-400">{stats.active}</p><p className="mt-1 text-xs text-slate-500">missions</p></div>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-1 backdrop-blur">
+          <LiveMap positions={positions} drivers={drivers} />
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
           <div className="border-b border-white/10 px-5 py-4"><h2 className="text-sm font-semibold text-white">Courses critiques</h2></div>
