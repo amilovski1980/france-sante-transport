@@ -49,28 +49,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <section>
-      <div className="bg-navy-900 text-white print:hidden">
-        <div className="container-x flex flex-col gap-6 py-10 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-flagred-500">
-              {roleInfo.label}
-            </p>
-            <h1 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
-              {profile.full_name || profile.email}
-            </h1>
-            <p className="mt-2 text-sm text-navy-100/80">
-              {roleInfo.hint} · {profile.email}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Avatar name={profile.full_name} email={profile.email} src={(profile as { avatar_url?: string | null }).avatar_url} size="md" className="ring-white/40" /><span className="rounded-full border border-white/25 bg-white/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider">
-              Rôle : {profile.role}
-            </span>
-            <SignOutButton />
-          </div>
-        </div>
-      </div>
-      <div className="dash-bg flex min-h-[calc(100vh-5rem)]"><DashboardSidebar profile={profile as Profile} /><div className="flex-1 py-8"><div className="container-x">{children}</div></div></div>
+      <div className="dash-bg min-h-screen"><div className="mx-auto max-w-2xl"><div className="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f131b]"><div className="flex items-center gap-2"><Avatar name={profile.full_name} email={profile.email} src={(profile as { avatar_url?: string | null }).avatar_url} size="sm" /><span className="text-sm font-semibold text-navy-900 dark:text-slate-100">{profile.full_name || profile.email}</span></div><SignOutButton /></div><DashboardSidebar profile={profile as Profile} /><div className="px-4 py-6">{children}</div></div></div>
     </section>
   );
 }
