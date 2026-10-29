@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   },
   description:
     "France Santé Transport : transport de patients et de matériel médical, devis en ligne, suivi traçable et équipes dédiées.",
+  icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

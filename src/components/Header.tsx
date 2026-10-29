@@ -53,7 +53,7 @@ export function Logo({
   branding?: BrandingSettings;
 }) {
   const { t } = useI18n();
-  const logoUrl = branding?.logo_url ?? null;
+  const logoUrl = branding?.logo_url ?? "/logo.png";
   const logoAlt = branding?.logo_alt || DEFAULT_BRANDING.logo_alt || "France Santé Transport";
   const slogan = branding?.slogan || DEFAULT_BRANDING.slogan || "Le transport qui fait avancer la santé";
 
