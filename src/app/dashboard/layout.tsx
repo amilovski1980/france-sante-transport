@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import SignOutButton from "@/components/SignOutButton"; import Avatar from "@/components/Avatar";
+import SignOutButton from "@/components/SignOutButton"; import Avatar from "@/components/Avatar"; import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import type { Profile } from "@/lib/types";
 
 const ROLE_LABELS: Record<Profile["role"], { label: string; hint: string }> = {
@@ -70,7 +70,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
       </div>
-      <div className="dash-bg"><div className="container-x py-10">{children}</div></div>
+      <div className="dash-bg flex min-h-[calc(100vh-5rem)]"><DashboardSidebar profile={profile as Profile} /><div className="flex-1 py-8"><div className="container-x">{children}</div></div></div>
     </section>
   );
 }
