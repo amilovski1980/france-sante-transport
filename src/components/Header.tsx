@@ -122,6 +122,8 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
+  if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <header className="sticky top-0 z-50 border-b border-navy-100 bg-white/90 backdrop-blur-md">
       <div className="container-x flex h-20 items-center justify-between gap-4">
