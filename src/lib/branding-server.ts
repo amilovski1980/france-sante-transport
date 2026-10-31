@@ -13,7 +13,7 @@ export async function loadBranding(): Promise<BrandingSettings> {
     const supabase = createSupabaseClient(url, anonKey, {
       global: {
         fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-          fetch(input, { ...init, next: { revalidate: 300 } }),
+          fetch(input, { ...init, next: { revalidate: 60 } }),
       },
     });
     const { data, error } = await supabase
