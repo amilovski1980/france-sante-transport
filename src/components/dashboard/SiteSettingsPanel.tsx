@@ -100,6 +100,8 @@ export default function SiteSettingsPanel() {
       });
       setSettings(row);
       setSaved(true);
+      // Purge immédiate du cache public (accueil, header, footer).
+      void fetch("/api/revalidate-branding", { method: "POST" }).catch(() => undefined);
       router.refresh();
     } catch (err) {
       setError(toUserMessage(err));
