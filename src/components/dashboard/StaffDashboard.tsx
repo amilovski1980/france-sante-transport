@@ -663,7 +663,7 @@ export default function StaffDashboard({
 
       {tab === "agenda" && (
         <div className="space-y-6">
-          <DispatchCalendar shipments={shipments} requests={requests} assignments={assignments} drivers={drivers} />
+          <DispatchCalendar shipments={shipments} requests={requests} assignments={assignments} drivers={drivers} vehicles={vehicles} />
           <DriverSchedulePanel drivers={drivers} shipments={shipments} assignments={assignments} requests={requests} />
           <DriverKpiPanel drivers={drivers} shipments={shipments} assignments={assignments} />
         </div>
