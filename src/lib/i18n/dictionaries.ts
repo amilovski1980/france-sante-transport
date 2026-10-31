@@ -413,9 +413,15 @@ const fr = {
   "am.open": "Discuter avec Aminia",
   "am.close": "Fermer la discussion",
   "am.title": "Aminia · assistante",
-  "am.status": "En ligne · réponse immédiate",
+  "am.status": "En ligne · répond en quelques secondes",
   "am.welcome":
-    "Bonjour, je suis Aminia, l'assistante de France Santé Transport. Je peux vous orienter vers le bon service : transport biologique (UN 3373), distribution pharmaceutique (BPD), envois sous carboglace -78,5 °C ou demandes d'enlèvement 24/7. Que puis-je faire pour vous ?",
+    "Je suis Aminia, l'assistante de France Santé Transport. Je peux vous orienter vers le bon service : transport biologique (UN 3373), distribution pharmaceutique (BPD), envois sous carboglace -78,5 °C ou demandes d'enlèvement 24/7. Que puis-je faire pour vous ?",
+  "am.welcomeBack":
+    "Ravi de vous revoir sur France Santé Transport ! Besoin d'un enlèvement planifié, d'un devis, ou d'une question sur nos normes (UN 3373, BPD, carboglace) ? Je suis là pour vous orienter.",
+  "am.greet.morning": "Bonjour !",
+  "am.greet.afternoon": "Bonjour !",
+  "am.greet.evening": "Bonsoir !",
+  "am.thinking": "Aminia réfléchit…",
   "am.placeholder": "Décrivez votre besoin…",
   "am.send": "Envoyer",
   "am.disclaimer": "Assistante automatisée. Pour une réponse d'un membre de l'équipe, utilisez la page Contact.",
@@ -426,6 +432,10 @@ const fr = {
   "am.q.newsletter": "Newsletter",
   "am.fallback":
     "Je n'ai pas tout compris, mais un membre de notre équipe pourra vous répondre précisément depuis la page Contact. En attendant, voici les orientations possibles :",
+  "am.answer.greet":
+    "Comment puis-je vous orienter aujourd'hui ? Transport biologique (UN 3373), distribution pharmaceutique (BPD), envois sous carboglace -78,5 °C ou demande d'enlèvement 24/7 — dites-moi votre besoin.",
+  "am.answer.thanks":
+    "Avec plaisir ! Si vous avez une question sur un acheminement, un devis ou nos normes sanitaires, n'hésitez pas. Un membre de l'équipe vous répond précisément via la page Contact si besoin.",
   "am.answer.bed":
     "Pour les prélèvements et échantillons biologiques, avec chaîne du froid stricte et conformité UN 3373, c'est le service dédié :",
   "am.answer.seated":
@@ -939,9 +949,15 @@ const en: Record<TKey, string> = {
   "am.open": "Chat with Aminia",
   "am.close": "Close the conversation",
   "am.title": "Aminia · assistant",
-  "am.status": "Online · instant reply",
+  "am.status": "Online · replies in seconds",
   "am.welcome":
-    "Hello, I'm Aminia, France Santé Transport's assistant. I can direct you to the right service: biological transport (UN 3373), pharmaceutical distribution (GDP), dry-ice shipments -78.5 °C or 24/7 pickups. How can I help?",
+    "I'm Aminia, France Santé Transport's assistant. I can direct you to the right service: biological transport (UN 3373), pharmaceutical distribution (GDP), dry-ice shipments -78.5 °C or 24/7 pickups. How can I help?",
+  "am.welcomeBack":
+    "Good to see you again on France Santé Transport! Need a scheduled pickup, a quote, or a question about our standards (UN 3373, GDP, dry ice)? I'm here to help.",
+  "am.greet.morning": "Good morning!",
+  "am.greet.afternoon": "Good afternoon!",
+  "am.greet.evening": "Good evening!",
+  "am.thinking": "Aminia is thinking…",
   "am.placeholder": "Describe your need…",
   "am.send": "Send",
   "am.disclaimer": "Automated assistant. For an answer from a team member, use the Contact page.",
@@ -952,6 +968,10 @@ const en: Record<TKey, string> = {
   "am.q.newsletter": "Newsletter",
   "am.fallback":
     "Sorry, I didn't fully understand, but a member of our team can answer precisely via the Contact page. Meanwhile, here are the available options:",
+  "am.answer.greet":
+    "How can I point you in the right direction today? Biological transport (UN 3373), pharmaceutical distribution (GDP), dry-ice shipments -78.5 °C or 24/7 pickups — tell me your need.",
+  "am.answer.thanks":
+    "My pleasure! If you have a question about a shipment, a quote or our healthcare standards, just ask. A team member can answer precisely via the Contact page if needed.",
   "am.answer.bed":
     "For biological samples with a strict cold chain and UN 3373 compliance, here is the dedicated service:",
   "am.answer.seated":

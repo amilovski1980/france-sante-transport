@@ -71,10 +71,98 @@ const INTENTS: Array<Intent> = [
   },
 ];
 
-/** Détection d'intention par mots-clés (insensible à la casse). */
+/** Mots de salutation reconnus en début de message. */
+const GREETING_WORDS = [
+  "bonjour",
+  "bonsoir",
+  "salut",
+  "coucou",
+  "hello",
+  "hey",
+  "hi",
+  "good morning",
+  "good afternoon",
+  "good evening",
+];
+
+/** Détecte une intention par mots-clés (insensible à la casse). */
 function detectIntent(input: string): Intent | null {
   const low = input.toLowerCase();
   return INTENTS.find((intent) => intent.keywords.some((keyword) => low.includes(keyword))) ?? null;
+}
+
+/** Clé i18n de la salutation adaptée à l'heure de la journée. */
+function timeGreetKey(): TKey {
+  const hour = new Date().getHours();
+  if (hour < 12) return "am.greet.morning";
+  if (hour < 18) return "am.greet.afternoon";
+  return "am.greet.evening";
+}
+
+/** Le message commence-t-il par une salutation ? */
+function greetingPrefix(input: string): TKey | null {
+  const low = input.toLowerCase().trimStart();
+  for (const word of GREETING_WORDS) {
+    if (low.startsWith(word)) return timeGreetKey();
+  }
+  return null;
+}
+
+/** Le message est-il une expressions de remerciement isolée ? */
+function isThanks(input: string): boolean {
+  const low = input.toLowerCase().trim();
+  return low.length <= 30 && /(merci|thanks|thank you|bien reçu)/.test(low);
+}
+
+/** Le message est-il une salutation seule (sans autre demande) ? */
+function isBareGreeting(input: string): boolean {
+  const low = input.toLowerCase().trim();
+  return low.length <= 22 && GREETING_WORDS.some((word) => low === word || low.startsWith(`${word} `) || low.startsWith(`${word},`) || low.startsWith(`${word}!`));
+}
+
+/** Preconditions : profil visiteur connu ? (première visite vs fidèle) — localStorage. */
+function isReturningVisitor(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (window.localStorage.getItem("fst-aminia-visit") === "1") return true;
+    window.localStorage.setItem("fst-aminia-visit", "1");
+  } catch {
+    /* mode privé : considéré nouvelle visite */
+  }
+  return false;
+}
+
+/**
+ * Logo Aminia : bulle de conversation dégradée avec trois points —
+ * identité visuelle propre, sans emoji génériques.
+ */
+function AminiaMark({ size = 36, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 48 48"
+      width={size}
+      height={size}
+      className={className}
+    >
+      <defs>
+        <linearGradient id="aminia-mark-g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#1e2f5c" />
+          <stop offset="55%" stopColor="#243a6e" />
+          <stop offset="100%" stopColor="#c0392b" />
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="46" height="46" rx="13" fill="url(#aminia-mark-g)" />
+      <path
+        d="M15 12h18c3.3 0 6 2.7 6 6v9c0 3.3-2.7 6-6 6H24l-7 6v-6h-2c-3.3 0-6-2.7-6-6v-9c0-3.3 2.7-6 6-6z"
+        fill="#ffffff"
+        opacity="0.95"
+      />
+      <circle cx="18.5" cy="22.5" r="2.5" fill="#1e2f5c" />
+      <circle cx="27.5" cy="22.5" r="2.5" fill="#1e2f5c" />
+      <circle cx="36" cy="22.5" r="2.5" fill="#1e2f5c" />
+    </svg>
+  );
 }
 
 export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: string | null }) {
@@ -82,35 +170,41 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [input, setInput] = useState("");
+  const [thinking, setThinking] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const thinkingTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (thinkingTimerRef.current) window.clearTimeout(thinkingTimerRef.current);
+    };
+  }, []);
+
+  /** Message d'ouverture : salutation selon l'heure + nouveau/retour. */
+  const buildOpeningMessage = useCallback((): AssistantMessage => {
+    const returned = isReturningVisitor();
+    const text = returned
+      ? `${t(timeGreetKey())} ${t("am.welcomeBack")}`
+      : `${t(timeGreetKey())} ${t("am.welcome")}`;
+    return { role: "aminia", text, links: [] };
+  }, [t]);
 
   useEffect(() => {
     if (open && messages.length === 0) {
-      setMessages([{ role: "aminia", text: t("am.welcome"), links: [] }]);
+      setMessages([buildOpeningMessage()]);
     }
-  }, [open, messages.length, t]);
+  }, [open, messages.length, buildOpeningMessage]);
 
   useEffect(() => {
     if (open) scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [open, messages]);
+  }, [open, messages, thinking]);
 
   const say = useCallback((message: AssistantMessage) => {
     setMessages((current) => [...current, message]);
   }, []);
 
-  const answerToMessage = useCallback(
-    (intent: Intent | null) => {
-      if (!intent) {
-        say({
-          role: "aminia",
-          text: t("am.fallback"),
-          links: [
-            { label: t("nav.services"), href: "/services" },
-            { label: t("footer.link.contact"), href: "/contact" },
-          ],
-        });
-        return;
-      }
+  const linksForIntent = useCallback(
+    (intent: Intent): AssistantLink[] => {
       const links: AssistantLink[] = [];
       for (const key of intent.linkKeys) {
         if (key === "footer.newsletter") {
@@ -120,20 +214,76 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
         const href = INTENT_HREFS[key];
         if (href) links.push({ label: t(key), href });
       }
-      say({ role: "aminia", text: t(intent.answerKey), links });
+      return links;
     },
-    [newsletterUrl, say, t],
+    [newsletterUrl, t],
   );
+
+  /** Réponse après un délai de réflexion, proportionné à la demande. */
+  function planReply(builder: () => AssistantMessage, delay = 650) {
+    if (thinkingTimerRef.current) window.clearTimeout(thinkingTimerRef.current);
+    setThinking(true);
+    thinkingTimerRef.current = window.setTimeout(() => {
+      setThinking(false);
+      say(builder());
+    }, delay);
+  }
 
   function sendText(text: string) {
     const trimmed = text.trim();
-    if (!trimmed) return;
+    if (!trimmed || thinking) return;
     say({ role: "user", text: trimmed });
     setInput("");
-    answerToMessage(detectIntent(trimmed));
+
+    const low = trimmed.toLowerCase();
+    const intent = detectIntent(low);
+    const delay = 560 + Math.min(760, trimmed.length * 16);
+
+    // 1) Salutation seule → réponse situation (heure + orientation).
+    if (isBareGreeting(trimmed)) {
+      planReply(() => ({
+        role: "aminia",
+        text: `${t(timeGreetKey())} ${t("am.answer.greet")}`,
+        links: [
+          { label: t("nav.services"), href: "/services" },
+          { label: t("cta.quote"), href: "/devis" },
+        ],
+      }), delay);
+      return;
+    }
+
+    // 2) Remerciement isolé → réponse courtoise.
+    if (isThanks(trimmed) && !intent) {
+      planReply(() => ({
+        role: "aminia",
+        text: t("am.answer.thanks"),
+        links: [{ label: t("footer.link.contact"), href: "/contact" }],
+      }), delay);
+      return;
+    }
+
+    // 3) Intention métier, précédée d'une salutation le cas échéant.
+    if (intent) {
+      planReply(() => {
+        const greeting = greetingPrefix(trimmed);
+        const answer = greeting ? `${t(greeting)} ${t(intent.answerKey)}` : t(intent.answerKey);
+        return { role: "aminia", text: answer, links: linksForIntent(intent) };
+      }, delay);
+      return;
+    }
+
+    // 4) Pas compris → réponse d'orientation.
+    planReply(() => ({
+      role: "aminia",
+      text: t("am.fallback"),
+      links: [
+        { label: t("nav.services"), href: "/services" },
+        { label: t("footer.link.contact"), href: "/contact" },
+      ],
+    }), delay);
   }
 
-  const QUICK_ACTIONS: Array<{ key: TKey; intentKey: TKey | null }> = [
+  const QUICK_ACTIONS: Array<{ key: TKey; intentKey: TKey }> = [
     { key: "am.q.bed", intentKey: "am.answer.bed" },
     { key: "am.q.seated", intentKey: "am.answer.seated" },
     { key: "am.q.price", intentKey: "am.answer.quote" },
@@ -141,9 +291,13 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
     { key: "am.q.newsletter", intentKey: "am.answer.newsletter" },
   ];
 
-  function sendQuick(action: { key: TKey; intentKey: TKey | null }) {
+  function sendQuick(action: { key: TKey; intentKey: TKey }) {
+    if (thinking) return;
     say({ role: "user", text: t(action.key) });
-    answerToMessage(INTENTS.find((i) => i.answerKey === action.intentKey) ?? null);
+    const intent = INTENTS.find((i) => i.answerKey === action.intentKey) ?? null;
+    if (intent) {
+      planReply(() => ({ role: "aminia", text: t(intent.answerKey), links: linksForIntent(intent) }));
+    }
   }
 
   return (
@@ -165,11 +319,8 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
             <span aria-hidden="true" className="absolute inset-0">
               <span className="aminia-shine absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
             </span>
-            <span
-              aria-hidden="true"
-              className="aminia-bob grid h-9 w-9 place-items-center rounded-full bg-white/15 text-lg ring-1 ring-white/30"
-            >
-              🤖
+            <span aria-hidden="true" className="aminia-bob relative">
+              <AminiaMark size={38} />
             </span>
             <span>Aminia</span>
             {/* Pastille « en ligne » */}
@@ -186,10 +337,13 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
           aria-label={t("am.title")}
           className="aminia-pop fixed bottom-5 right-5 z-50 flex max-h-[32rem] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-navy-200 bg-white shadow-2xl"
         >
-          <div className="flex items-center justify-between bg-navy-800 px-4 py-3 text-white">
-            <div>
-              <p className="font-display text-sm font-semibold">🤖 {t("am.title")}</p>
-              <p className="text-[0.7rem] text-navy-200">{t("am.status")}</p>
+          <div className="flex items-center justify-between bg-gradient-to-r from-navy-900 via-navy-800 to-navy-700 px-4 py-3 text-white">
+            <div className="flex items-center gap-2.5">
+              <AminiaMark size={34} />
+              <div>
+                <p className="font-display text-sm font-semibold">{t("am.title")}</p>
+                <p className="text-[0.7rem] text-navy-200">{t("am.status")}</p>
+              </div>
             </div>
             <button
               type="button"
@@ -206,13 +360,13 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-navy-50/60 px-3 py-3">
             {messages.map((message, index) =>
               message.role === "user" ? (
-                <div key={index} className="flex justify-end">
+                <div key={index} className="aminia-reveal flex justify-end">
                   <p className="max-w-[85%] rounded-xl rounded-br-sm bg-navy-800 px-3 py-2 text-sm text-white">
                     {message.text}
                   </p>
                 </div>
               ) : (
-                <div key={index} className="space-y-1.5">
+                <div key={index} className="aminia-reveal space-y-1.5">
                   <p className="max-w-[90%] rounded-xl rounded-bl-sm bg-white px-3 py-2 text-sm text-navy-800 shadow-sm">
                     {message.text}
                   </p>
@@ -233,6 +387,22 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
                 </div>
               ),
             )}
+
+            {thinking && (
+              <div className="aminia-reveal flex items-center gap-2">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white shadow-sm">
+                  <AminiaMark size={22} />
+                </span>
+                <span
+                  className="flex items-center gap-1 rounded-xl rounded-bl-sm bg-white px-3 py-2.5 shadow-sm"
+                  aria-label={t("am.thinking")}
+                >
+                  <span className="aminia-dot block h-1.5 w-1.5 rounded-full bg-navy-400" />
+                  <span className="aminia-dot aminia-dot-2 block h-1.5 w-1.5 rounded-full bg-navy-400" />
+                  <span className="aminia-dot aminia-dot-3 block h-1.5 w-1.5 rounded-full bg-navy-400" />
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-1.5 border-t border-navy-100 bg-white px-3 py-2">
@@ -241,7 +411,8 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
                 key={action.key}
                 type="button"
                 onClick={() => sendQuick(action)}
-                className="rounded-full border border-navy-200 px-2.5 py-1 text-[0.7rem] font-medium text-navy-700 transition hover:bg-navy-50"
+                disabled={thinking}
+                className="rounded-full border border-navy-200 px-2.5 py-1 text-[0.7rem] font-medium text-navy-700 transition hover:bg-navy-50 disabled:opacity-50"
               >
                 {t(action.key)}
               </button>
@@ -264,7 +435,7 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
             />
             <button
               type="submit"
-              disabled={!input.trim()}
+              disabled={!input.trim() || thinking}
               className="rounded-full bg-navy-800 px-3 py-2 text-xs font-semibold text-white transition hover:bg-navy-700 disabled:opacity-50"
             >
               {t("am.send")}

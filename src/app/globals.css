@@ -98,9 +98,23 @@ body {
 .aminia-shine { animation: aminia-shine 4.5s ease-in-out infinite; }
 .aminia-bob { animation: aminia-bob 3.5s ease-in-out infinite; }
 
+/* Indicateur de réflexion (trois points) + apparition des messages. */
+@keyframes aminia-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes aminia-reveal {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.aminia-dot { animation: aminia-dot 1.15s ease-in-out infinite; }
+.aminia-dot-2 { animation-delay: 0.16s; }
+.aminia-dot-3 { animation-delay: 0.32s; }
+.aminia-reveal { animation: aminia-reveal 0.26s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .aminia-ring, .aminia-shine, .aminia-bob { animation: none; }
-  .aminia-pop { animation: none; }
+  .aminia-ring, .aminia-shine, .aminia-bob, .aminia-dot { animation: none; }
+  .aminia-pop, .aminia-reveal { animation: none; }
 }
 
 h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: inherit; }
