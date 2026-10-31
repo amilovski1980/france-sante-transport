@@ -62,6 +62,13 @@ export default async function DashboardPage() {
   if (role === "partner") {
     redirect("/dashboard/partners");
   }
+
+  // Gestion des rôles inattendus
+  if (role !== "driver" && role !== "admin" && role !== "dispatcher" && role !== "partner") {
+    // Rediriger vers une page d'erreur ou un message d'erreur
+    redirect("/login");
+  }
+
   const [{ data: requests }, { data: quotes }, { data: shipments }, { data: events }] =
     await Promise.all([
       supabase
@@ -73,7 +80,6 @@ export default async function DashboardPage() {
       supabase.from("shipment_events").select("*").order("created_at", { ascending: true }),
     ]);
 
-  redirect("/dashboard/requests");
   return (
     <div className="space-y-6">
       <HomeHero profile={profile} pending={(requests ?? []).filter((r) => r.status === "submitted").length} active={(shipments ?? []).filter((s) => s.status === "in_progress" || s.status === "confirmed").length} heroImageUrl="https://images.unsplash.com/photo-1576041046739-116194f5514e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" />

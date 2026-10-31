@@ -40,30 +40,30 @@ export default function ContactForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setPending(true);
-    setError(null);
-    setSuccess(false);
-    try {
-      await sendContactMessage({
-        topic,
-        full_name: fullName.trim(),
-        email: email.trim(),
-        phone: phone.trim() || undefined,
-        subject: subject.trim(),
-        message: message.trim(),
-      });
-      setSuccess(true);
-      setFullName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
-    } catch (err) {
-      setError(toUserMessage(err));
-    } finally {
-      setPending(false);
+      event.preventDefault();
+      setPending(true);
+      setError(null);
+      setSuccess(false);
+      try {
+        await sendContactMessage({
+          topic,
+          full_name: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim() || undefined,
+          subject: subject.trim(),
+          message: message.trim(),
+        });
+        setSuccess(true);
+        setFullName("");
+        setEmail("");
+        setPhone("");
+        setMessage("");
+      } catch (err) {
+        setError(toUserMessage(err));
+      } finally {
+        setPending(false);
+      }
     }
-  }
 
   return (
     <form onSubmit={handleSubmit} className="surface space-y-5 p-7 sm:p-8">

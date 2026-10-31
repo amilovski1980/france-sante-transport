@@ -27,6 +27,14 @@ export interface CreateRequestInput {
   organization_id?: string;
 }
 
+export interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  topic: ContactTopic;
+}
+
 async function call<T>(fn: () => Promise<{ data: T | null; error: unknown }>): Promise<T> {
   try {
     const { data, error } = await fn();
@@ -383,6 +391,28 @@ export async function adminUpdateProfile(input: {
       p_avatar_url: input.avatar_url ?? null,
       p_role: input.role ?? null,
     });
+  });
+}
+
+// ------------------------------------------------------------
+// Contact form
+// ------------------------------------------------------------
+
+export async function sendContactMessage(input: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): Promise<{ status: number; data?: any; error?: any }> {
+  return call(async () => {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc("send_contact_message", {
+      p_name: input.name,
+      p_email: input.email,
+      p_subject: input.subject,
+      p_message: input.message,
+    });
+    return { status: 200, data, error };
   });
 }
 

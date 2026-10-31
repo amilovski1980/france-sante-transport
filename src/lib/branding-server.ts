@@ -6,6 +6,7 @@ export async function loadBranding(): Promise<BrandingSettings> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) {
+    console.warn("Supabase URL or Anon Key not found, using default branding");
     return DEFAULT_BRANDING;
   }
 
@@ -24,6 +25,7 @@ export async function loadBranding(): Promise<BrandingSettings> {
       .eq("id", 1)
       .single();
     if (error) {
+      console.warn("First attempt to fetch branding failed, trying retry...", error.message);
       // Repli : une seconde tentative sans cache (higiénique si la première a été tronquée).
       const retry = await supabase
         .from("site_settings")
@@ -32,11 +34,15 @@ export async function loadBranding(): Promise<BrandingSettings> {
         )
         .eq("id", 1)
         .single();
-      if (retry.error) return DEFAULT_BRANDING;
+      if (retry.error) {
+        console.error("Both attempts to fetch branding failed, using default branding", retry.error.message);
+        return DEFAULT_BRANDING;
+      }
       return resolveBranding(retry.data);
     }
     return resolveBranding(data);
-  } catch {
+  } catch (error: any) {
+    console.error("Unexpected error fetching branding, using default branding", error.message || error);
     return DEFAULT_BRANDING;
   }
 }
