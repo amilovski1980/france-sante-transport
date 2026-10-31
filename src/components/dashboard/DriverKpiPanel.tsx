@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/components/I18nProvider";
+import DriverAvatar from "@/components/dashboard/DriverAvatar";
 import type { DriverAssignment, Profile, Shipment } from "@/lib/types";
 
 interface DriverAgg {
@@ -97,7 +98,14 @@ export default function DriverKpiPanel({
               return (
                 <li key={r.driver.id} className="px-5 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-navy-900">{r.driver.full_name || r.driver.email}</span>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <DriverAvatar
+                        name={r.driver.full_name || r.driver.email}
+                        url={r.driver.avatar_url}
+                        size={32}
+                      />
+                      <span className="truncate text-sm font-semibold text-navy-900">{r.driver.full_name || r.driver.email}</span>
+                    </span>
                     <span className="text-xs text-navy-500">{t("dkpi.rowStats", { done: r.completed, upcoming: r.upcoming, total: r.total })}</span>
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-navy-50">

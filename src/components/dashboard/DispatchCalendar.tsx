@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useI18n } from "@/components/I18nProvider";
 import { ShipmentStatusBadge } from "@/components/StatusBadge";
 import { formatDateTime } from "@/components/dashboard/ClientDashboard";
+import DriverAvatar from "@/components/dashboard/DriverAvatar";
 import { toUserMessage } from "@/lib/errors";
 import {
   SERVICE_TYPE_LABELS,
@@ -515,9 +516,16 @@ export default function DispatchCalendar({
                 <dt className="w-24 shrink-0 text-[11px] font-semibold uppercase tracking-wide text-navy-400">
                   {t("cal.driver")}
                 </dt>
-                <dd className="text-navy-800">
-                  {openDriver ? openDriver.full_name || openDriver.email : t("cal.unassigned")}
-                  {openVehicle ? ` · ${openVehicle.registration_plate} (${VEHICLE_SHORT[openVehicle.vehicle_type] ?? openVehicle.vehicle_type})` : ""}
+                <dd className="flex min-w-0 items-center gap-2 text-navy-800">
+                  <DriverAvatar
+                    name={openDriver ? openDriver.full_name || openDriver.email : "—"}
+                    url={openDriver?.avatar_url}
+                    size={28}
+                  />
+                  <span className="min-w-0 break-words">
+                    {openDriver ? openDriver.full_name || openDriver.email : t("cal.unassigned")}
+                    {openVehicle ? ` · ${openVehicle.registration_plate} (${VEHICLE_SHORT[openVehicle.vehicle_type] ?? openVehicle.vehicle_type})` : ""}
+                  </span>
                 </dd>
               </div>
             </dl>

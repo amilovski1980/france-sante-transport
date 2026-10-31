@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { AssignmentStatusBadge, ShipmentStatusBadge } from "@/components/StatusBadge";
 import { formatDateTime } from "@/components/dashboard/ClientDashboard";
+import DriverAvatar from "@/components/dashboard/DriverAvatar";
 import type {
   DriverAssignment,
   Profile,
@@ -100,12 +101,22 @@ export default function DriverSchedulePanel({
                     onClick={() => setSelected(driver.id)}
                     className={`w-full px-4 py-3 text-left transition-colors ${active ? "bg-navy-800 text-white" : "hover:bg-navy-50"}`}
                   >
-                    <p className={`text-sm font-semibold ${active ? "text-white" : "text-navy-900"}`}>
-                      {driver.full_name || driver.email}
-                    </p>
-                    <p className={`mt-0.5 text-xs ${active ? "text-navy-200" : "text-navy-500"}`}>
-                      {t("dsp.stats", { done: stats.done, upcoming: stats.upcoming, total: stats.total })}
-                    </p>
+                    <span className="flex items-center gap-3">
+                      <DriverAvatar
+                        name={driver.full_name || driver.email}
+                        url={driver.avatar_url}
+                        size={36}
+                        ring={active}
+                      />
+                      <span className="min-w-0">
+                        <span className={`block truncate text-sm font-semibold ${active ? "text-white" : "text-navy-900"}`}>
+                          {driver.full_name || driver.email}
+                        </span>
+                        <span className={`mt-0.5 block text-xs ${active ? "text-navy-200" : "text-navy-500"}`}>
+                          {t("dsp.stats", { done: stats.done, upcoming: stats.upcoming, total: stats.total })}
+                        </span>
+                      </span>
+                    </span>
                   </button>
                 </li>
               );
@@ -119,9 +130,20 @@ export default function DriverSchedulePanel({
           ) : (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-semibold text-navy-900">
-                  {selectedDriver.full_name || selectedDriver.email}
-                </p>
+                <span className="flex items-center gap-3">
+                  <DriverAvatar
+                    name={selectedDriver.full_name || selectedDriver.email}
+                    url={selectedDriver.avatar_url}
+                    size={48}
+                    ring
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-navy-900">
+                      {selectedDriver.full_name || selectedDriver.email}
+                    </span>
+                    <span className="block truncate text-xs text-navy-500">{selectedDriver.email}</span>
+                  </span>
+                </span>
                 <div className="flex overflow-hidden rounded-full border border-navy-200">
                   <button
                     type="button"

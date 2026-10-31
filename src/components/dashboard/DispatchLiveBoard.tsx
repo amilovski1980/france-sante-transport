@@ -10,6 +10,7 @@ import {
   ShipmentStatusBadge,
 } from "@/components/StatusBadge";
 import { formatDateTime } from "@/components/dashboard/ClientDashboard";
+import DriverAvatar from "@/components/dashboard/DriverAvatar";
 import LiveMap from "@/components/dashboard/LiveMap";
 import type {
   DriverAssignment,
@@ -241,8 +242,15 @@ export default function DispatchLiveBoard({
                 return (
                   <li key={driver.id} className="px-5 py-3.5">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-semibold text-navy-900">
-                        {driver.full_name || driver.email}
+                      <span className="flex min-w-0 items-center gap-2.5">
+                        <DriverAvatar
+                          name={driver.full_name || driver.email}
+                          url={driver.avatar_url}
+                          size={30}
+                        />
+                        <span className="truncate text-sm font-semibold text-navy-900">
+                          {driver.full_name || driver.email}
+                        </span>
                       </span>
                       {engaged ? (
                         <AssignmentStatusBadge status={engaged.assignment!.status} />
