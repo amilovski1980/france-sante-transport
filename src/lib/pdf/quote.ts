@@ -56,7 +56,7 @@ export async function buildQuotePdf(input: {
   // En-tête bandeau
   page.drawRectangle({ x: 0, y: 768, width, height: 46, color: LIGHT });
   page.drawText("FRANCE SANTÉ TRANSPORT", { x: 40, y: 792, size: 15, font: bold, color: NAVY });
-  page.drawText("Transport médical & sanitaire — VSL, brancards, fauteuils", { x: 40, y: 778, size: 8, font, color: SLATE });
+  page.drawText("Logistique de santé — Transport biologique · Pharmaceutique · Carboglace", { x: 40, y: 778, size: 8, font, color: SLATE });
   page.drawText("DEVIS", { x: width - 105, y: 786, size: 20, font: bold, color: RED });
   page.drawText(`Version V${quote.version} · ${fmtDate(quote.created_at)}`, { x: width - 178, y: 776, size: 7.5, font, color: SLATE });
 
@@ -88,7 +88,7 @@ export async function buildQuotePdf(input: {
   page.drawText(fmtDate(request.pickup_datetime), { x: 305, y: yr, size: 8.5, font, color: SLATE });
   yr -= 11.5;
   if (request.patient_name) {
-    page.drawText(`Patient : ${request.patient_name}`, { x: 305, y: yr, size: 8.5, font, color: SLATE });
+    page.drawText(`Produit : ${request.patient_name}`, { x: 305, y: yr, size: 8.5, font, color: SLATE });
     yr -= 11.5;
   }
 

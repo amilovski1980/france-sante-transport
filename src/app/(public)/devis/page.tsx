@@ -6,13 +6,13 @@ import type { Locale } from "@/lib/i18n/locale";
 export const metadata: Metadata = {
   title: "Demande de devis",
   description:
-    "Décrivez votre besoin de transport : nos équipes instruisent la demande et vous adressent un devis versionné.",
+    "Décrivez votre besoin d'acheminement : nos équipes instruisent la demande et vous adressent un devis versionné.",
 };
 
 const COPY = {
   fr: {
     kicker: "Demande de devis",
-    title: "Décrivez votre transport",
+    title: "Décrivez votre envoi",
     intro:
       "Votre demande est enregistrée dans votre espace, horodatée, puis examinée par nos équipes. Vous recevrez un devis à valider — rien n'est engagé sans votre accord.",
     howTitle: "Comment ça se passe ?",
@@ -28,7 +28,7 @@ const COPY = {
   },
   en: {
     kicker: "Quote request",
-    title: "Describe your transport",
+    title: "Describe your shipment",
     intro:
       "Your request is recorded in your space, timestamped, then reviewed by our teams. You will receive a quote to approve — nothing is committed without your agreement.",
     howTitle: "How it works",

@@ -34,7 +34,7 @@ const fr = {
   // Pied de page
   // ------------------------------------------------------------
   "footer.description":
-    "Transport de patients et de matériel médical, encadré et traçable de bout en bout.",
+    "Acheminement de produits biologiques, pharmaceutiques et médicaux sensibles, encadré et traçable de bout en bout.",
   "footer.navigation": "Navigation",
   "footer.company": "Entreprise",
   "footer.clientArea": "Espace client",
@@ -49,6 +49,10 @@ const fr = {
   "footer.link.dashboard": "Tableau de bord",
   "footer.rights": "© {year} France Santé Transport — Identité et coordonnées provisoires.",
   "footer.progress": "Site en cours de construction · Sprint 1",
+  "footer.social": "Rejoignez-nous",
+  "footer.newsletter": "Newsletter",
+  "footer.link.cgv": "CGV et conditions",
+  "footer.aminia": "Discuter avec Aminia · assistante IA",
 
   // ------------------------------------------------------------
   // Commun
@@ -128,26 +132,26 @@ const fr = {
   "qform.needTitle": "Un espace client est nécessaire",
   "qform.needBody":
     "Pour suivre votre dossier, recevoir les devis et les notifications de mission, connectez-vous ou créez un compte. C'est gratuit et immédiat.",
-  "qform.serviceLabel": "Type de transport",
-  "qform.pickup": "Adresse de prise en charge",
+  "qform.serviceLabel": "Type d'acheminement",
+  "qform.pickup": "Adresse d'enlèvement",
   "qform.pickupPh": "12 rue des Lilas, 75011 Paris",
   "qform.dropoff": "Adresse de destination",
   "qform.dropoffPh": "Hôpital Saint-Louis, 75010 Paris",
-  "qform.datetime": "Date et heure de prise en charge",
+  "qform.datetime": "Date et heure d'enlèvement",
   "qform.contactPhone": "Téléphone de contact",
-  "qform.patient": "Nom du patient (facultatif)",
-  "qform.patientPh": "Nom du patient",
-  "qform.mobility": "Besoins de mobilité (facultatif)",
-  "qform.mobilityPh": "Fauteuil, canne, assistance…",
+  "qform.patient": "Désignation du produit (facultatif)",
+  "qform.patientPh": "Ex. : prélèvement sanguin UN 3373",
+  "qform.mobility": "Contrainte de température / conditionnement (facultatif)",
+  "qform.mobilityPh": "2–8 °C, -20 °C, carboglace -78,5 °C…",
   "qform.notes": "Précisions (facultatif)",
-  "qform.notesPh": "Accompagnant, étage, contraintes d'accès…",
+  "qform.notesPh": "Contact sur place, livreur, contraintes d'accès…",
   "qform.priceNote":
-    "Aucun tarif n'est affiché à cette étape : le prix de votre transport sera défini et validé par notre équipe, puis transmis dans un devis versionné que vous pourrez accepter.",
+    "Aucun tarif n'est affiché à cette étape : le prix de votre acheminement sera défini et validé par notre équipe, puis transmis dans un devis versionné que vous pourrez accepter.",
   "qform.submitting": "Envoi de la demande…",
   "qform.submit": "Envoyer ma demande",
   "qform.createdTitle": "Demande enregistrée",
   "qform.createdBody":
-    "Votre demande a été créée et son horodatage enregistré. Nos équipes l'instruisent et vous adresseront un devis depuis votre espace.",
+    "Votre demande a été créée et son horodatage enregistré. Nos équipes l'instruisent et vous adresseront un devis pour votre envoi depuis votre espace.",
   "qform.followCta": "Suivre dans mon espace",
   "qform.newRequest": "Nouvelle demande",
   // ------------------------------------------------------------
@@ -252,12 +256,12 @@ const fr = {
   "dlb.driver": "Chauffeur",
   "dlb.driverUnassigned": "Chauffeur non affecté",
   "dlb.vehicle": "Véhicule",
-  "dlb.patient": "Patient : {n}",
+  "dlb.patient": "Produit : {n}",
   "dlb.quoteAccepted": "Devis V{v} accepté",
   "cd.emptyTitle": "Aucune demande pour le moment",
   "cd.emptyBody": "Soumettez votre première demande de transport : elle sera enregistrée, horodatée, puis examinée par nos équipes qui vous adresseront un devis.",
   "cd.requestQuote": "Demander un devis",
-  "cd.pickupOn": "Prise en charge : {pickup} · Demande du {created}",
+  "cd.pickupOn": "Enlèvement : {pickup} · Demande du {created}",
   "cd.submittedOn": "soumise le {t}",
   "cd.cancelAction": "Annulation…",
   "cd.cancelRequest": "Annuler la demande",
@@ -342,7 +346,7 @@ const fr = {
   "dd.decline": "Refuser",
   "dd.pickup": "Départ",
   "dd.dropoff": "Arrivée",
-  "dd.patientNotes": "Patient / précisions",
+  "dd.patientNotes": "Produit / précisions",
   "dd.assignmentState": "État de l'affectation :",
   "dd.respondedOn": " · répondu le {t}",
   "ss.loading": "Chargement des réglages du site…",
@@ -360,6 +364,63 @@ const fr = {
   "ss.save": "Enregistrer les réglages",
   "ss.reset": "Rétablir les valeurs par défaut",
   "ss.preview": "Aperçu de l'en-tête",
+  "ss.socialTitle": "Réseaux sociaux & newsletter",
+  "ss.socialHint": "Ces liens alimentent la colonne « Rejoignez-nous » du pied de page. Vide = masqué.",
+  "ss.facebook": "Facebook (URL)",
+  "ss.facebookPh": "https://facebook.com/francesantetransport",
+  "ss.linkedin": "LinkedIn (URL)",
+  "ss.linkedinPh": "https://linkedin.com/company/francesantetransport",
+  "ss.x": "X (ex-Twitter) (URL)",
+  "ss.xPh": "https://x.com/francesantetransport",
+  "ss.instagram": "Instagram (URL)",
+  "ss.instagramPh": "https://instagram.com/francesantetransport",
+  "ss.newsletter": "Newsletter (URL d'inscription)",
+  "ss.newsletterPh": "https://newsletter.exemple.fr/inscription",
+  "ss.invalidUrl": "Les liens doivent être des URL complètes commençant par https:// (ou http://).",
+  "ss.homeImages": "Images de la page d'accueil",
+  "ss.homeImagesHint": "Fond du bandeau d'accueil et visuel de la carte « Une logistique sous contrôle ». Laissez vide pour conserver le design par défaut.",
+  "ss.heroImage": "Fond du bandeau d'accueil (URL)",
+  "ss.heroImagePh": "https://images.exemple.fr/hero-labo.jpg",
+  "ss.visualImage": "Visuel de la carte parcours (URL)",
+  "ss.visualImagePh": "https://images.exemple.fr/parcours.jpg",
+
+  // ------------------------------------------------------------
+  // Aminia · assistante IA (site public)
+  // ------------------------------------------------------------
+  "am.open": "Discuter avec Aminia",
+  "am.close": "Fermer la discussion",
+  "am.title": "Aminia · assistante",
+  "am.status": "En ligne · réponse immédiate",
+  "am.welcome":
+    "Bonjour, je suis Aminia, l'assistante de France Santé Transport. Je peux vous orienter vers le bon service : transport biologique (UN 3373), distribution pharmaceutique (BPD), envois sous carboglace -78,5 °C ou demandes d'enlèvement 24/7. Que puis-je faire pour vous ?",
+  "am.placeholder": "Décrivez votre besoin…",
+  "am.send": "Envoyer",
+  "am.disclaimer": "Assistante automatisée. Pour une réponse d'un membre de l'équipe, utilisez la page Contact.",
+  "am.q.bed": "Transport biologique",
+  "am.q.seated": "Transport pharmaceutique",
+  "am.q.price": "Demander un devis",
+  "am.q.partner": "Devenir partenaire",
+  "am.q.newsletter": "Newsletter",
+  "am.fallback":
+    "Je n'ai pas tout compris, mais un membre de notre équipe pourra vous répondre précisément depuis la page Contact. En attendant, voici les orientations possibles :",
+  "am.answer.bed":
+    "Pour les prélèvements et échantillons biologiques, avec chaîne du froid stricte et conformité UN 3373, c'est le service dédié :",
+  "am.answer.seated":
+    "Pour la distribution sécurisée de médicaments et produits de santé, en conformité avec les Bonnes Pratiques de Distribution (BPD) :",
+  "am.answer.moto":
+    "Pour des envois à très basse température (-78,5 °C grâce à la carboglace) et produits critiques, voici le service adapté :",
+  "am.answer.parcel":
+    "Pour planifier vos enlèvements en ligne 24/7 — ponctuels, réguliers ou urgents — c'est la demande d'enlèvement :",
+  "am.answer.quote":
+    "Le plus simple : envoyez votre demande avec l'adresse d'enlèvement, la destination, la date et la contrainte de température. Notre équipe vous adresse un devis versionné sur votre espace :",
+  "am.answer.partner":
+    "Bienvenue ! Pour les établissements, pharmacies et structures de santé, l'apport d'affaires ouvre des circuits partenaires :",
+  "am.answer.contact":
+    "Pour toute question humaine (coordonnées, horaires, urgence), voici la page contact :",
+  "am.answer.cgv":
+    "Nos conditions générales de vente (paiement, annulation, responsabilité) sont détaillées ici :",
+  "am.answer.newsletter":
+    "Vous pouvez vous inscrire à la newsletter pour être informé de nos nouveautés et conseils sanitaires :",
   "st.fAll": "Toutes",
   "st.fSubmitted": "Soumises",
   "st.fReview": "En instruction",
@@ -378,8 +439,8 @@ const fr = {
   "st.errSelect": "Sélectionnez un chauffeur et un véhicule.",
   "st.emptyFilter": "Aucune demande dans ce filtre.",
   "st.submittedOn": "soumise le {t}",
-  "st.patient": "patient : {n}",
-  "st.mobility": "mobilité : {n}",
+  "st.patient": "envoi : {n}",
+  "st.mobility": "température : {n}",
   "st.notes": "Précisions : {n}",
   "st.openReview": "Ouvrir l'instruction",
   "st.prepareQuote": "Préparer un devis",
@@ -445,10 +506,10 @@ const fr = {
   "st.vPlate": "Immatriculation",
   "st.vType": "Type",
   "st.vCapacity": "Capacité",
-  "st.vLift": "Plateforme fauteuil",
+  "st.vLift": "Véhicule frigorifique",
   "st.addVehicle": "Ajouter le véhicule",
   "st.adding": "Ajout…",
-  "st.thLift": "Plateforme",
+  "st.thLift": "Frigorifique",
   "st.yes": "Oui",
   "st.no": "Non",
   "st.noVehicles": "Aucun véhicule enregistré.",
@@ -482,7 +543,7 @@ const en: Record<TKey, string> = {
 
   // Pied de page
   "footer.description":
-    "Patient and medical equipment transport, supervised and fully traceable end to end.",
+    "Shipping of sensitive biological, pharmaceutical and medical products, supervised and fully traceable end to end.",
   "footer.navigation": "Navigation",
   "footer.company": "Company",
   "footer.clientArea": "Client area",
@@ -497,6 +558,10 @@ const en: Record<TKey, string> = {
   "footer.link.dashboard": "Dashboard",
   "footer.rights": "© {year} France Santé Transport — Placeholder identity and contact details.",
   "footer.progress": "Website under construction · Sprint 1",
+  "footer.social": "Join us",
+  "footer.newsletter": "Newsletter",
+  "footer.link.cgv": "Terms & conditions",
+  "footer.aminia": "Chat with Aminia · AI assistant",
 
   // Commun
   "common.save": "Save",
@@ -569,26 +634,26 @@ const en: Record<TKey, string> = {
   "qform.needTitle": "A client account is required",
   "qform.needBody":
     "To follow your file, receive quotes and mission notifications, sign in or create an account. It's free and immediate.",
-  "qform.serviceLabel": "Transport type",
+  "qform.serviceLabel": "Shipping type",
   "qform.pickup": "Pickup address",
   "qform.pickupPh": "12 rue des Lilas, 75011 Paris",
   "qform.dropoff": "Destination address",
   "qform.dropoffPh": "Hôpital Saint-Louis, 75010 Paris",
   "qform.datetime": "Pickup date and time",
   "qform.contactPhone": "Contact phone",
-  "qform.patient": "Patient name (optional)",
-  "qform.patientPh": "Patient name",
-  "qform.mobility": "Mobility needs (optional)",
-  "qform.mobilityPh": "Wheelchair, cane, assistance…",
+  "qform.patient": "Product description (optional)",
+  "qform.patientPh": "e.g. blood sample UN 3373",
+  "qform.mobility": "Temperature / packaging constraint (optional)",
+  "qform.mobilityPh": "2–8 °C, -20 °C, dry ice -78.5 °C…",
   "qform.notes": "Details (optional)",
-  "qform.notesPh": "Companion, floor, access constraints…",
+  "qform.notesPh": "On-site contact, delivery, access constraints…",
   "qform.priceNote":
-    "No price is shown at this stage: the cost of your transport will be defined and validated by our team, then sent as a versioned quote you can accept.",
+    "No price is shown at this stage: the cost of your shipment will be defined and validated by our team, then sent as a versioned quote you can accept.",
   "qform.submitting": "Submitting…",
   "qform.submit": "Submit my request",
   "qform.createdTitle": "Request recorded",
   "qform.createdBody":
-    "Your request was created and timestamped. Our teams will review it and send you a quote from your space.",
+    "Your request was created and timestamped. Our teams will review it and send you a quote for your shipment from your space.",
   "qform.followCta": "Track it in my space",
   "qform.newRequest": "New request",
 
@@ -694,7 +759,7 @@ const en: Record<TKey, string> = {
   "dlb.driver": "Driver",
   "dlb.driverUnassigned": "Unassigned driver",
   "dlb.vehicle": "Vehicle",
-  "dlb.patient": "Patient: {n}",
+  "dlb.patient": "Product: {n}",
   "dlb.quoteAccepted": "Quote V{v} accepted",
   "cd.emptyTitle": "No requests yet",
   "cd.emptyBody": "Submit your first transport request: it will be recorded, timestamped, then reviewed by our teams who will send you a quote.",
@@ -784,7 +849,7 @@ const en: Record<TKey, string> = {
   "dd.decline": "Decline",
   "dd.pickup": "Pickup",
   "dd.dropoff": "Drop-off",
-  "dd.patientNotes": "Patient / details",
+  "dd.patientNotes": "Product / details",
   "dd.assignmentState": "Assignment state:",
   "dd.respondedOn": " · replied on {t}",
   "ss.loading": "Loading site settings…",
@@ -802,6 +867,63 @@ const en: Record<TKey, string> = {
   "ss.save": "Save settings",
   "ss.reset": "Restore default values",
   "ss.preview": "Header preview",
+  "ss.socialTitle": "Social media & newsletter",
+  "ss.socialHint": "These links feed the “Join us” section of the footer. Empty = hidden.",
+  "ss.facebook": "Facebook (URL)",
+  "ss.facebookPh": "https://facebook.com/francesantetransport",
+  "ss.linkedin": "LinkedIn (URL)",
+  "ss.linkedinPh": "https://linkedin.com/company/francesantetransport",
+  "ss.x": "X (ex-Twitter) (URL)",
+  "ss.xPh": "https://x.com/francesantetransport",
+  "ss.instagram": "Instagram (URL)",
+  "ss.instagramPh": "https://instagram.com/francesantetransport",
+  "ss.newsletter": "Newsletter (sign-up URL)",
+  "ss.newsletterPh": "https://newsletter.example.com/signup",
+  "ss.invalidUrl": "Links must be full URLs starting with https:// (or http://).",
+  "ss.homeImages": "Homepage images",
+  "ss.homeImagesHint": "Hero background and the visual inside the “Logistics under control” card. Leave empty to keep the default design.",
+  "ss.heroImage": "Homepage hero background (URL)",
+  "ss.heroImagePh": "https://images.example.com/hero-lab.jpg",
+  "ss.visualImage": "Journey card visual (URL)",
+  "ss.visualImagePh": "https://images.example.com/journey.jpg",
+
+  // ------------------------------------------------------------
+  // Aminia · AI assistant (public site)
+  // ------------------------------------------------------------
+  "am.open": "Chat with Aminia",
+  "am.close": "Close the conversation",
+  "am.title": "Aminia · assistant",
+  "am.status": "Online · instant reply",
+  "am.welcome":
+    "Hello, I'm Aminia, France Santé Transport's assistant. I can direct you to the right service: biological transport (UN 3373), pharmaceutical distribution (GDP), dry-ice shipments -78.5 °C or 24/7 pickups. How can I help?",
+  "am.placeholder": "Describe your need…",
+  "am.send": "Send",
+  "am.disclaimer": "Automated assistant. For an answer from a team member, use the Contact page.",
+  "am.q.bed": "Biological transport",
+  "am.q.seated": "Pharmaceutical transport",
+  "am.q.price": "Request a quote",
+  "am.q.partner": "Become a partner",
+  "am.q.newsletter": "Newsletter",
+  "am.fallback":
+    "Sorry, I didn't fully understand, but a member of our team can answer precisely via the Contact page. Meanwhile, here are the available options:",
+  "am.answer.bed":
+    "For biological samples with a strict cold chain and UN 3373 compliance, here is the dedicated service:",
+  "am.answer.seated":
+    "For the secure distribution of medicines and health products, in line with Good Distribution Practices (GDP):",
+  "am.answer.moto":
+    "For very-low-temperature shipments (-78.5 °C with dry ice) and critical products, here is the adapted service:",
+  "am.answer.parcel":
+    "To schedule online pickups 24/7 — one-off, regular or urgent — here is the pickup request:",
+  "am.answer.quote":
+    "Simplest path: send your request with the pickup address, destination, date and temperature constraint. Our team sends you a versioned quote in your space:",
+  "am.answer.partner":
+    "Welcome! For hospitals, pharmacies and health structures, the business-referral program opens partner routes:",
+  "am.answer.contact":
+    "For any human question (contact details, hours, emergency), here is the contact page:",
+  "am.answer.cgv":
+    "Our general terms of sale (payment, cancellation, liability) are detailed here:",
+  "am.answer.newsletter":
+    "You can subscribe to the newsletter to be informed of our news and health tips:",
   "st.fAll": "All",
   "st.fSubmitted": "Submitted",
   "st.fReview": "In review",
@@ -820,7 +942,7 @@ const en: Record<TKey, string> = {
   "st.errSelect": "Select a driver and a vehicle.",
   "st.emptyFilter": "No request with this filter.",
   "st.submittedOn": "submitted {t}",
-  "st.patient": "patient: {n}",
+  "st.patient": "shipment: {n}",
   "st.mobility": "mobility: {n}",
   "st.notes": "Details: {n}",
   "st.openReview": "Open review",

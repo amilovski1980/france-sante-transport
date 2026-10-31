@@ -10,7 +10,7 @@ function fmtDateTime(value: string | Date): string {
   return new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
-/** Étiquette d'expédition imprimable d'une mission (A·B, patient, chauffeur, QR). */
+/** Étiquette d'expédition imprimable d'une mission (A·B, produit, chauffeur, QR). */
 export default async function LabelPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
@@ -97,7 +97,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
                 <div className="min-w-0">
                   <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">{stop.label}</p>
                   <p className="break-words text-[13px] font-semibold leading-snug text-navy-900">{stop.address}</p>
-                  {stop.alt && <p className="text-[11px] italic text-slate-600">{stop.tag === "A" ? `Patient : ${stop.alt}` : stop.alt}</p>}
+                  {stop.alt && <p className="text-[11px] italic text-slate-600">{stop.tag === "A" ? `Produit : ${stop.alt}` : stop.alt}</p>}
                 </div>
               </div>
             ))}
@@ -149,7 +149,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
         <p className="mt-3 text-center text-[11px] text-slate-500 print:hidden">
-          Astuce : imprimez 2 exemplaires (un pour le véhicule, un pour le dossier patient).
+          Astuce : imprimez 2 exemplaires (un pour le véhicule, un pour le dossier expédition).
         </p>
       </div>
     </main>

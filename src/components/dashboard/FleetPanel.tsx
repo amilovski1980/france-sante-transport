@@ -8,12 +8,12 @@ import type { AppRole, Vehicle } from "@/lib/types";
 type VehicleType = Vehicle["vehicle_type"];
 
 const TYPES: { value: VehicleType; label: string }[] = [
-  { value: "sedan", label: "Berline" },
-  { value: "van", label: "Van / VSL" },
-  { value: "minibus", label: "Minibus" },
-  { value: "stretcher_van", label: "Véhicule brancard" },
-  { value: "ambulance", label: "Ambulance" },
-  { value: "moto", label: "Moto (moto-taxi / VMDTR)" },
+  { value: "van", label: "Fourgon frigorifique (2–8 °C)" },
+  { value: "stretcher_van", label: "Isotherme carboglace (-78,5 °C)" },
+  { value: "minibus", label: "Van d'enlèvement" },
+  { value: "ambulance", label: "Véhicule UN 3373 (biologie)" },
+  { value: "sedan", label: "Véhicule messagerie santé" },
+  { value: "moto", label: "Moto messagerie" },
 ];
 
 type Draft = {
@@ -165,7 +165,7 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
         </div>
         <div className="flex gap-2">
           <span className="rounded-xl bg-navy-50 px-4 py-2 text-sm font-semibold text-navy-800 dark:bg-white/10 dark:text-slate-200">
-            🚐 {vehicles.length}
+            🏍️ {vehicles.length}
           </span>
           <span className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
             Actifs : {activeCount}
@@ -201,13 +201,13 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
               <input value={draft.label} onChange={(e) => set("label", e.target.value)} placeholder="VSL n°1 — Bruno" className={inputCls} />
             </div>
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Capacité (places patient) *</label>
+              <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Capacité (colis / emplacements) *</label>
               <input type="number" min={1} max={20} value={draft.capacity} onChange={(e) => set("capacity", e.target.value)} className={inputCls} />
             </div>
             <div className="flex items-end pb-1">
               <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input type="checkbox" checked={draft.has_wheelchair_lift} onChange={(e) => set("has_wheelchair_lift", e.target.checked)} className="h-4 w-4 rounded border-slate-300" />
-                ♿ Lève-fauteuil
+                ❄ Frigorifique
               </label>
             </div>
             <div className="flex items-end pb-1">
@@ -243,11 +243,11 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
               <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    🚐 <span className="font-mono">{v.registration_plate}</span> · {typeLabel(v.vehicle_type)}
+                    🏍️ <span className="font-mono">{v.registration_plate}</span> · {typeLabel(v.vehicle_type)}
                     {v.label && <span className="ml-2 text-xs text-slate-400">{v.label}</span>}
                   </p>
                   <p className="mt-0.5 text-xs text-slate-400">
-                    {v.capacity} place(s) {v.has_wheelchair_lift && " · ♿ lève-fauteuil"}
+                    {v.capacity} place(s) {v.has_wheelchair_lift && " · ❄ frigorifique"}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

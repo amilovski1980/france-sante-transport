@@ -6,72 +6,72 @@ import type { Locale } from "@/lib/i18n/locale";
 export const metadata: Metadata = {
   title: "Flotte",
   description:
-    "Une flotte diversifiée et entretenue : berlines, vans, minibus, motos (moto-VMDTR), véhicules équipés pour le brancard et l'ambulance.",
+    "Une flotte diversifiée et entretenue : fourgons frigorifiques, véhicules isothermes pour carboglace, vans d'enlèvement et véhicules de messagerie médicale.",
 };
 
 const FLEET = {
   fr: [
     {
-      type: "Berline",
-      usage: "Transport de patients en état de marche ou avec assistance minimale.",
-      specs: ["Confort et discrétion", "Idéal trajets rendez-vous", "Poste avant libre pour accompagnant"],
+      type: "Fourgon frigorifique",
+      usage: "Distribution pharmaceutique et produits soumis aux Bonnes Pratiques (BPD).",
+      specs: ["Température régulée 2–8 °C", "Emplacements scellés", "Traçabilité de température"],
+      lift: true,
+    },
+    {
+      type: "Véhicule isotherme carboglace",
+      usage: "Envois à très basse température (-78,5 °C) pour biotechnologies.",
+      specs: ["Caisse isotherme certifiée", "Équipement carboglace", "Permis ATD vérifié"],
+      lift: true,
+    },
+    {
+      type: "Van d'enlèvement",
+      usage: "Collectes planifiées 24/7 auprès des laboratoires et structures de santé.",
+      specs: ["Chargement arrière élargi", "Touring urbain rapide", "Chauffeur dédié"],
       lift: false,
     },
     {
-      type: "Van",
-      usage: "Fauteuils roulants et petits groupes, montée facilitée.",
-      specs: ["Accès élargi", "Sangleage fauteuil", "Capacité modulable"],
-      lift: true,
-    },
-    {
-      type: "Minibus",
-      usage: "Transferts de groupes : établissements, structures, événements de santé.",
-      specs: ["Capacité élevée", "Circuits planifiés", "Chauffeur dédié"],
+      type: "Véhicule UN 3373",
+      usage: "Prélèvements et échantillons biologiques sous chaîne du froid.",
+      specs: ["Conteneurs validés", "Horodatage des étapes", "Remise contre accusé"],
       lift: false,
     },
     {
-      type: "Véhicule brancard",
-      usage: "Patients alités, transferts entre structures de soins.",
-      specs: ["Brancard sécurisé", "Équipement médical de bord", "Équipes formées"],
-      lift: true,
-    },
-    {
-      type: "Ambulance",
-      usage: "Médicalisation renforcée selon les besoins du dossier.",
-      specs: ["Configuration sanitaire", "Matériel de surveillance", "Déploiement sur validation"],
-      lift: true,
+      type: "Véhicule messagerie santé",
+      usage: "Matériel et colis médicaux sensibles avec chaîne de responsabilité.",
+      specs: ["Remise responsable", "Suivi de tournée", "Volumes récurrents gérés"],
+      lift: false,
     },
   ],
   en: [
     {
-      type: "Sedan",
-      usage: "Transport of ambulatory patients or with minimal assistance.",
-      specs: ["Comfort and discretion", "Ideal for appointment trips", "Free front seat for companion"],
+      type: "Refrigerated van",
+      usage: "Pharmaceutical distribution and products under Good Distribution Practices (GDP).",
+      specs: ["Regulated 2–8 °C temperature", "Sealed slots", "Temperature traceability"],
+      lift: true,
+    },
+    {
+      type: "Dry ice insulated vehicle",
+      usage: "Very-low-temperature shipments (-78.5 °C) for biotech.",
+      specs: ["Certified insulated box", "Dry-ice equipment", "TDG clearance checked"],
+      lift: true,
+    },
+    {
+      type: "Pickup van",
+      usage: "24/7 scheduled collections from laboratories and health facilities.",
+      specs: ["Wide rear loading", "Fast urban routing", "Dedicated driver"],
       lift: false,
     },
     {
-      type: "Van",
-      usage: "Wheelchairs and small groups, easy boarding.",
-      specs: ["Wide access", "Wheelchair restraint", "Modular capacity"],
-      lift: true,
-    },
-    {
-      type: "Minibus",
-      usage: "Group transfers: facilities, structures, health events.",
-      specs: ["High capacity", "Planned routes", "Dedicated driver"],
+      type: "UN 3373 vehicle",
+      usage: "Biological samples and specimens under cold chain.",
+      specs: ["Validated containers", "Timestamped steps", "Handover with receipt"],
       lift: false,
     },
     {
-      type: "Stretcher vehicle",
-      usage: "Bedridden patients, transfers between care facilities.",
-      specs: ["Secure stretcher", "Onboard medical equipment", "Trained teams"],
-      lift: true,
-    },
-    {
-      type: "Ambulance",
-      usage: "Enhanced medicalization according to the file's needs.",
-      specs: ["Medical configuration", "Monitoring equipment", "Deployment on validation"],
-      lift: true,
+      type: "Health courier vehicle",
+      usage: "Sensitive medical equipment and parcels with accountable custody.",
+      specs: ["Responsible handover", "Route tracking", "Recurring volumes managed"],
+      lift: false,
     },
   ],
 } as const satisfies Record<Locale, readonly { type: string; usage: string; specs: readonly string[]; lift: boolean }[]>;
@@ -79,9 +79,9 @@ const FLEET = {
 const COPY = {
   fr: {
     kicker: "Flotte",
-    title: "Des véhicules choisis pour le service médical",
+    title: "Des véhicules choisis pour la chaîne du froid et la conformité",
     intro:
-      "Chaque mission est préparée avec le véhicule adapté au profil du patient et à la nature du transport, après confirmation de nos équipes.",
+      "Chaque mission est préparée avec le véhicule adapté à la nature des produits et à la température requise, après confirmation de nos équipes.",
     equipped: "Équipé",
     fleetTitle: "Composition de la flotte",
     fleetBody:
@@ -90,9 +90,9 @@ const COPY = {
   },
   en: {
     kicker: "Fleet",
-    title: "Vehicles chosen for medical service",
+    title: "Vehicles chosen for cold chain and compliance",
     intro:
-      "Every mission is prepared with the vehicle suited to the patient's profile and the nature of the transport, after confirmation by our teams.",
+      "Every mission is prepared with the vehicle suited to the products and the required temperature, after confirmation by our teams.",
     equipped: "Equipped",
     fleetTitle: "Fleet composition",
     fleetBody:

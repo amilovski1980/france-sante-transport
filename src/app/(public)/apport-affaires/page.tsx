@@ -14,20 +14,20 @@ const CONTENT = {
     kicker: "Apport d'affaires",
     title: "Faites avancer la santé avec nous",
     intro:
-      "Vous accompagnez des patients ou pilotez une structure ? Devenez partenaire de France Santé Transport et proposez à vos écosystèmes un transport digne du secteur médical.",
+      "Vous exploitez un laboratoire, une pharmacie, une structure de santé ou un réseau biomédical ? Devenez partenaire de France Santé Transport et proposez à vos écosystèmes une logistique des produits de santé rapide, fiable et sécurisée.",
     heroCta: "Proposer un partenariat",
     partners: [
       {
+        title: "Laboratoires et centres de biologie",
+        body: "Laboratoires d'analyses, centres de biologie et structures de recherche qui acheminent quotidiennement des prélèvements et échantillons soumis à la chaîne du froid.",
+      },
+      {
+        title: "Pharmacies et distributeurs",
+        body: "Officines, grossistes et plateformes de distribution recherchant un acheminement sûr de leurs médicaments et produits de santé, conformes aux BPD.",
+      },
+      {
         title: "Établissements de santé",
-        body: "Hôpitaux, cliniques, EHPAD et structures médico-sociales qui cherchent un partenaire de transport fiable pour leurs transferts et leurs patients.",
-      },
-      {
-        title: "Professionnels de santé",
-        body: "Cabinets, centres de soins, laboratoires et infirmiers libéraux qui orientent régulièrement des patients vers un transport adapté.",
-      },
-      {
-        title: "Partenaires institutionnels",
-        body: "Mutuelles, associations, communes et acteurs du médico-social qui accompagnent les parcours de soins de leurs bénéficiaires.",
+        body: "Hôpitaux, cliniques et institutions qui envoient du matériel médical, des produits sanguins ou des échantillons entre leurs services.",
       },
     ],
     howKicker: "Comment ça marche",
@@ -58,20 +58,20 @@ const CONTENT = {
     kicker: "Business referral",
     title: "Advance health with us",
     intro:
-      "You care for patients or run a facility? Become a partner of France Santé Transport and offer your ecosystem a transport worthy of the medical sector.",
+      "You run a laboratory, a pharmacy, a health facility or a biomedical network? Become a partner of France Santé Transport and offer your ecosystem fast, reliable and secure health-product logistics.",
     heroCta: "Propose a partnership",
     partners: [
       {
+        title: "Laboratories and biology centres",
+        body: "Testing laboratories, biology centres and research structures shipping samples subject to the cold chain every day.",
+      },
+      {
+        title: "Pharmacies and distributors",
+        body: "Pharmacies, wholesalers and distribution platforms looking for safe, GDP-compliant shipping of their medicines and health products.",
+      },
+      {
         title: "Healthcare facilities",
-        body: "Hospitals, clinics, nursing homes and medico-social structures looking for a reliable transport partner for their transfers and patients.",
-      },
-      {
-        title: "Health professionals",
-        body: "Practices, care centres, laboratories and private nurses regularly referring patients to suitable transport.",
-      },
-      {
-        title: "Institutional partners",
-        body: "Mutuals, associations, municipalities and medico-social actors supporting the care pathways of their beneficiaries.",
+        body: "Hospitals, clinics and institutions sending medical equipment, blood products or samples between their services.",
       },
     ],
     howKicker: "How it works",

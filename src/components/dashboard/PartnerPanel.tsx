@@ -154,14 +154,14 @@ export default function PartnerPanel({ role, partnerName }: { role: AppRole; par
               <input value={draft.organization} onChange={(e) => field("organization", e.target.value)} placeholder="Clinique, cabinet, EHPAD…" className={inputCls} />
             </F>
             <F label="Départ souhaité">
-              <input value={draft.pickup} onChange={(e) => field("pickup", e.target.value)} placeholder="Adresse de prise en charge" className={inputCls} />
+              <input value={draft.pickup} onChange={(e) => field("pickup", e.target.value)} placeholder="Adresse d'enlèvement" className={inputCls} />
             </F>
             <F label="Destination">
               <input value={draft.dropoff} onChange={(e) => field("dropoff", e.target.value)} placeholder="Adresse d'arrivée" className={inputCls} />
             </F>
             <div className="sm:col-span-2">
               <F label="Besoin du client *">
-                <textarea required minLength={10} rows={3} value={draft.need} onChange={(e) => field("need", e.target.value)} placeholder="Transport allé-retour en fauteuil pour RDV ophtalmo le …, patient …, accompagnateur …" className={`${inputCls} resize-y`} />
+                <textarea required minLength={10} rows={3} value={draft.need} onChange={(e) => field("need", e.target.value)} placeholder="Ex. : 30 échantillons UN 3373 à 2–8 °C, laboratoire X → centre de biologie Y, collecte jeudi matin…" className={`${inputCls} resize-y`} />
               </F>
             </div>
           </div>

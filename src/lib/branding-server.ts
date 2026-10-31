@@ -18,7 +18,9 @@ export async function loadBranding(): Promise<BrandingSettings> {
     });
     const { data, error } = await supabase
       .from("site_settings")
-      .select("logo_url, logo_alt, slogan, custom_css")
+      .select(
+        "logo_url, logo_alt, slogan, custom_css, social_facebook, social_linkedin, social_x, social_instagram, newsletter_url, home_hero_image, home_visual_image",
+      )
       .eq("id", 1)
       .single();
     if (error) return DEFAULT_BRANDING;

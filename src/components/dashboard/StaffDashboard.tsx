@@ -67,6 +67,15 @@ const buttonGhost =
 const buttonDanger =
   "rounded-full border border-flagred-600/40 px-4 py-2 text-xs font-semibold text-flagred-700 hover:bg-flagred-50 disabled:opacity-60";
 
+const VEHICLE_TYPE_LABELS: Record<string, string> = {
+  van: "Fourgon frigorifique (2–8 °C)",
+  stretcher_van: "Isotherme carboglace (-78,5 °C)",
+  minibus: "Van d'enlèvement",
+  ambulance: "Véhicule UN 3373 (biologie)",
+  sedan: "Véhicule messagerie santé",
+  moto: "Moto messagerie",
+};
+
 export default function StaffDashboard({
   isAdmin,
   requests,
@@ -251,7 +260,7 @@ export default function StaffDashboard({
                     <p className="mt-0.5 text-xs text-navy-500">
                       {formatDateTime(request.pickup_datetime)} · soumise le{" "}
                       {formatDateTime(request.created_at)}
-                      {request.patient_name ? ` · patient : ${request.patient_name}` : ""}
+                      {request.patient_name ? ` · envoi : ${request.patient_name}` : ""}
                       {request.mobility_notes ? ` · mobilité : ${request.mobility_notes}` : ""}
                     </p>
                     {request.notes && (
@@ -764,9 +773,9 @@ function FleetPanel({ vehicles }: { vehicles: Vehicle[] }) {
             onChange={(e) => setType(e.target.value as Vehicle["vehicle_type"])}
             className={inputClass}
           >
-            {["sedan", "van", "minibus", "stretcher_van", "ambulance", "moto"].map((t) => (
-              <option key={t} value={t}>
-                {t}
+            {Object.entries(VEHICLE_TYPE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </select>
@@ -787,7 +796,7 @@ function FleetPanel({ vehicles }: { vehicles: Vehicle[] }) {
         </div>
         <label className="flex items-center gap-2 pb-2.5 text-sm text-navy-800">
           <input type="checkbox" checked={lift} onChange={(e) => setLift(e.target.checked)} className="h-4 w-4 accent-navy-800" />
-          Plateforme fauteuil
+          ❄ Frigorifique
         </label>
         <button type="submit" disabled={pending} className={buttonPrimary}>
           {pending ? "Ajout…" : "Ajouter le véhicule"}

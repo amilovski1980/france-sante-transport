@@ -223,7 +223,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     new Date(shipment.scheduled_at),
   );
   void sendWebPush(assignment.driver_id, {
-    title: "Nouvelle mission proposée 🚐",
+    title: "Nouvelle mission proposée 🏍️",
     body: `${flight} · ${req.pickup_address} → ${req.dropoff_address}`,
     url: "/dashboard",
     tag: `assignment-${assignment.id}`,

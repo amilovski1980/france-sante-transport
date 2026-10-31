@@ -119,7 +119,7 @@ export default async function QuotePrintPage({
                 <p className="mt-1 text-sm italic text-navy-600">{settings.slogan}</p>
               )}
               <p className="mt-2 text-xs leading-relaxed text-navy-500">
-                Transport médical &amp; sanitaire — VSL, brancards, fauteuils
+                Logistique de santé — Transport biologique · Pharmaceutique · Carboglace
                 <br />
                 Devis : devis@france-sante-transport.fr · 01 84 80 00 00
               </p>
@@ -169,7 +169,7 @@ export default async function QuotePrintPage({
               {SERVICE_TYPE_LABELS[request.service_type as keyof typeof SERVICE_TYPE_LABELS]}
             </p>
             {request.patient_name && (
-              <p className="mt-1 text-xs text-navy-600">Patient : {request.patient_name}</p>
+              <p className="mt-1 text-xs text-navy-600">Produit : {request.patient_name}</p>
             )}
             {request.mobility_notes && (
               <p className="mt-1 text-xs leading-relaxed text-navy-600">

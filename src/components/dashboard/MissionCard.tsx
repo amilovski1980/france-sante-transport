@@ -73,7 +73,7 @@ export default function MissionCard({
 
         {(r?.patient_name || r?.mobility_notes || vehicle) && (
           <div className="mt-3 rounded-xl bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-600 dark:bg-white/5 dark:text-slate-300">
-            {r?.patient_name && <p><span className="font-semibold">Patient :</span> {r.patient_name}</p>}
+            {r?.patient_name && <p><span className="font-semibold">Produit :</span> {r.patient_name}</p>}
             {r?.mobility_notes && <p><span className="font-semibold">Mobilité :</span> {r.mobility_notes}</p>}
             {vehicle && <p><span className="font-semibold">Véhicule :</span> {vehicle.label || vehicle.registration_plate} · {vehicle.registration_plate}</p>}
           </div>

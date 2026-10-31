@@ -23,6 +23,13 @@ export default function SiteSettingsPanel() {
   const [logoAlt, setLogoAlt] = useState("");
   const [slogan, setSlogan] = useState("");
   const [customCss, setCustomCss] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialLinkedin, setSocialLinkedin] = useState("");
+  const [socialX, setSocialX] = useState("");
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [newsletterUrl, setNewsletterUrl] = useState("");
+  const [homeHeroImage, setHomeHeroImage] = useState("");
+  const [homeVisualImage, setHomeVisualImage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, setPending] = useState(false);
@@ -37,6 +44,13 @@ export default function SiteSettingsPanel() {
         setLogoAlt(row.logo_alt ?? "");
         setSlogan(row.slogan ?? "");
         setCustomCss(row.custom_css ?? "");
+        setSocialFacebook(row.social_facebook ?? "");
+        setSocialLinkedin(row.social_linkedin ?? "");
+        setSocialX(row.social_x ?? "");
+        setSocialInstagram(row.social_instagram ?? "");
+        setNewsletterUrl(row.newsletter_url ?? "");
+        setHomeHeroImage(row.home_hero_image ?? "");
+        setHomeVisualImage(row.home_visual_image ?? "");
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(toUserMessage(err));
@@ -46,17 +60,43 @@ export default function SiteSettingsPanel() {
     };
   }, []);
 
+  /** URL complète obligatoire pour les liens publics de diffusion. */
+  function validPublicUrl(raw: string): boolean {
+    if (!raw.trim()) return true;
+    return /^https?:\/\/\S+$/.test(raw.trim());
+  }
+
   async function save(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setPending(true);
     setError(null);
     setSaved(false);
+    const socials: Array<[string, string]> = [
+      [t("ss.facebook"), socialFacebook],
+      [t("ss.linkedin"), socialLinkedin],
+      [t("ss.x"), socialX],
+      [t("ss.instagram"), socialInstagram],
+      [t("ss.newsletter"), newsletterUrl],
+      [t("ss.heroImage"), homeHeroImage],
+      [t("ss.visualImage"), homeVisualImage],
+    ];
+    if (socials.some(([, value]) => !validPublicUrl(value))) {
+      setError(t("ss.invalidUrl"));
+      return;
+    }
+    setPending(true);
     try {
       const row = await updateSiteSettings({
         logo_url: logoUrl.trim() || null,
         logo_alt: logoAlt.trim() || null,
         slogan: slogan.trim() || null,
         custom_css: sanitizeCustomCss(customCss) || null,
+        social_facebook: socialFacebook.trim() || null,
+        social_linkedin: socialLinkedin.trim() || null,
+        social_x: socialX.trim() || null,
+        social_instagram: socialInstagram.trim() || null,
+        newsletter_url: newsletterUrl.trim() || null,
+        home_hero_image: homeHeroImage.trim() || null,
+        home_visual_image: homeVisualImage.trim() || null,
       });
       setSettings(row);
       setSaved(true);
@@ -73,6 +113,13 @@ export default function SiteSettingsPanel() {
     setLogoAlt(DEFAULT_BRANDING.logo_alt ?? "");
     setSlogan(DEFAULT_BRANDING.slogan ?? "");
     setCustomCss(DEFAULT_BRANDING.custom_css ?? "");
+    setSocialFacebook(DEFAULT_BRANDING.social_facebook ?? "");
+    setSocialLinkedin(DEFAULT_BRANDING.social_linkedin ?? "");
+    setSocialX(DEFAULT_BRANDING.social_x ?? "");
+    setSocialInstagram(DEFAULT_BRANDING.social_instagram ?? "");
+    setNewsletterUrl(DEFAULT_BRANDING.newsletter_url ?? "");
+    setHomeHeroImage(DEFAULT_BRANDING.home_hero_image ?? "");
+    setHomeVisualImage(DEFAULT_BRANDING.home_visual_image ?? "");
     setSaved(false);
   }
 
@@ -144,6 +191,142 @@ export default function SiteSettingsPanel() {
             placeholder={DEFAULT_BRANDING.slogan ?? ""}
             className={inputClass}
           />
+        </div>
+
+        <div className="border-t border-navy-100 pt-5">
+          <h3 className="text-sm font-semibold text-navy-800">{t("ss.socialTitle")}</h3>
+          <p className="mt-1 text-[0.75rem] text-navy-500">{t("ss.socialHint")}</p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="s-facebook" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.facebook")}
+              </label>
+              <input
+                id="s-facebook"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={socialFacebook}
+                onChange={(e) => setSocialFacebook(e.target.value)}
+                placeholder={t("ss.facebookPh")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="s-linkedin" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.linkedin")}
+              </label>
+              <input
+                id="s-linkedin"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={socialLinkedin}
+                onChange={(e) => setSocialLinkedin(e.target.value)}
+                placeholder={t("ss.linkedinPh")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="s-x" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.x")}
+              </label>
+              <input
+                id="s-x"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={socialX}
+                onChange={(e) => setSocialX(e.target.value)}
+                placeholder={t("ss.xPh")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="s-instagram" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.instagram")}
+              </label>
+              <input
+                id="s-instagram"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={socialInstagram}
+                onChange={(e) => setSocialInstagram(e.target.value)}
+                placeholder={t("ss.instagramPh")}
+                className={inputClass}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="s-newsletter" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.newsletter")}
+              </label>
+              <input
+                id="s-newsletter"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={newsletterUrl}
+                onChange={(e) => setNewsletterUrl(e.target.value)}
+                placeholder={t("ss.newsletterPh")}
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-navy-100 pt-5">
+          <h3 className="text-sm font-semibold text-navy-800">{t("ss.homeImages")}</h3>
+          <p className="mt-1 text-[0.75rem] text-navy-500">{t("ss.homeImagesHint")}</p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="s-hero-image" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.heroImage")}
+              </label>
+              <input
+                id="s-hero-image"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={homeHeroImage}
+                onChange={(e) => setHomeHeroImage(e.target.value)}
+                placeholder={t("ss.heroImagePh")}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="s-visual-image" className="mb-1 block text-xs font-semibold text-navy-700">
+                {t("ss.visualImage")}
+              </label>
+              <input
+                id="s-visual-image"
+                type="text"
+                inputMode="url"
+                maxLength={2048}
+                value={homeVisualImage}
+                onChange={(e) => setHomeVisualImage(e.target.value)}
+                placeholder={t("ss.visualImagePh")}
+                className={inputClass}
+              />
+            </div>
+          </div>
+          {(homeHeroImage || homeVisualImage) && (
+            <div className="mt-4 rounded-lg border border-navy-100 bg-white p-3">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-widest text-navy-500">
+                {t("ss.preview")}
+              </p>
+              <div className="mt-2 flex gap-3">
+                {homeHeroImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={homeHeroImage} alt="" className="h-20 w-1/2 rounded-lg object-cover" />
+                )}
+                {homeVisualImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={homeVisualImage} alt="" className="h-20 w-1/2 rounded-lg object-cover" />
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div>

@@ -256,6 +256,13 @@ export interface SiteSettings {
   logo_alt: string | null;
   slogan: string | null;
   custom_css: string | null;
+  social_facebook: string | null;
+  social_linkedin: string | null;
+  social_x: string | null;
+  social_instagram: string | null;
+  newsletter_url: string | null;
+  home_hero_image: string | null;
+  home_visual_image: string | null;
   updated_by: string | null;
   updated_at: string;
 }

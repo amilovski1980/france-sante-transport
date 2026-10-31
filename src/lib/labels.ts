@@ -44,10 +44,10 @@ export const ASSIGNMENT_STATUS_LABELS: Record<AssignmentStatus, string> = {
 };
 
 export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
-  medical_transport: "Transport médicalisé",
-  wheelchair_transport: "Transport en fauteuil",
-  stretcher_transport: "Transport en brancard",
-  appointment_transfer: "Transport vers rendez-vous",
+  medical_transport: "Transport biologique",
+  wheelchair_transport: "Transport pharmaceutique",
+  stretcher_transport: "Transport sous carboglace",
+  appointment_transfer: "Demande d'enlèvement",
   medical_supply: "Transport de matériel médical",
   other: "Autre besoin",
 };
@@ -120,10 +120,10 @@ export const ASSIGNMENT_STATUS_LABELS_EN: Record<AssignmentStatus, string> = {
 };
 
 export const SERVICE_TYPE_LABELS_EN: Record<ServiceType, string> = {
-  medical_transport: "Assisted medical transport",
-  wheelchair_transport: "Wheelchair transport",
-  stretcher_transport: "Stretcher transport",
-  appointment_transfer: "Appointment transfer",
+  medical_transport: "Biological transport",
+  wheelchair_transport: "Pharmaceutical transport",
+  stretcher_transport: "Dry-ice transport",
+  appointment_transfer: "Pickup request",
   medical_supply: "Medical equipment transport",
   other: "Other need",
 };

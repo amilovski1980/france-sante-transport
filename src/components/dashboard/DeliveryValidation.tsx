@@ -97,7 +97,7 @@ export default function DeliveryValidation({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (recipient.trim().length < 2) {
-      setError("Indiquez le nom du destinataire (qui a reçu le patient / plis).");
+      setError("Indiquez le nom du destinataire (qui a reçu l'envoi).");
       return;
     }
     if (!dirtyRef.current) {
@@ -141,7 +141,7 @@ export default function DeliveryValidation({
             <input
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              placeholder="Nom de la personne qui a reçu (infirmière, patient, famille…)"
+              placeholder="Nom de la personne qui a reçu (réceptionniste, laborantin, magasinier…)"
               className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-navy-400"
             />
           </div>
@@ -169,7 +169,7 @@ export default function DeliveryValidation({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Note (état du patient, incidents…)</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Note (état de l'envoi, incidents…)</label>
             <textarea
               rows={2}
               value={note}

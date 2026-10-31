@@ -72,6 +72,37 @@ body {
   body { font-size: 0.875rem; }
 }
 
+/* ------------------------------------------------------------
+   Aminia · assistante IA — bouton animé + fenêtre
+   ------------------------------------------------------------ */
+@keyframes aminia-ring {
+  0% { transform: scale(0.85); opacity: 0.5; }
+  70% { transform: scale(1.45); opacity: 0; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+@keyframes aminia-pop {
+  from { transform: translateY(12px) scale(0.9); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes aminia-shine {
+  0% { transform: translateX(-180%) skewX(-18deg); }
+  55%, 100% { transform: translateX(340%) skewX(-18deg); }
+}
+@keyframes aminia-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.aminia-ring { animation: aminia-ring 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.aminia-pop { animation: aminia-pop 0.28s cubic-bezier(0.2, 0, 0.2, 1.2) both; }
+.aminia-shine { animation: aminia-shine 4.5s ease-in-out infinite; }
+.aminia-bob { animation: aminia-bob 3.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aminia-ring, .aminia-shine, .aminia-bob { animation: none; }
+  .aminia-pop { animation: none; }
+}
+
 h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: inherit; }
 h1 { font-size: 1.6rem; }
 h2 { font-size: 1.25rem; }

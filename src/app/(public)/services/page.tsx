@@ -8,7 +8,7 @@ import type { ServiceType } from "@/lib/types";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Transport médicalisé, fauteuil, brancard, transferts de rendez-vous et matériel médical : le détail des services France Santé Transport.",
+    "Logistique de santé : transport biologique (UN 3373), distribution pharmaceutique (BPD), acheminements sous carboglace -78,5 °C et enlèvements planifiés 24/7.",
 };
 
 type ServiceDetail = { audience: string; body: string; points: string[] };
@@ -16,39 +16,39 @@ type ServiceDetail = { audience: string; body: string; points: string[] };
 const DETAILS = {
   fr: {
     medical_transport: {
-      audience: "Patients, établissements, mutuelles et associations",
-      body: "Prise en charge de bout en bout pour les trajets médicaux qui exigent un accompagnement attentif et une ponctualité irréprochable.",
+      audience: "Laboratoires, hôpitaux, structures de recherche",
+      body: "Nous acheminons vos prélèvements et échantillons biologiques en garantissant le strict respect de la chaîne du froid et des normes UN 3373.",
       points: [
-        "Chauffeurs formés à l'accueil des patients",
-        "Créneau confirmé et suivi horodaté",
-        "Interlocuteur unique pour les établissements",
+        "Chaîne du froid respectée de bout en bout",
+        "Conformité aux normes UN 3373 (matières biologiques)",
+        "Traçabilité horodatée jusqu'à la remise au laboratoire",
       ],
     },
     wheelchair_transport: {
-      audience: "Patients en fauteuil roulant",
-      body: "Véhicules adaptés au maintien du fauteuil, avec assistance à la montée et à la descente.",
+      audience: "Pharmacies, grossistes, établissements de santé",
+      body: "Nous veillons à la distribution sécurisée de vos médicaments et produits de santé en conformité avec les Bonnes Pratiques de Distribution (BPD).",
       points: [
-        "Sangleage et maintien du fauteuil",
-        "Véhicules équipés selon la mobilité",
-        "Accompagnement porte à porte",
+        "Conformité aux Bonnes Pratiques de Distribution (BPD)",
+        "Emballages scellés et remise responsable",
+        "Suivi dédié aux volumes récurrents",
       ],
     },
     stretcher_transport: {
-      audience: "Patients alités et transferts spécialisés",
-      body: "Transport en brancard encadré, en coordination avec les équipes soignantes et les lieux de prise en charge.",
+      audience: "Industrie pharmaceutique, biotechnologies",
+      body: "Nous sécurisons vos transports à très basse température (-78,5 °C) grâce à l'utilisation de carboglace pour maintenir l'intégrité de vos produits les plus critiques.",
       points: [
-        "Équipement de transport sécurisé",
-        "Coordination avec l'établissement d'accueil",
-        "Validation du dossier avant chaque mission",
+        "Maintien à -78,5 °C grâce à la carboglace",
+        "Emballages isothermes homologués",
+        "Traçabilité de température sur toute la mission",
       ],
     },
     appointment_transfer: {
-      audience: "Patients à destination de rendez-vous médicaux",
-      body: "Aller-retour organisé autour de votre rendez-vous : prise en charge à l'heure, attente gérée, retour à domicile.",
+      audience: "Laboratoires, professionnels de santé, entreprises",
+      body: "Planifiez vos demandes d'enlèvement en ligne 24/7 pour une prise en charge rapide, ponctuelle ou régulière, adaptée à vos urgences.",
       points: [
-        "Prise en charge calée sur le rendez-vous",
-        "Gestion de l'attente sur place",
-        "Traçabilité complète du trajet",
+        "Commande d'enlèvement en ligne 24/7",
+        "Tours réguliers ou prises en charge ponctuelles",
+        "Ajustement possible en cas d'urgence",
       ],
     },
     medical_supply: {
@@ -72,39 +72,39 @@ const DETAILS = {
   } satisfies Record<ServiceType, ServiceDetail>,
   en: {
     medical_transport: {
-      audience: "Patients, facilities, insurers and associations",
-      body: "End-to-end handling for medical journeys that require careful assistance and impeccable punctuality.",
+      audience: "Laboratories, hospitals, research facilities",
+      body: "We ship your biological samples while strictly maintaining the cold chain and UN 3373 requirements.",
       points: [
-        "Drivers trained in patient care",
-        "Confirmed slot with timestamped tracking",
-        "A single contact for facilities",
+        "Cold chain preserved end to end",
+        "Compliance with UN 3373 (biological substances)",
+        "Timestamped traceability up to lab handover",
       ],
     },
     wheelchair_transport: {
-      audience: "Wheelchair users",
-      body: "Vehicles adapted to securing wheelchairs, with boarding and alighting assistance.",
+      audience: "Pharmacies, wholesalers, care facilities",
+      body: "We ensure the secure distribution of your medicines and health products in line with Good Distribution Practices (GDP).",
       points: [
-        "Wheelchair securing and restraint",
-        "Vehicles equipped for mobility needs",
-        "Door-to-door assistance",
+        "Compliance with Good Distribution Practices (GDP)",
+        "Sealed packaging and responsible handover",
+        "Dedicated follow-up for recurring volumes",
       ],
     },
     stretcher_transport: {
-      audience: "Bedridden patients and specialised transfers",
-      body: "Supervised stretcher transport, coordinated with care teams and pickup locations.",
+      audience: "Pharmaceutical industry, biotech",
+      body: "We secure your very-low-temperature shipments (-78.5 °C) using dry ice to maintain the integrity of your most critical products.",
       points: [
-        "Secure transport equipment",
-        "Coordination with the receiving facility",
-        "File validated before every mission",
+        "-78.5 °C maintained with dry ice",
+        "Certified insulated packaging",
+        "Temperature traceability along the mission",
       ],
     },
     appointment_transfer: {
-      audience: "Patients travelling to medical appointments",
-      body: "A round trip organised around your appointment: on-time pickup, waiting time managed, return home.",
+      audience: "Laboratories, healthcare professionals, companies",
+      body: "Schedule your pickup requests online 24/7 for fast, punctual or regular handling, matched to your emergencies.",
       points: [
-        "Pickup scheduled around the appointment",
-        "Waiting time handled on site",
-        "Full journey traceability",
+        "Online pickup booking 24/7",
+        "Regular routes or one-off collections",
+        "Adjustable in case of emergency",
       ],
     },
     medical_supply: {
@@ -130,24 +130,24 @@ const DETAILS = {
 
 const COPY = {
   fr: {
-    kicker: "Services",
-    title: "Le bon véhicule, la bonne équipe, au bon moment",
+    kicker: "Nos services",
+    title: "La logistique de santé pensée pour vos produits sensibles",
     intro:
-      "Six familles de prestations, un même standard : un dossier instruit, un prix validé par notre équipe, une mission confirmée avant tout engagement.",
-    ctaTitle: "Un besoin de transport ?",
+      "Notre expertise en logistique de santé et notre connaissance des réseaux médicaux vous assurent un transport rapide, fiable et sécurisé de vos produits biologiques et médicaux sensibles.",
+    ctaTitle: "Un produit à acheminer ?",
     ctaBody:
-      "Décrivez votre trajet : notre équipe instruit la demande et vous adresse un devis versionné, avec un prix validé par nos soins.",
+      "Décrivez votre envoi : notre équipe instruit la demande et vous adresse un devis versionné, avec un prix validé par nos soins.",
     ctaQuote: "Demander un devis",
     ctaContact: "Nous contacter",
   },
   en: {
-    kicker: "Services",
-    title: "The right vehicle, the right team, at the right time",
+    kicker: "Our services",
+    title: "Logistics designed for your sensitive products",
     intro:
-      "Six service families, one standard: a file reviewed, a price validated by our team, a mission confirmed before any commitment.",
-    ctaTitle: "Need transport?",
+      "Our expertise in healthcare logistics and our knowledge of medical networks ensure fast, reliable and secure transport of your sensitive biological and medical products.",
+    ctaTitle: "A product to ship?",
     ctaBody:
-      "Describe your journey: our team reviews the request and sends you a versioned quote with a price validated by us.",
+      "Describe your shipment: our team reviews the request and sends you a versioned quote with a price validated by us.",
     ctaQuote: "Request a quote",
     ctaContact: "Contact us",
   },

@@ -8,8 +8,8 @@ const EVENT_META: Record<string, { icon: string; label: string; tone: string }> 
   request_submitted: { icon: "📥", label: "Demande enregistrée", tone: "bg-navy-50 text-navy-700 dark:bg-white/10 dark:text-slate-200" },
   quote_sent: { icon: "📄", label: "Devis envoyé", tone: "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300" },
   shipment_confirmed: { icon: "✅", label: "Mission confirmée", tone: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300" },
-  shipment_started: { icon: "🚐", label: "Départ", tone: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
-  patient_picked_up: { icon: "🧑‍⚕️", label: "Patient pris en charge", tone: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
+  shipment_started: { icon: "🚚", label: "Enlèvement en cours", tone: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
+  patient_picked_up: { icon: "📦", label: "Envoi enlevé par le chauffeur", tone: "bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
   shipment_completed: { icon: "🏁", label: "Mission terminée", tone: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300" },
   shipment_cancelled: { icon: "⛔", label: "Mission annulée", tone: "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300" },
 };
@@ -49,7 +49,7 @@ export default function AlertsFeed(props: Props) {
       const r = s ? requestById.get(s?.transport_request_id ?? "") : undefined;
       rows.push({
         id: a.id,
-        icon: a.status === "proposed" ? "🔔" : a.status === "completed" ? "🏁" : "🚐",
+        icon: a.status === "proposed" ? "🔔" : a.status === "completed" ? "🏁" : "🏍️",
         title:
           a.status === "proposed"
             ? "Mission proposée par le dispatch"

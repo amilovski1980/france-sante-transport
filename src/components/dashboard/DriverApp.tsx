@@ -92,7 +92,7 @@ export default function DriverApp({
 
       {active.length === 0 ? (
         <div className="card-pro p-10 text-center">
-          <p className="text-4xl" aria-hidden="true">🚐</p>
+          <p className="text-4xl" aria-hidden="true">🏍️</p>
           <p className="mt-3 font-display text-lg font-semibold text-navy-900 dark:text-slate-100">Aucune mission active</p>
           <p className="mx-auto mt-2 max-w-xs text-sm text-slate-400">
             Les nouvelles missions proposées par le dispatch apparaîtront ici en temps réel, avec une notification push.

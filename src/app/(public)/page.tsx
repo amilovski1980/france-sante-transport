@@ -2,27 +2,28 @@ import Link from "next/link";
 import { getLabels } from "@/lib/labels";
 import { getLocale } from "@/lib/i18n/server";
 import type { Locale } from "@/lib/i18n/locale";
+import { loadBranding } from "@/lib/branding-server";
 
 const COPY = {
   fr: {
-    badge: "Transport sanitaire · France",
+    badge: "Logistique de santé · France",
     titleLine1: "Le transport qui fait",
     titleLine2: "avancer la santé",
     heroText:
-      "Patients, établissements et professionnels de santé : un transport encadré, traçable et piloté par des équipes dédiées, de la demande de devis jusqu'à la clôture de la mission.",
+      "Laboratoires, pharmacies et établissements de santé : un transport rapide, fiable et sécurisé de vos produits biologiques et médicaux sensibles, de l'enlèvement jusqu'à la livraison traçée.",
     ctaQuote: "Demander un devis",
     ctaServices: "Découvrir nos services",
-    journeyCardTitle: "Un parcours sous contrôle",
+    journeyCardTitle: "Une logistique sous contrôle",
     ctaSpace: "Créer mon espace client",
     servicesKicker: "Nos services",
-    servicesTitle: "Des prestations pensées pour le secteur médical",
+    servicesTitle: "Des prestations pensées pour les produits de santé",
     servicesIntro:
-      "Chaque type de transport répond à un besoin précis, avec le niveau d'accompagnement et de sécurité adapté.",
+      "Biologie, pharmacie, carboglace ou enlèvements : chaque type d'acheminement répond à une norme précise, avec un niveau de sécurité adapté.",
     serviceCardBody:
-      "Prise en charge organisée, interlocuteur identifié et suivi horodaté jusqu'à l'arrivée.",
+      "Chaîne du froid, normes applicables, remise tracée : nos prestations sont organisées pour l'exigence sanitaire.",
     servicesLink: "Voir le détail des services →",
     journeyKicker: "Parcours client",
-    journeyTitle: "De la demande à la mission, rien n'est laissé au hasard",
+    journeyTitle: "De la demande d'enlèvement à la livraison, rien n'est laissé au hasard",
     commitmentsKicker: "Nos engagements",
     commitmentsTitle: "Une exigence de service digne du secteur de la santé",
     ctaStart: "Démarrer une demande",
@@ -31,7 +32,7 @@ const COPY = {
       {
         n: "01",
         title: "Vous soumettez votre demande",
-        body: "En quelques minutes, depuis votre espace : trajet, créneau, besoins du patient. La demande est enregistrée et horodatée.",
+        body: "En quelques minutes, depuis votre espace : produits, itinéraire, température requise. La demande est enregistrée et horodatée.",
       },
       {
         n: "02",
@@ -46,7 +47,7 @@ const COPY = {
       {
         n: "04",
         title: "La mission est confirmée et suivie",
-        body: "Après validation de nos équipes, chauffeur et véhicule sont affectés. Chaque événement est journalisé et horodaté.",
+        body: "Après validation de nos équipes, chauffeur et véhicule réfrigéré ou adapté sont affectés. Chaque événement est journalisé et horodaté.",
       },
     ],
     commitments: [
@@ -69,24 +70,24 @@ const COPY = {
     ],
   },
   en: {
-    badge: "Medical transport · France",
+    badge: "Healthcare logistics · France",
     titleLine1: "Transport that keeps",
     titleLine2: "health moving",
     heroText:
-      "Patients, care facilities and healthcare professionals: supervised, fully traceable transport run by dedicated teams, from the quote request to mission closure.",
+      "Laboratories, pharmacies and care facilities: fast, reliable and secure transport of your sensitive biological and medical products, from pickup to traced delivery.",
     ctaQuote: "Request a quote",
     ctaServices: "Discover our services",
-    journeyCardTitle: "A journey under control",
+    journeyCardTitle: "Logistics under control",
     ctaSpace: "Create my client space",
     servicesKicker: "Our services",
-    servicesTitle: "Services designed for the healthcare sector",
+    servicesTitle: "Services designed for healthcare products",
     servicesIntro:
-      "Each transport type answers a specific need, with the right level of assistance and safety.",
+      "Biological, pharmaceutical, dry ice or pickups: each shipping type answers a precise standard, with the right level of security.",
     serviceCardBody:
-      "Organised pickup, a named contact and timestamped follow-through until arrival.",
+      "Cold chain, applicable standards, traced handover: our services are built for healthcare requirements.",
     servicesLink: "See the service details →",
     journeyKicker: "Client journey",
-    journeyTitle: "From request to mission, nothing is left to chance",
+    journeyTitle: "From pickup request to delivery, nothing is left to chance",
     commitmentsKicker: "Our commitments",
     commitmentsTitle: "A level of service worthy of healthcare",
     ctaStart: "Start a request",
@@ -95,7 +96,7 @@ const COPY = {
       {
         n: "01",
         title: "You submit your request",
-        body: "In a few minutes, from your space: route, time slot, patient needs. The request is recorded and timestamped.",
+        body: "In a few minutes, from your space: products, route, required temperature. The request is recorded and timestamped.",
       },
       {
         n: "02",
@@ -110,7 +111,7 @@ const COPY = {
       {
         n: "04",
         title: "The mission is confirmed and tracked",
-        body: "Once validated by our teams, a driver and vehicle are assigned. Every event is logged and timestamped.",
+        body: "Once validated, a driver and a refrigerated or suitable vehicle are assigned. Every event is logged and timestamped.",
       },
     ],
     commitments: [
@@ -138,11 +139,23 @@ export default async function HomePage() {
   const locale = await getLocale();
   const c = COPY[locale];
   const labels = getLabels(locale);
+  const branding = await loadBranding();
+  const heroImage = branding?.home_hero_image || null;
+  const visualImage = branding?.home_visual_image || null;
 
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-navy-900 text-white">
+      <section
+        className="relative overflow-hidden bg-navy-900 bg-cover bg-center text-white"
+        style={
+          heroImage
+            ? {
+                backgroundImage: `linear-gradient(to bottom, rgba(11,18,38,0.82), rgba(11,18,38,0.92)), url('${heroImage}')`,
+              }
+            : undefined
+        }
+      >
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(30,75,147,0.55),transparent_55%)]"
@@ -178,6 +191,14 @@ export default async function HomePage() {
           </div>
 
           <div className="rounded-2xl border border-white/15 bg-white/5 p-7 backdrop-blur-sm">
+            {visualImage && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={visualImage}
+                alt=""
+                className="mb-6 h-44 w-full rounded-xl object-cover"
+              />
+            )}
             <p className="font-display text-xl font-semibold text-white">{c.journeyCardTitle}</p>
             <ul className="mt-6 space-y-5">
               {c.steps.slice(0, 3).map((step) => (

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · France Santé Transport",
   },
   description:
-    "France Santé Transport : transport de patients et de matériel médical, devis en ligne, suivi traçable et équipes dédiées.",
+    "France Santé Transport : acheminement de produits biologiques, pharmaceutiques et médicaux sensibles, devis en ligne, suivi traçable et équipes dédiées.",
   icons: { icon: "/logo.png", apple: "/logo.png" },
   manifest: "/manifest.webmanifest",
 };

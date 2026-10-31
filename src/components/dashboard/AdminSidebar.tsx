@@ -12,7 +12,7 @@ const ITEMS = [
   { href: "/dashboard/messages", label: "Messagerie", icon: "💬" },
   { href: "/dashboard/admin/agenda", label: "Agenda", icon: "📅" },
   { href: "/dashboard/users", label: "Comptes", icon: "👥" },
-  { href: "/dashboard/admin/fleet", label: "Flotte", icon: "🚐" },
+  { href: "/dashboard/admin/fleet", label: "Flotte", icon: "🏍️" },
   { href: "/dashboard/admin/services", label: "Services & API", icon: "🔌" },
   { href: "/dashboard/admin/site", label: "Paramètres du site", icon: "🎨" },
   { href: "/dashboard/settings", label: "Paramètres", icon: "⚙️" },

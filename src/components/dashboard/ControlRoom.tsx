@@ -47,7 +47,7 @@ export default function ControlRoom({ requests, quotes, shipments, positions = [
         <Stat label="Chiffre d'affaires" value={formatMoney(stats.revenue, "EUR", "fr-FR")} trend="+12% ce mois" tone="navy" icon={<span className="text-lg">💰</span>} />
         <Stat label="Marge estimée" value={formatMoney(stats.margin, "EUR", "fr-FR")} trend="+14%" tone="green" icon={<span className="text-lg">📈</span>} />
         <Stat label="En attente" value={String(stats.pending)} sub="demandes" tone="orange" icon={<span className="text-lg">⏳</span>} />
-        <Stat label="En transit" value={String(stats.active)} sub="missions" tone="blue" icon={<span className="text-lg">🚐</span>} />
+        <Stat label="En transit" value={String(stats.active)} sub="missions" tone="blue" icon={<span className="text-lg">🏍️</span>} />
       </div>
 
       <LiveMap positions={positions} drivers={drivers} />
