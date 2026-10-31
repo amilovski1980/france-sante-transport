@@ -167,7 +167,7 @@ export default async function ServicesPage() {
             {c.kicker}
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">{c.title}</h1>
-          <p className="mt-5 text-lg leading-relaxed text-navy-100/90">{c.intro}</p>
+          <p className="mt-5 text-lg font-medium leading-relaxed text-navy-100/90">{c.intro}</p>
         </div>
       </section>
 

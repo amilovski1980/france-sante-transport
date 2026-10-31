@@ -56,7 +56,7 @@ body {
   padding-inline: 1.25rem;
 }
 
-@utility surface { border: 1px solid #e8ebf0; background-color: #ffffff; border-radius: 1.25rem; box-shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 10px 30px -14px rgb(16 24 40 / 0.14); }
+@utility surface { border: 1px solid #eef1f6; background-color: #ffffff; border-radius: 1.25rem; box-shadow: 0 8px 30px rgb(6 26 51 / 0.05); }
 
 @utility section-pad {
   padding-block: 4.5rem;
@@ -64,7 +64,7 @@ body {
 
 @utility dash-bg { background-color: #f4f6fb; }
 
-@utility card-pro { border: 1px solid #e5e9f2; background-color: #ffffff; border-radius: 1rem; box-shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 8px 24px -12px rgb(16 24 40 / 0.12); }
+@utility card-pro { border: 1px solid #e9edf5; background-color: #ffffff; border-radius: 1rem; box-shadow: 0 8px 30px rgb(6 26 51 / 0.04); }
 
 @media (max-width: 640px) {
   .container-x { padding-inline: 0.9rem; }

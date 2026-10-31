@@ -233,7 +233,7 @@ export default async function HomePage() {
             <h2 className="mt-3 font-display text-3xl font-semibold text-navy-900 sm:text-4xl">
               {c.servicesTitle}
             </h2>
-            <p className="mt-4 text-navy-700/80 leading-relaxed">{c.servicesIntro}</p>
+            <p className="mt-4 font-medium text-navy-700/80 leading-relaxed">{c.servicesIntro}</p>
           </div>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -246,7 +246,7 @@ export default async function HomePage() {
                 <h3 className="mt-5 font-display text-lg font-semibold text-navy-900">
                   {labels.service[key]}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-navy-700/75">{c.serviceCardBody}</p>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-navy-700/75">{c.serviceCardBody}</p>
               </div>
             ))}
           </div>
@@ -278,7 +278,7 @@ export default async function HomePage() {
               <li key={step.n} className="surface p-6">
                 <span className="font-display text-3xl font-bold text-navy-200">{step.n}</span>
                 <h3 className="mt-4 font-semibold text-navy-900">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-navy-700/75">{step.body}</p>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-navy-700/75">{step.body}</p>
               </li>
             ))}
           </ol>
@@ -314,7 +314,7 @@ export default async function HomePage() {
             {c.commitments.map((item) => (
               <div key={item.title} className="rounded-xl border border-navy-100 bg-navy-50/60 p-6">
                 <h3 className="font-semibold text-navy-900">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-navy-700/80">{item.body}</p>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-navy-700/80">{item.body}</p>
               </div>
             ))}
           </div>

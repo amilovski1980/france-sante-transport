@@ -64,12 +64,12 @@ export function Logo({
         <img
           src={logoUrl}
           alt={logoAlt}
-          className="h-10 w-auto max-w-[10rem] rounded-lg object-contain transition-transform duration-300 group-hover:-translate-y-0.5"
+          className="h-8 w-auto max-w-[9rem] rounded-lg object-contain transition-transform duration-300 group-hover:-translate-y-0.5 sm:h-10 sm:max-w-[10rem]"
         />
       ) : (
         <span
           aria-hidden="true"
-          className="grid h-10 w-10 place-items-center rounded-lg bg-navy-800 font-display text-lg font-bold text-white transition-transform duration-300 group-hover:-translate-y-0.5"
+          className="grid h-8 w-8 place-items-center rounded-lg bg-navy-800 font-display text-base font-bold text-white transition-transform duration-300 group-hover:-translate-y-0.5 sm:h-10 sm:w-10 sm:text-lg"
         >
           FS<span className="text-flagred-600">T</span>
         </span>
@@ -121,11 +121,39 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
+  /** Barre de progression de lecture (desktop + mobile), études GPU via transform. */
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   if (pathname.startsWith("/dashboard")) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-navy-100 bg-white/90 backdrop-blur-md">
-      <div className="container-x flex h-20 items-center justify-between gap-4">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left bg-gradient-to-r from-navy-600 via-flagred-600 to-flagred-500 will-change-transform"
+        style={{ transform: `scaleX(${progress})` }}
+      />
+      <div className="container-x flex h-16 items-center justify-between gap-4 sm:h-20">
         <Logo branding={branding} />
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label={t("nav.main")}>

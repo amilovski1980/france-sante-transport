@@ -303,21 +303,23 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
   return (
     <>
       {!open && (
-        <div className="fixed bottom-5 right-5 z-50">
+        <div className="fixed bottom-20 right-4 z-50 sm:bottom-5 sm:right-5">
           {/* Halo pulsé derrière le bouton */}
           <span
             aria-hidden="true"
-            className="aminia-ring pointer-events-none absolute inset-0 rounded-full bg-flagred-500/40"
+            className="aminia-ring pointer-events-none absolute inset-0 rounded-2xl bg-flagred-500/30"
           />
           <button
             type="button"
             onClick={() => setOpen(true)}
             aria-label={t("am.open")}
-            className="aminia-pop relative flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-br from-navy-800 via-navy-700 to-flagred-600 px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-navy-900/30 transition-transform duration-200 hover:scale-105 active:scale-95"
+            className="aminia-pop relative flex items-center gap-3 overflow-hidden rounded-2xl bg-navy-900 px-4 py-3 text-sm font-medium text-white shadow-2xl shadow-navy-900/40 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
           >
-            {/* Reflet qui traverse le bouton */}
+            {/* Voile glass premium */}
+            <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+            {/* Reflet discret qui traverse le bouton */}
             <span aria-hidden="true" className="absolute inset-0">
-              <span className="aminia-shine absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+              <span className="aminia-shine absolute top-0 left-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
             </span>
             <span aria-hidden="true" className="aminia-bob relative">
               <AminiaMark size={38} />
@@ -335,7 +337,7 @@ export default function AminiaAssistant({ newsletterUrl }: { newsletterUrl?: str
         <div
           role="dialog"
           aria-label={t("am.title")}
-          className="aminia-pop fixed bottom-5 right-5 z-50 flex max-h-[32rem] w-[min(22rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-navy-200 bg-white shadow-2xl"
+          className="aminia-pop fixed bottom-20 right-4 z-50 flex max-h-[32rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-navy-200 bg-white shadow-2xl sm:bottom-5 sm:right-5 sm:w-[min(22rem,calc(100vw-2.5rem))]"
         >
           <div className="flex items-center justify-between bg-gradient-to-r from-navy-900 via-navy-800 to-navy-700 px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
