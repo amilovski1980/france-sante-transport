@@ -163,7 +163,7 @@ export default function InvoicesPanel({
             href="/api/invoices/export"
             className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-navy-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
           >
-            ⬇️ Export CSV
+            Export CSV
           </a>
           <button
             type="button"
@@ -171,7 +171,7 @@ export default function InvoicesPanel({
             onClick={() => void sendReminders()}
             className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-navy-700 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
           >
-            {busy === "reminders" ? "⏳ Relances…" : `🔁 Relancer les échues (${totals.overdueCount})`}
+            {busy === "reminders" ? "⏳ Relances…" : `Relancer les échues (${totals.overdueCount})`}
           </button>
           <div className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
             Encaissé : {money(totals.revenue)}
@@ -189,7 +189,7 @@ export default function InvoicesPanel({
 
       {info && !error && (
         <div className="rounded-xl bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-          ✅ {info}
+          {info}
         </div>
       )}
 
@@ -277,14 +277,14 @@ export default function InvoicesPanel({
                   {inv.status === "issued" && (
                     <button type="button" disabled={busy === inv.id} onClick={() => void sendEmail(inv)}
                       className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-navy-700 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10">
-                      ✉️ Envoyer
+                      Envoyer
                     </button>
                   )}
                   {inv.status === "sent" && (
                     <>
                       <button type="button" disabled={busy === inv.id} onClick={() => void setStatus(inv.id, "paid")}
                         className="rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-40">
-                        💰 Encaisser
+                        Encaisser
                       </button>
                       <button type="button" disabled={busy === inv.id} onClick={() => void setStatus(inv.id, "cancelled")}
                         className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:hover:bg-white/10">

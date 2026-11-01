@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/SignOutButton";
 import Avatar from "@/components/Avatar";
 import AdminSidebar from "@/components/dashboard/AdminSidebar";
+import AdminMobileNav from "@/components/dashboard/AdminMobileNav";
 import BottomNav from "@/components/dashboard/BottomNav";
 import type { Profile } from "@/lib/types";
 
@@ -70,9 +71,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <section className="min-h-screen">
       {isStaff ? (
         <div className="dash-bg flex min-h-screen">
-          <AdminSidebar />
+          <AdminSidebar role={profile.role} />
           <div className="min-w-0 flex-1">
             {TopBar}
+            <AdminMobileNav role={profile.role} />
             <div className={`${contentWidth} px-4 pb-24 pt-6 lg:px-10 lg:pb-10`}>{children}</div>
           </div>
           <BottomNav role={profile.role} />

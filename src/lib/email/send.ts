@@ -16,6 +16,25 @@ function parseFrom(raw: string | undefined): string | undefined {
   return raw;
 }
 
+/** Expéditeur de secours dérivé de NEXT_PUBLIC_APP_URL ( domaine du site ). */
+function fallbackFrom(): string {
+  try {
+    const url = process.env.NEXT_PUBLIC_APP_URL;
+    const domain = url ? new URL(url).hostname : "france-sante-transport.fr";
+    return `France Santé Transport <no-reply@${domain}>`;
+  } catch {
+    return "France Santé Transport <no-reply@france-sante-transport.fr>";
+  }
+}
+
+/** Ne jamais retourner un domaine jetable ( fst.local ) : cela garantit un classement en spam. */
+function normalizeFrom(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const address = value.match(/<([^>]+)>/)?.[1] ?? value;
+  if (/@fst\.local$/i.test(address)) return fallbackFrom();
+  return value;
+}
+
 async function sendViaResend(
   to: string[],
   from: string | undefined,
@@ -58,7 +77,7 @@ async function sendViaSmtp(
     tls: config.port !== 465 ? { rejectUnauthorized: false } : undefined,
   });
   await transport.sendMail({
-    from: from ?? "France Santé Transport <no-reply@fst.local>",
+    from: fallbackFrom(),
     to: to.join(", "),
     subject: content.subject,
     html: content.html,
@@ -74,7 +93,7 @@ async function sendViaSmtp(
  */
 export async function sendEmail(input: { to: string | string[]; content: EmailContent }): Promise<SendResult> {
   const to = Array.isArray(input.to) ? input.to : [input.to];
-  const from = parseFrom(process.env.SMTP_FROM);
+  const from = normalizeFrom(parseFrom(process.env.SMTP_FROM)) ?? fallbackFrom();
 
   try {
     const settings = await loadAppSettings();

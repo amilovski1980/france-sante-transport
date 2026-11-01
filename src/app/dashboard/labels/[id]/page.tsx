@@ -108,7 +108,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
             <div>
               <p className="text-[8px] font-bold uppercase tracking-widest text-slate-400">Chauffeur</p>
               <p className="font-semibold text-navy-900">{assignment?.driver?.full_name ?? "Non affecté"}</p>
-              {assignment?.driver?.phone && <p className="text-slate-600">☎ {assignment.driver.phone}</p>}
+              {assignment?.driver?.phone && <p className="text-slate-600">{assignment.driver.phone}</p>}
             </div>
             <div>
               <p className="text-[8px] font-bold uppercase tracking-widest text-slate-400">Véhicule</p>
@@ -129,7 +129,7 @@ export default async function LabelPage({ params }: { params: Promise<{ id: stri
               <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">Urgent</span>
             )}
             {request?.mobility_notes && (
-              <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">♿ {request.mobility_notes.slice(0, 42)}</span>
+              <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">{request.mobility_notes.slice(0, 42)}</span>
             )}
           </div>
 

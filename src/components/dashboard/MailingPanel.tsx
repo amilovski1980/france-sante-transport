@@ -41,7 +41,7 @@ export default function MailingPanel({ recipients }: { recipients: Recipient[] }
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ sent: number; failed: number; raw?: string } | null>(null);
+  const [result, setResult] = useState<{ sent: number; failed: number; raw?: string; warning?: string | null } | null>(null);
   const [history, setHistory] = useState<Array<EmailLog & { recipient?: Pick<Profile, "id" | "full_name" | "email"> }>>([]);
 
   const filtered = useMemo(() => {
@@ -86,7 +86,7 @@ export default function MailingPanel({ recipients }: { recipients: Recipient[] }
       });
       const data = await res.json();
       if (data.ok) {
-        setResult({ sent: data.sent, failed: data.failed });
+        setResult({ sent: data.sent, failed: data.failed, warning: data.warning ?? null });
         setSubject("");
         setBody("");
         setSel(new Set());
@@ -121,8 +121,13 @@ export default function MailingPanel({ recipients }: { recipients: Recipient[] }
             <p className="font-semibold">{result.raw}</p>
           ) : (
             <p>
-              ✅ {result.sent} e-mail{result.sent > 1 ? "s" : ""} envoyé{result.sent > 1 ? "s" : ""}
+              {result.sent} e-mail{result.sent > 1 ? "s" : ""} envoyé{result.sent > 1 ? "s" : ""}
               {result.failed > 0 && <span className="font-semibold text-red-600"> · {result.failed} en échec</span>}
+            </p>
+          )}
+          {result.warning && (
+            <p className="mt-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+              {result.warning}
             </p>
           )}
         </div>

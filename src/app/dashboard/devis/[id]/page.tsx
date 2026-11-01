@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { QUOTE_STATUS_LABELS, SERVICE_TYPE_LABELS } from "@/lib/labels";
 import EsignButton from "@/components/dashboard/EsignButton";
+import PayQuoteButton from "@/components/dashboard/PayQuoteButton";
 import PrintButton from "./PrintButton";
 
 export const dynamic = "force-dynamic";
@@ -72,31 +73,54 @@ export default async function QuotePrintPage({
   const total = Number(quote.amount);
   const hasLines = (lines?.length ?? 0) > 0;
 
-  // Signature DocuSign : dernière enveloppe + statut (staff seulement)
-  const isStaff = user.role === "admin" || user.role === "dispatcher";
-  const { data: esignRow } = isStaff
-    ? await supabase
-        .from("esign_documents")
-        .select("id, status, envelope_id")
-        .eq("scope", "quote")
-        .eq("reference_id", id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle()
-    : { data: null };
+  const [{ data: profile }, { data: esignRow }, { data: invoice }] = await Promise.all([
+    supabase.from("profiles").select("role").eq("id", user.id).single(),
+    supabase
+      .from("esign_documents")
+      .select("id, status, envelope_id")
+      .eq("scope", "quote")
+      .eq("reference_id", id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase.from("invoices").select("id, status").eq("quote_id", id).maybeSingle(),
+  ]);
+  const isStaff = profile?.role === "admin" || profile?.role === "dispatcher";
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
       <PrintButton />
-      {isStaff && (
-        <div className="card-pro px-5 py-3">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400">Signature électronique</p>
-          <EsignButton
-            quoteId={id}
-            status={(esignRow?.status as import("@/lib/types").EsignStatus) ?? null}
-            envelopeId={esignRow?.envelope_id ?? null}
-            esignId={esignRow?.id ?? null}
-          />
+      {(quote.status === "sent" || quote.status === "accepted") && (
+        <div className="card-pro space-y-4 px-5 py-4 print:hidden">
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              Signature électronique
+            </p>
+            <EsignButton
+              quoteId={id}
+              status={(esignRow?.status as import("@/lib/types").EsignStatus) ?? null}
+              envelopeId={esignRow?.envelope_id ?? null}
+              esignId={esignRow?.id ?? null}
+              audience={isStaff ? "staff" : "client"}
+            />
+          </div>
+          {quote.status === "accepted" && (
+            <div className="border-t border-navy-100 pt-4">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                Règlement
+              </p>
+              {invoice?.status === "paid" ? (
+                <a
+                  href={`/dashboard/invoices/${invoice.id}`}
+                  className="inline-flex rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500"
+                >
+                  Facture réglée
+                </a>
+              ) : (
+                <PayQuoteButton quoteId={id} />
+              )}
+            </div>
+          )}
         </div>
       )}
 

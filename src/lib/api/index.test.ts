@@ -87,10 +87,10 @@ describe("call() — erreurs mappées", () => {
   });
 });
 
-describe("sendContactMessage", () => {
+describe("submitContact", () => {
   it("insère le message via la table contact_messages", async () => {
     fromTable.mockReturnValue(tableChain({ data: { id: "c1" }, error: null }));
-    const { sendContactMessage } = await import("@/lib/api");
+    const { submitContact } = await import("@/lib/api");
     const input = {
       topic: "contact" as const,
       full_name: "Marie Dupont",
@@ -98,7 +98,7 @@ describe("sendContactMessage", () => {
       subject: "Demande d'information",
       message: "Bonjour, je souhaite en savoir plus.",
     };
-    await expect(sendContactMessage(input)).resolves.toEqual({ id: "c1" });
+    await expect(submitContact(input)).resolves.toEqual({ id: "c1" });
     expect(fromTable).toHaveBeenCalledWith("contact_messages");
   });
 });

@@ -116,15 +116,8 @@ export default function InternalMessages({ counterparts }: { counterparts: Count
         { event: "INSERT", schema: "public", table: "internal_messages" },
         (payload) => {
           const row = payload.new as InternalMessage;
+          // Non lu tant que l'utilisateur n'a pas ouvert le fil (badge + alerte).
           upsertMany([row]);
-          // Accusé de réception immédiat : si je suis destinataire, marquer lu.
-          if (meId && row.recipient_id === meId) {
-            void supabase
-              .from("internal_messages")
-              .update({ read_at: new Date().toISOString() })
-              .eq("id", row.id)
-              .eq("recipient_id", meId);
-          }
         },
       )
       .subscribe();
@@ -196,6 +189,12 @@ export default function InternalMessages({ counterparts }: { counterparts: Count
     if (err) { setError("Envoi impossible : " + err.message); return; }
     setDraft("");
     upsertMany([data as InternalMessage]);
+    // Alerter le destinataire (in-app + Web Push), sans bloquer l'UI.
+    void fetch("/api/messages/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message_id: (data as { id: string }).id }),
+    }).catch(() => undefined);
   }
 
   const empty = !loading && counterparts.length === 0;

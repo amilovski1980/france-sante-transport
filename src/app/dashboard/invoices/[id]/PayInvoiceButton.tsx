@@ -80,7 +80,7 @@ export default function PayInvoiceButton({ invoiceId }: { invoiceId: string }) {
         disabled={busy}
         className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#635bff] px-6 py-3.5 text-base font-bold text-white shadow-[0_8px_24px_rgba(99,91,255,0.35)] transition-colors hover:bg-[#7a73ff] disabled:opacity-40 sm:w-auto"
       >
-        {busy ? "Redirection vers Stripe…" : "💳 Payer avec Stripe"}
+        {busy ? "Redirection vers Stripe…" : "Payer avec Stripe"}
       </button>
       <p className="mt-2 text-center text-xs text-slate-400 sm:text-left">Paiement sécurisé par carte bancaire — confirmation immédiate.</p>
     </div>

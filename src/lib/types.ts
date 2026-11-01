@@ -360,6 +360,19 @@ export interface VerificationCode {
   created_at: string;
 }
 
+export interface AppNotification {
+  id: string;
+  user_id: string;
+  type: string;
+  title: string;
+  body: string | null;
+  url: string | null;
+  tag: string | null;
+  data: Record<string, unknown> | null;
+  read_at: string | null;
+  created_at: string;
+}
+
 type Row<T> = T;
 type Insert<T> = Partial<T>;
 type Update<T> = Partial<T>;
@@ -442,6 +455,11 @@ export interface Database {
         Row: Row<VerificationCode>;
         Insert: Insert<VerificationCode>;
         Update: Update<VerificationCode>;
+      };
+      notifications: {
+        Row: Row<AppNotification>;
+        Insert: Insert<AppNotification>;
+        Update: Update<AppNotification>;
       };
     };
     Functions: {

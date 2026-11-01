@@ -1,7 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AlertsFeed from "@/components/dashboard/AlertsFeed";
-import type { DriverAssignment, Shipment, TransportRequest } from "@/lib/types";
+import type {
+  AppNotification,
+  DriverAssignment,
+  Shipment,
+  TransportRequest,
+} from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +17,24 @@ export default async function NotificationsPage() {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (!profile) redirect("/dashboard");
 
-  // Chauffeurs : flux construit sur leurs affectations (la RLS bloque
-  // shipment_events pour eux) — staff/clients : journal des évènements.
+  // Notifications personnelles (une ligne par destinataire et par événement).
+  const { data: notifications, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(100);
+
+  if (!error) {
+    return (
+      <AlertsFeed
+        mode="notifications"
+        notifications={(notifications ?? []) as AppNotification[]}
+      />
+    );
+  }
+
+  // Repli tant que la migration « notifications » n'est pas appliquée.
   if (profile.role === "driver") {
     const [{ data: assignments }, { data: shipments }, { data: requests }] = await Promise.all([
       supabase.from("driver_assignments").select("*").order("assigned_at", { ascending: false }).limit(30),
@@ -34,6 +55,6 @@ export default async function NotificationsPage() {
     .from("shipment_events")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(30);
+    .limit(50);
   return <AlertsFeed mode="feed" events={events ?? []} />;
 }

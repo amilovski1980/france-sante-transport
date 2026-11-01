@@ -53,7 +53,21 @@ async function call<T>(fn: () => Promise<{ data: T | null; error: unknown }>): P
 // ------------------------------------------------------------
 // Notifications e-mail (fire-and-forget : jamais bloquant pour le flux métier)
 // ------------------------------------------------------------
-export type NotifyType = "quote_sent" | "assignment_proposed" | "request_received";
+export type NotifyType =
+  | "request_received"
+  | "request_under_review"
+  | "request_cancelled"
+  | "quote_sent"
+  | "quote_accepted"
+  | "quote_declined"
+  | "assignment_proposed"
+  | "assignment_response"
+  | "shipment_confirmed"
+  | "shipment_started"
+  | "shipment_completed"
+  | "shipment_cancelled"
+  | "delivery_proved"
+  | "invoice_sent";
 
 export async function notify(type: NotifyType, id: string): Promise<void> {
   try {
@@ -103,13 +117,15 @@ export async function listAllRequests(): Promise<TransportRequest[]> {
 }
 
 export async function cancelMyRequest(requestId: string, reason?: string): Promise<TransportRequest> {
-  return call(async () => {
+  const request = await call<TransportRequest>(async () => {
     const supabase = createClient();
     return supabase.rpc("cancel_transport_request", {
       p_request_id: requestId,
       p_reason: reason ?? null,
     });
   });
+  void notify("request_cancelled", requestId);
+  return request;
 }
 
 // ------------------------------------------------------------
@@ -161,24 +177,30 @@ export async function adminSendQuote(quoteId: string): Promise<Quote> {
 }
 
 export async function acceptQuote(quoteId: string): Promise<Shipment> {
-  return call(async () => {
+  const shipment = await call<Shipment>(async () => {
     const supabase = createClient();
     return supabase.rpc("accept_quote", { p_quote_id: quoteId });
   });
+  void notify("quote_accepted", quoteId);
+  return shipment;
 }
 
 export async function declineQuote(quoteId: string): Promise<Quote> {
-  return call(async () => {
+  const quote = await call<Quote>(async () => {
     const supabase = createClient();
     return supabase.rpc("decline_quote", { p_quote_id: quoteId });
   });
+  void notify("quote_declined", quoteId);
+  return quote;
 }
 
 export async function markRequestUnderReview(requestId: string): Promise<TransportRequest> {
-  return call(async () => {
+  const request = await call<TransportRequest>(async () => {
     const supabase = createClient();
     return supabase.rpc("mark_request_under_review", { p_request_id: requestId });
   });
+  void notify("request_under_review", requestId);
+  return request;
 }
 
 // ------------------------------------------------------------
@@ -325,31 +347,39 @@ export async function listShipments(): Promise<Shipment[]> {
 }
 
 export async function adminConfirmShipment(shipmentId: string): Promise<Shipment> {
-  return call(async () => {
+  const shipment = await call<Shipment>(async () => {
     const supabase = createClient();
     return supabase.rpc("confirm_shipment", { p_shipment_id: shipmentId });
   });
+  void notify("shipment_confirmed", shipmentId);
+  return shipment;
 }
 
 export async function adminStartShipment(shipmentId: string): Promise<Shipment> {
-  return call(async () => {
+  const shipment = await call<Shipment>(async () => {
     const supabase = createClient();
     return supabase.rpc("start_shipment", { p_shipment_id: shipmentId });
   });
+  void notify("shipment_started", shipmentId);
+  return shipment;
 }
 
 export async function adminCompleteShipment(shipmentId: string): Promise<Shipment> {
-  return call(async () => {
+  const shipment = await call<Shipment>(async () => {
     const supabase = createClient();
     return supabase.rpc("complete_shipment", { p_shipment_id: shipmentId });
   });
+  void notify("shipment_completed", shipmentId);
+  return shipment;
 }
 
 export async function adminCancelShipment(shipmentId: string, reason?: string): Promise<Shipment> {
-  return call(async () => {
+  const shipment = await call<Shipment>(async () => {
     const supabase = createClient();
     return supabase.rpc("cancel_shipment", { p_shipment_id: shipmentId, p_reason: reason ?? null });
   });
+  void notify("shipment_cancelled", shipmentId);
+  return shipment;
 }
 
 export async function assignDriver(
@@ -367,6 +397,13 @@ export async function assignDriver(
   });
   void notify("assignment_proposed", assignment.id);
   return assignment;
+}
+
+export async function cancelAssignment(assignmentId: string): Promise<DriverAssignment> {
+  return call<DriverAssignment>(async () => {
+    const supabase = createClient();
+    return supabase.rpc("cancel_driver_assignment", { p_assignment_id: assignmentId });
+  });
 }
 
 // ------------------------------------------------------------
@@ -493,13 +530,15 @@ export async function listMyAssignments(driverId: string): Promise<DriverAssignm
 }
 
 export async function respondToAssignment(assignmentId: string, accept: boolean): Promise<DriverAssignment> {
-  return call(async () => {
+  const assignment = await call<DriverAssignment>(async () => {
     const supabase = createClient();
     return supabase.rpc("respond_driver_assignment", {
       p_assignment_id: assignmentId,
       p_accept: accept,
     });
   });
+  void notify("assignment_response", assignmentId);
+  return assignment;
 }
 
 // ------------------------------------------------------------

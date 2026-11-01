@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toUserMessage } from "@/lib/errors";
 import type { AppRole, Vehicle } from "@/lib/types";
+import { NavIcon } from "@/components/dashboard/NavIcon";
 
 type VehicleType = Vehicle["vehicle_type"];
 
@@ -165,7 +166,8 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
         </div>
         <div className="flex gap-2">
           <span className="rounded-xl bg-navy-50 px-4 py-2 text-sm font-semibold text-navy-800 dark:bg-white/10 dark:text-slate-200">
-            🏍️ {vehicles.length}
+            <NavIcon name="vehicle" className="mr-1.5 inline h-4 w-4 align-[-3px] text-navy-500 dark:text-slate-300" />
+            {vehicles.length}
           </span>
           <span className="rounded-xl bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
             Actifs : {activeCount}
@@ -173,14 +175,14 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
         </div>
       </div>
 
-      {error && <div className="rounded-xl bg-red-50 px-5 py-3 text-sm font-semibold text-red-700 dark:bg-red-500/10 dark:text-red-300">⚠️ {error}</div>}
-      {info && !error && <div className="rounded-xl bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">✅ {info}</div>}
+      {error && <div className="rounded-xl bg-red-50 px-5 py-3 text-sm font-semibold text-red-700 dark:bg-red-500/10 dark:text-red-300">{error}</div>}
+      {info && !error && <div className="rounded-xl bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">{info}</div>}
 
       {isAdmin && (
         <form onSubmit={submit} className="card-pro">
           <div className="border-b border-slate-100 px-5 py-4 dark:border-white/10">
             <h2 className="text-sm font-bold uppercase tracking-wide text-navy-700 dark:text-slate-200">
-              {editingId ? "✏️ Modifier le véhicule" : "➕ Ajouter un véhicule"}
+              {editingId ? "Modifier le véhicule" : "Ajouter un véhicule"}
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-4 px-5 py-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -207,7 +209,7 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
             <div className="flex items-end pb-1">
               <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input type="checkbox" checked={draft.has_wheelchair_lift} onChange={(e) => set("has_wheelchair_lift", e.target.checked)} className="h-4 w-4 rounded border-slate-300" />
-                ❄ Frigorifique
+                Frigorifique
               </label>
             </div>
             <div className="flex items-end pb-1">
@@ -243,11 +245,12 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
               <li key={v.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    🏍️ <span className="font-mono">{v.registration_plate}</span> · {typeLabel(v.vehicle_type)}
+                    <NavIcon name="vehicle" className="mr-1.5 inline h-4 w-4 align-[-3px] text-slate-400 dark:text-slate-300" />
+                    <span className="font-mono">{v.registration_plate}</span> · {typeLabel(v.vehicle_type)}
                     {v.label && <span className="ml-2 text-xs text-slate-400">{v.label}</span>}
                   </p>
                   <p className="mt-0.5 text-xs text-slate-400">
-                    {v.capacity} place(s) {v.has_wheelchair_lift && " · ❄ frigorifique"}
+                    {v.capacity} place(s) {v.has_wheelchair_lift && " · frigorifique"}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -262,7 +265,7 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
                         onClick={() => void toggleActive(v)}
                         className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-navy-700 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
                       >
-                        {v.active ? "⏸ Désactiver" : "▶ Activer"}
+                        {v.active ? "Désactiver" : "Activer"}
                       </button>
                       <button
                         type="button"
@@ -270,7 +273,7 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
                         onClick={() => startEdit(v)}
                         className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-navy-700 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
                       >
-                        ✏️
+                        <NavIcon name="edit" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
@@ -278,7 +281,7 @@ export default function FleetPanel({ initial, role }: { initial: Vehicle[]; role
                         onClick={() => void remove(v)}
                         className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40 dark:border-white/10 dark:text-red-400"
                       >
-                        🗑
+                        <NavIcon name="trash" className="h-3.5 w-3.5" />
                       </button>
                     </>
                   )}

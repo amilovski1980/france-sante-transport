@@ -4,10 +4,28 @@ import { formatMoney } from "@/components/dashboard/ClientDashboard";
 import CriticalityBadge from "@/components/dashboard/CriticalityBadge";
 import Countdown from "@/components/dashboard/Countdown";
 import LiveMap from "@/components/dashboard/LiveMap";
+import DispatchBoard from "@/components/dashboard/DispatchBoard";
+import { NavIcon } from "@/components/dashboard/NavIcon";
 import { useLiveRefresh } from "@/lib/useLiveRefresh";
 import type { Quote, Shipment, TransportRequest } from "@/lib/types";
 
-export default function ControlRoom({ requests, quotes, shipments, positions = [], drivers = [] }: { requests: TransportRequest[]; quotes: Quote[]; shipments: Shipment[]; positions?: import("@/lib/types").DriverLocation[]; drivers?: import("@/lib/types").Profile[] }) {
+export default function ControlRoom({
+  requests,
+  quotes,
+  shipments,
+  positions = [],
+  drivers = [],
+  assignments = [],
+  vehicles = [],
+}: {
+  requests: TransportRequest[];
+  quotes: Quote[];
+  shipments: Shipment[];
+  positions?: import("@/lib/types").DriverLocation[];
+  drivers?: import("@/lib/types").Profile[];
+  assignments?: import("@/lib/types").DriverAssignment[];
+  vehicles?: import("@/lib/types").Vehicle[];
+}) {
   // Positions GPS + flux métier rafraîchis en continu (Realtime → fallback polling 6 s)
   const live = useLiveRefresh(["driver_positions", "shipments", "transport_requests", "quotes"], { pollMs: 6000 });
   const stats = useMemo(() => {
@@ -44,13 +62,21 @@ export default function ControlRoom({ requests, quotes, shipments, positions = [
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat label="Chiffre d'affaires" value={formatMoney(stats.revenue, "EUR", "fr-FR")} trend="+12% ce mois" tone="navy" icon={<span className="text-lg">💰</span>} />
-        <Stat label="Marge estimée" value={formatMoney(stats.margin, "EUR", "fr-FR")} trend="+14%" tone="green" icon={<span className="text-lg">📈</span>} />
-        <Stat label="En attente" value={String(stats.pending)} sub="demandes" tone="orange" icon={<span className="text-lg">⏳</span>} />
-        <Stat label="En transit" value={String(stats.active)} sub="missions" tone="blue" icon={<span className="text-lg">🏍️</span>} />
+        <Stat label="Chiffre d'affaires" value={formatMoney(stats.revenue, "EUR", "fr-FR")} trend="+12% ce mois" tone="navy" icon={<NavIcon name="wallet" className="h-5 w-5" />} />
+        <Stat label="Marge estimée" value={formatMoney(stats.margin, "EUR", "fr-FR")} trend="+14%" tone="green" icon={<NavIcon name="trend" className="h-5 w-5" />} />
+        <Stat label="En attente" value={String(stats.pending)} sub="demandes" tone="orange" icon={<NavIcon name="clock" className="h-5 w-5" />} />
+        <Stat label="En transit" value={String(stats.active)} sub="missions" tone="blue" icon={<NavIcon name="truck" className="h-5 w-5" />} />
       </div>
 
       <LiveMap positions={positions} drivers={drivers} />
+
+      <DispatchBoard
+        shipments={shipments}
+        requests={requests}
+        assignments={assignments}
+        drivers={drivers}
+        vehicles={vehicles}
+      />
 
       <div className="card-pro overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-white/10">

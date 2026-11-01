@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import DispatchBoard from "@/components/dashboard/DispatchBoard";
 import DispatchCalendar from "@/components/dashboard/DispatchCalendar";
 import DriverSchedulePanel from "@/components/dashboard/DriverSchedulePanel";
 import DriverKpiPanel from "@/components/dashboard/DriverKpiPanel";
@@ -9,9 +10,9 @@ import type { DriverAssignment, Profile, Shipment, TransportRequest, Vehicle } f
 type Tab = "calendar" | "schedule" | "performance";
 
 const TABS: Array<{ key: Tab; label: string; icon: string }> = [
-  { key: "calendar", label: "Calendrier", icon: "🗓️" },
-  { key: "schedule", label: "Planning chauffeurs", icon: "🕒" },
-  { key: "performance", label: "Performance", icon: "📈" },
+  { key: "calendar", label: "Calendrier", icon: "" },
+  { key: "schedule", label: "Planning chauffeurs", icon: "" },
+  { key: "performance", label: "Performance", icon: "" },
 ];
 
 export default function AgendaTabs({
@@ -31,6 +32,14 @@ export default function AgendaTabs({
 
   return (
     <div className="space-y-5">
+      <DispatchBoard
+        shipments={shipments}
+        requests={requests}
+        assignments={assignments}
+        drivers={drivers}
+        vehicles={vehicles}
+      />
+
       <div className="inline-flex rounded-2xl border border-slate-200/80 bg-white/80 p-1 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
         {TABS.map((t) => (
           <button

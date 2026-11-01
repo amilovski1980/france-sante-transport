@@ -211,7 +211,7 @@ export default function DispatchLiveBoard({
                         target="_blank"
                         className="rounded-md border border-navy-200 px-2 py-0.5 font-semibold text-navy-700 hover:bg-navy-50 dark:border-white/10 dark:text-slate-200"
                       >
-                        🏷️ Étiquette
+                        Étiquette
                       </Link>
                     </div>
                   </li>

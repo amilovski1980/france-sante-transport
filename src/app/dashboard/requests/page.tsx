@@ -47,5 +47,40 @@ export default async function RequestsPage() {
     supabase.from("shipments").select("*").order("scheduled_at", { ascending: true }),
     supabase.from("shipment_events").select("*").order("created_at", { ascending: true }),
   ]);
-  return <ClientDashboard requests={requests ?? []} quotes={quotes ?? []} events={events ?? []} shipments={shipments ?? []} />;
+
+  const quoteIds = (quotes ?? []).map((quote) => quote.id);
+  const [{ data: esignDocs }, { data: invoices }] = quoteIds.length
+    ? await Promise.all([
+        supabase
+          .from("esign_documents")
+          .select("reference_id, status")
+          .eq("scope", "quote")
+          .in("reference_id", quoteIds)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("invoices")
+          .select("quote_id, id, status")
+          .in("quote_id", quoteIds),
+      ])
+    : [{ data: [] }, { data: [] }];
+
+  const esignByQuote: Record<string, import("@/lib/types").EsignStatus> = {};
+  for (const doc of esignDocs ?? []) {
+    if (!esignByQuote[doc.reference_id]) esignByQuote[doc.reference_id] = doc.status as import("@/lib/types").EsignStatus;
+  }
+  const invoiceByQuote: Record<string, { id: string; status: import("@/lib/types").InvoiceStatus }> = {};
+  for (const invoice of invoices ?? []) {
+    invoiceByQuote[invoice.quote_id] = { id: invoice.id, status: invoice.status as import("@/lib/types").InvoiceStatus };
+  }
+
+  return (
+    <ClientDashboard
+      requests={requests ?? []}
+      quotes={quotes ?? []}
+      events={events ?? []}
+      shipments={shipments ?? []}
+      esignByQuote={esignByQuote}
+      invoiceByQuote={invoiceByQuote}
+    />
+  );
 }

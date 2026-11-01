@@ -274,3 +274,33 @@ export function invoiceReminderEmail(input: {
   ].join("\n");
   return { subject, html, text };
 }
+
+/** Alerte générique (staff ou client) : une notification par étape du dossier. */
+export function alertEmail(input: {
+  subject: string;
+  title: string;
+  intro: string;
+  lines?: string[];
+  actionLabel: string;
+  actionUrl: string;
+}): EmailContent {
+  const details = input.lines?.length
+    ? `<p style="background:#f0f4fa;border-radius:8px;padding:12px 16px;">${input.lines.map((line) => escapeHtml(line)).join("<br>")}</p>`
+    : "";
+  const html = shell(
+    escapeHtml(input.title),
+    [
+      `<p>${escapeHtml(input.intro)}</p>`,
+      details,
+      linkBlock(input.actionLabel, input.actionUrl),
+      signature(),
+    ].join(""),
+  );
+  const text = [
+    input.intro,
+    ...(input.lines ?? []),
+    "",
+    `${input.actionLabel} : ${input.actionUrl}`,
+  ].join("\n");
+  return { subject: input.subject, html, text };
+}
