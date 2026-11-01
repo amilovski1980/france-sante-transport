@@ -394,28 +394,6 @@ export async function adminUpdateProfile(input: {
   });
 }
 
-// ------------------------------------------------------------
-// Contact form
-// ------------------------------------------------------------
-
-export async function sendContactMessage(input: {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}): Promise<{ status: number; data?: any; error?: any }> {
-  return call(async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.rpc("send_contact_message", {
-      p_name: input.name,
-      p_email: input.email,
-      p_subject: input.subject,
-      p_message: input.message,
-    });
-    return { status: 200, data, error };
-  });
-}
-
 export async function updateOwnProfile(input: {
   full_name?: string | null;
   phone?: string | null;
@@ -528,7 +506,7 @@ export async function respondToAssignment(assignmentId: string, accept: boolean)
 // Messages de contact / apport d'affaires
 // ------------------------------------------------------------
 
-export async function sendContactMessage(input: {
+export async function submitContact(input: {
   topic: ContactTopic;
   full_name: string;
   email: string;

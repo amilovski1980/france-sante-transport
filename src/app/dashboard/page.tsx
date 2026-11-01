@@ -64,7 +64,7 @@ export default async function DashboardPage() {
   }
 
   // Gestion des rôles inattendus
-  if (role !== "driver" && role !== "admin" && role !== "dispatcher" && role !== "partner") {
+  if (role !== "client") {
     // Rediriger vers une page d'erreur ou un message d'erreur
     redirect("/login");
   }

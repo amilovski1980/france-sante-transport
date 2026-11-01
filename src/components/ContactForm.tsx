@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { sendContactMessage } from "@/lib/api";
+import { submitContact } from "@/lib/api";
 import { toUserMessage } from "@/lib/errors";
 import { useI18n } from "@/components/I18nProvider";
 import type { TKey } from "@/lib/i18n/dictionaries";
@@ -45,7 +45,7 @@ export default function ContactForm() {
       setError(null);
       setSuccess(false);
       try {
-        await sendContactMessage({
+        await submitContact({
           topic,
           full_name: fullName.trim(),
           email: email.trim(),
@@ -66,7 +66,7 @@ export default function ContactForm() {
     }
 
   return (
-    <form onSubmit={handleSubmit} className="surface space-y-5 p-7 sm:p-8">
+    <form onSubmit={handleSubmit} className="surface space-y-5 p-7 sm:p-8 rounded-xl shadow-lg">
       <div>
         <label htmlFor="contact-topic" className="mb-1.5 block text-sm font-semibold text-navy-800">
           {t("cform.topicLabel")}
@@ -75,7 +75,7 @@ export default function ContactForm() {
           id="contact-topic"
           value={topic}
           onChange={(e) => setTopic(e.target.value as ContactTopic)}
-          className={inputClass}
+          className={`${inputClass} w-full`}
         >
           {TOPIC_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -98,7 +98,7 @@ export default function ContactForm() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder={t("cform.namePh")}
-            className={inputClass}
+            className={`${inputClass} w-full`}
           />
         </div>
         <div>
@@ -112,7 +112,7 @@ export default function ContactForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("signup.emailPlaceholder")}
-            className={inputClass}
+            className={`${inputClass} w-full`}
           />
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function ContactForm() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="06 00 00 00 00"
-            className={inputClass}
+            className={`${inputClass} w-full`}
           />
         </div>
         <div>
@@ -143,14 +143,14 @@ export default function ContactForm() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder={t("cform.subjectPh")}
-            className={inputClass}
+            className={`${inputClass} w-full`}
           />
         </div>
       </div>
 
       <div>
         <label htmlFor="contact-message" className="mb-1.5 block text-sm font-semibold text-navy-800">
-          Message
+          {t("cform.message")}
         </label>
         <textarea
           id="contact-message"
@@ -161,7 +161,7 @@ export default function ContactForm() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={t("cform.messagePh")}
-          className={inputClass}
+          className={`${inputClass} w-full`}
         />
       </div>
 
@@ -179,7 +179,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-navy-800 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-navy-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="w-full rounded-full bg-navy-800 px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-navy-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2"
       >
         {pending ? t("cform.submitting") : t("cform.submit")}
       </button>
