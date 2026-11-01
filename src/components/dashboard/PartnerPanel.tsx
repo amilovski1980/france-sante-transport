@@ -131,14 +131,14 @@ export default function PartnerPanel({ role, partnerName }: { role: AppRole; par
 
       {error && <div className="card-pro px-5 py-3 text-sm font-semibold text-red-600">{error}</div>}
       {info && !error && (
-        <div className="card-pro px-5 py-3 text-sm font-semibold text-emerald-700 dark:text-emerald-300">✅ {info}</div>
+        <div className="card-pro px-5 py-3 text-sm font-semibold text-emerald-700 dark:text-emerald-300">{info}</div>
       )}
 
       {/* Formulaire partenaire */}
       {isPartner && (
         <form onSubmit={submit} className="card-pro overflow-visible">
           <div className="border-b border-slate-100 px-5 py-4 dark:border-white/10">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-navy-700 dark:text-slate-200">🤝 Transmettre un dossier</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-navy-700 dark:text-slate-200">Transmettre un dossier</h2>
           </div>
           <div className="grid grid-cols-1 gap-4 px-5 py-4 sm:grid-cols-2">
             <F label="Nom du contact client *">

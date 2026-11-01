@@ -120,7 +120,7 @@ export default function RequestAttachments({
         className="flex items-center gap-2 text-xs font-semibold text-navy-600 hover:text-navy-800 dark:text-slate-300"
       >
         <span aria-hidden="true">{open ? "▾" : "▸"}</span>
-        📎 Pièces jointes {items ? `(${items.length})` : ""}
+        Pièces jointes {items ? `(${items.length})` : ""}
       </button>
 
       {open && (
@@ -138,7 +138,7 @@ export default function RequestAttachments({
               {items.map((a) => (
                 <li key={a.id} className="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 text-xs dark:bg-white/10">
                   <span className="min-w-0 flex-1 truncate font-medium text-slate-700 dark:text-slate-200">
-                    📄 {a.file_name}
+                    {a.file_name}
                     <span className="ml-1.5 text-slate-400">{sizeLabel(a.size_bytes)}</span>
                   </span>
                   <span className="shrink-0 flex gap-1.5">

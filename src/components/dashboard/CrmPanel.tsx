@@ -217,7 +217,7 @@ export default function CrmPanel({
                     href="/dashboard/admin/mailing"
                     className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-navy-700 hover:bg-navy-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
                   >
-                    ✉️ E-mail
+                    E-mail
                   </Link>
                 </div>
               </div>
@@ -241,9 +241,9 @@ export default function CrmPanel({
                   onChange={(e) => setNoteKind(e.target.value as CrmNote["kind"])}
                   className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm dark:border-white/10 dark:bg-[#12161f] dark:text-slate-200 sm:w-36"
                 >
-                  <option value="note">📝 Note</option>
-                  <option value="call">📞 Appel</option>
-                  <option value="email">✉️ E-mail</option>
+                  <option value="note">Note</option>
+                  <option value="call">Appel</option>
+                  <option value="email">E-mail</option>
                 </select>
                 <input
                   type="text"

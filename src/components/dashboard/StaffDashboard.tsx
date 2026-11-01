@@ -23,6 +23,8 @@ import { formatDateTime, formatMoney } from "@/components/dashboard/ClientDashbo
 import SiteSettingsPanel from "@/components/dashboard/SiteSettingsPanel";
 import StatsPanel from "@/components/dashboard/StatsPanel";
 import DispatchLiveBoard from "@/components/dashboard/DispatchLiveBoard";
+import DispatchBoard from "@/components/dashboard/DispatchBoard";
+import ShipmentActions from "@/components/dashboard/ShipmentActions";
 import DispatchCalendar from "@/components/dashboard/DispatchCalendar";
 import DriverSchedulePanel from "@/components/dashboard/DriverSchedulePanel";
 import DriverKpiPanel from "@/components/dashboard/DriverKpiPanel";
@@ -461,7 +463,15 @@ export default function StaffDashboard({
       )}
 
       {tab === "missions" && (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          <DispatchBoard
+            shipments={shipments}
+            requests={requests}
+            assignments={assignments}
+            drivers={drivers}
+            vehicles={vehicles}
+          />
+
           {shipments.length === 0 && (
             <div className="surface p-8 text-center text-sm text-navy-600">
               Aucune mission. Une mission est créée uniquement après acceptation d&apos;un devis par
@@ -472,7 +482,11 @@ export default function StaffDashboard({
           {shipments.map((shipment) => {
             const request = requests.find((r) => r.id === shipment.transport_request_id);
             const quote = quotes.find((q) => q.id === shipment.quote_id);
-            const assignment = assignments.find((a) => a.shipment_id === shipment.id);
+            const assignment = assignments.find(
+              (a) =>
+                a.shipment_id === shipment.id &&
+                (a.status === "proposed" || a.status === "accepted"),
+            );
             const draft = assignDraft[shipment.id] ?? { driver_id: "", vehicle_id: "" };
             const canAssign =
               shipment.status === "pending_confirmation" || shipment.status === "confirmed";
@@ -499,47 +513,12 @@ export default function StaffDashboard({
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    {shipment.status === "pending_confirmation" && (
-                      <button
-                        type="button"
-                        disabled={pendingId === shipment.id}
-                        onClick={() => run(shipment.id, () => adminConfirmShipment(shipment.id))}
-                        className={buttonPrimary}
-                      >
-                        Confirmer la mission
-                      </button>
-                    )}
-                    {shipment.status === "confirmed" && (
-                      <button
-                        type="button"
-                        disabled={pendingId === shipment.id}
-                        onClick={() => run(shipment.id, () => adminStartShipment(shipment.id))}
-                        className={buttonGhost}
-                      >
-                        Démarrer
-                      </button>
-                    )}
-                    {(shipment.status === "confirmed" || shipment.status === "in_progress") && (
-                      <button
-                        type="button"
-                        disabled={pendingId === shipment.id}
-                        onClick={() => run(shipment.id, () => adminCompleteShipment(shipment.id))}
-                        className={buttonGhost}
-                      >
-                        Terminer
-                      </button>
-                    )}
-                    {!["completed", "cancelled"].includes(shipment.status) && (
-                      <button
-                        type="button"
-                        disabled={pendingId === shipment.id}
-                        onClick={() => run(shipment.id, () => adminCancelShipment(shipment.id, "Annulée par l'équipe"))}
-                        className={buttonDanger}
-                      >
-                        Annuler
-                      </button>
-                    )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ShipmentActions
+                      shipment={shipment}
+                      pending={pendingId === shipment.id}
+                      onRun={(fn) => run(shipment.id, fn)}
+                    />
                   </div>
                 </div>
 
@@ -640,7 +619,7 @@ export default function StaffDashboard({
                           <p className="mt-1 text-xs text-navy-500">Signé le {formatDateTime(proof.created_at)}</p>
                           {proof.note && <p className="mt-2 text-xs italic text-navy-700">« {proof.note} »</p>}
                           {proof.latitude != null && proof.longitude != null && (
-                            <p className="mt-2 text-xs text-emerald-700">📍 {proof.latitude}, {proof.longitude}</p>
+                            <p className="mt-2 text-xs text-emerald-700">{proof.latitude}, {proof.longitude}</p>
                           )}
                         </div>
                         <div>
@@ -796,7 +775,7 @@ function FleetPanel({ vehicles }: { vehicles: Vehicle[] }) {
         </div>
         <label className="flex items-center gap-2 pb-2.5 text-sm text-navy-800">
           <input type="checkbox" checked={lift} onChange={(e) => setLift(e.target.checked)} className="h-4 w-4 accent-navy-800" />
-          ❄ Frigorifique
+          Frigorifique
         </label>
         <button type="submit" disabled={pending} className={buttonPrimary}>
           {pending ? "Ajout…" : "Ajouter le véhicule"}

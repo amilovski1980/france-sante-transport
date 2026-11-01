@@ -9,9 +9,18 @@ import { QuoteStatusBadge, RequestStatusBadge, ShipmentStatusBadge } from "@/com
 import QuoteLines from "@/components/dashboard/QuoteLines";
 import ClientTrackingMap from "@/components/dashboard/ClientTrackingMap";
 import Stepper from "@/components/dashboard/Stepper";
+import EsignButton from "@/components/dashboard/EsignButton";
+import PayQuoteButton from "@/components/dashboard/PayQuoteButton";
 import { useI18n } from "@/components/I18nProvider";
 import RequestAttachments from "@/components/dashboard/RequestAttachments";
-import type { Quote, Shipment, ShipmentEvent, TransportRequest } from "@/lib/types";
+import type {
+  EsignStatus,
+  InvoiceStatus,
+  Quote,
+  Shipment,
+  ShipmentEvent,
+  TransportRequest,
+} from "@/lib/types";
 
 const CANCELABLE: TransportRequest["status"][] = [
   "draft",
@@ -44,11 +53,15 @@ export default function ClientDashboard({
   quotes,
   events,
   shipments,
+  esignByQuote = {},
+  invoiceByQuote = {},
 }: {
   requests: TransportRequest[];
   quotes: Quote[];
   events: ShipmentEvent[];
   shipments: Shipment[];
+  esignByQuote?: Record<string, EsignStatus>;
+  invoiceByQuote?: Record<string, { id: string; status: InvoiceStatus }>;
 }) {
   const { t, labels, locale } = useI18n();
   const router = useRouter();
@@ -85,7 +98,7 @@ export default function ClientDashboard({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {state.error && (
         <p role="alert" className="rounded-lg border border-flagred-600/30 bg-flagred-50 px-4 py-3 text-sm font-medium text-flagred-700">
           {state.error}
@@ -122,7 +135,7 @@ export default function ClientDashboard({
 
         return (
           <article key={request.id} className="surface overflow-hidden">
-            <div className="flex flex-col gap-4 border-b border-navy-100 bg-navy-50/50 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 border-b border-navy-100 bg-navy-50/50 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-6">
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <h2 className="font-display text-lg font-semibold text-navy-900">
@@ -154,7 +167,7 @@ export default function ClientDashboard({
               )}
             </div>
 
-            <div className="grid gap-6 p-6 lg:grid-cols-2">
+            <div className="grid gap-4 p-4 sm:gap-6 sm:p-6 lg:grid-cols-2">
               {/* Devis */}
               <div>
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-navy-500">
@@ -171,7 +184,7 @@ export default function ClientDashboard({
                       return (
                         <li
                           key={quote.id}
-                          className="rounded-xl border border-navy-100 bg-white p-4 shadow-sm"
+                          className="rounded-xl border border-navy-100 bg-white p-3 shadow-sm sm:p-4"
                         >
                           <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
@@ -215,31 +228,71 @@ export default function ClientDashboard({
                           </p>
 
                           {quote.status === "sent" && (
-                            <div className="mt-4 flex flex-wrap gap-2">
-                              <button
-                                type="button"
-                                disabled={isPendingAction}
-                                onClick={() => run(quote.id, () => acceptQuote(quote.id))}
-                                className="rounded-full bg-navy-800 px-5 py-2 text-xs font-semibold text-white hover:bg-navy-700 disabled:opacity-60"
-                              >
-                                {isPendingAction ? t("cd.processing") : t("cd.acceptQuote")}
-                              </button>
-                              <button
-                                type="button"
-                                disabled={isPendingAction}
-                                onClick={() => run(quote.id, () => declineQuote(quote.id))}
-                                className="rounded-full border border-navy-200 px-5 py-2 text-xs font-semibold text-navy-700 hover:bg-navy-50 disabled:opacity-60"
-                              >
-                                {t("cd.decline")}
-                              </button>
+                            <div className="mt-4 space-y-3">
+                              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                                <button
+                                  type="button"
+                                  disabled={isPendingAction}
+                                  onClick={() => run(quote.id, () => acceptQuote(quote.id))}
+                                  className="w-full rounded-full bg-navy-800 px-5 py-2.5 text-xs font-semibold text-white hover:bg-navy-700 disabled:opacity-60 sm:w-auto"
+                                >
+                                  {isPendingAction ? t("cd.processing") : t("cd.acceptQuote")}
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={isPendingAction}
+                                  onClick={() => run(quote.id, () => declineQuote(quote.id))}
+                                  className="w-full rounded-full border border-navy-200 px-5 py-2.5 text-xs font-semibold text-navy-700 hover:bg-navy-50 disabled:opacity-60 sm:w-auto"
+                                >
+                                  {t("cd.decline")}
+                                </button>
+                              </div>
+                              <div className="rounded-xl border border-navy-100 bg-navy-50/60 p-3">
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-navy-500">
+                                  Signature électronique
+                                </p>
+                                <EsignButton
+                                  quoteId={quote.id}
+                                  status={esignByQuote[quote.id] ?? null}
+                                  esignId={null}
+                                  audience="client"
+                                />
+                              </div>
                             </div>
                           )}
-                          {quote.status === "accepted" && quote.accepted_at && (
-                            <p className="mt-3 text-xs font-semibold text-emerald-700">
-                              {t("cd.acceptedOn", {
-                                t: formatDateTime(quote.accepted_at, locale),
-                              })}
-                            </p>
+                          {quote.status === "accepted" && (
+                            <div className="mt-4 space-y-3">
+                              {quote.accepted_at && (
+                                <p className="text-xs font-semibold text-emerald-700">
+                                  {t("cd.acceptedOn", {
+                                    t: formatDateTime(quote.accepted_at, locale),
+                                  })}
+                                </p>
+                              )}
+                              <div className="rounded-xl border border-navy-100 bg-white p-3">
+                                {invoiceByQuote[quote.id]?.status === "paid" ? (
+                                  <Link
+                                    href={`/dashboard/invoices/${invoiceByQuote[quote.id].id}`}
+                                    className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 sm:w-auto"
+                                  >
+                                    Facture réglée
+                                  </Link>
+                                ) : (
+                                  <>
+                                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-navy-500">
+                                      Règlement
+                                    </p>
+                                    <PayQuoteButton quoteId={quote.id} />
+                                  </>
+                                )}
+                              </div>
+                              <EsignButton
+                                quoteId={quote.id}
+                                status={esignByQuote[quote.id] ?? null}
+                                esignId={null}
+                                audience="client"
+                              />
+                            </div>
                           )}
                         </li>
                       );
@@ -265,7 +318,7 @@ export default function ClientDashboard({
                     {requestShipments.map((shipment) => (
                       <li
                         key={shipment.id}
-                        className="rounded-xl border border-navy-100 bg-white p-4 shadow-sm"
+                        className="rounded-xl border border-navy-100 bg-white p-3 shadow-sm sm:p-4"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <p className="text-sm font-semibold text-navy-900">

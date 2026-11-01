@@ -34,8 +34,8 @@ const PARTNER_ITEMS = [
 ];
 
 const STAFF_ITEMS = [
+  { href: "/dashboard/admin", label: "Console", icon: "home" },
   { href: "/dashboard/requests", label: "Dossiers", icon: "courses" },
-  { href: "/dashboard/users", label: "Clients", icon: "users" },
   { href: "/dashboard/notifications", label: "Alertes", icon: "bell" },
   { href: "/dashboard/messages", label: "Messages", icon: "chat" },
   { href: "/dashboard/settings", label: "Compte", icon: "user" },

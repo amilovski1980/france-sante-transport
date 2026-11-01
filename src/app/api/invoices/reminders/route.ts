@@ -70,7 +70,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       sent += 1;
       await supabase.from("invoices").update({ last_reminder_at: new Date().toISOString() }).eq("id", invoiceId);
       void sendWebPush(String(inv.client_id), {
-        title: "Rappel : facture en attente 💳",
+        title: "Rappel : facture en attente ",
         body: `Facture ${String(inv.invoice_number)} — ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: String(inv.currency) }).format(Number(inv.amount))}`,
         url: `/dashboard/invoices/${invoiceId}`,
         tag: `invoice-reminder-${invoiceId}`,

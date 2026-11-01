@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { notify } from "@/lib/api";
 import { toUserMessage } from "@/lib/errors";
 import type { Shipment, TransportRequest } from "@/lib/types";
 
@@ -120,6 +121,7 @@ export default function DeliveryValidation({
       if (err) throw err;
       const s = Array.isArray(data) ? data[0] : (data as Shipment);
       onConfirmed(s);
+      void notify("delivery_proved", shipment.id);
     } catch (err) {
       setError(toUserMessage(err));
     } finally {
@@ -130,7 +132,7 @@ export default function DeliveryValidation({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4" role="dialog" aria-modal="true">
       <form onSubmit={submit} className="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
-        <h3 className="font-display text-lg font-semibold text-navy-900">✅ Valider la livraison</h3>
+        <h3 className="font-display text-lg font-semibold text-navy-900">Valider la livraison</h3>
         <p className="mt-1 text-xs text-slate-500">
           {request?.pickup_address ? <>Traversée {request.pickup_address} → {request.dropoff_address}</> : `Mission ${shipment.id.slice(0, 8)}`}
         </p>
@@ -181,7 +183,7 @@ export default function DeliveryValidation({
 
           <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
             <input type="checkbox" checked={useGps} onChange={(e) => void captureGps(e.target.checked)} className="h-4 w-4 rounded border-slate-300" />
-            📍 Joindre ma position GPS {coords && <span className="text-xs text-emerald-600">({coords.lat}, {coords.lng})</span>}
+            Joindre ma position GPS {coords && <span className="text-xs text-emerald-600">({coords.lat}, {coords.lng})</span>}
           </label>
         </div>
 

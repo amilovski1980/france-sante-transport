@@ -46,7 +46,7 @@ export default function EsignDonePage() {
   return (
     <div className="mx-auto mt-16 w-full max-w-lg">
       <div className="card-pro p-8 text-center">
-        <p className="text-4xl">{status === "completed" ? "✅" : status === "pending" ? "⏳" : "⚠️"}</p>
+        <p className="text-4xl">{status === "completed" ? "" : status === "pending" ? "⏳" : ""}</p>
         <h1 className="mt-3 font-display text-xl font-semibold text-navy-900 dark:text-slate-100">
           {status === "completed" ? "Signature terminée" : status === "pending" ? "Signature en cours" : "Problème de signature"}
         </h1>
@@ -90,7 +90,7 @@ export default function EsignDonePage() {
           }}
           className="rounded-xl bg-navy-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-navy-800"
         >
-          🔄 Revérifier
+          Revérifier
         </button>
       );
     }

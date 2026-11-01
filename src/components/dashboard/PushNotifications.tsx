@@ -133,7 +133,7 @@ export default function PushNotifications() {
     try {
       const res = await fetch("/api/push/test", { method: "POST" });
       const data = await res.json();
-      setMessage(data.ok ? "Notification de test envoyée 🎉" : data.error ?? "Test échoué");
+      setMessage(data.ok ? "Notification de test envoyée " : data.error ?? "Test échoué");
     } catch {
       setMessage("Erreur réseau");
     } finally {
@@ -174,7 +174,7 @@ export default function PushNotifications() {
                   disabled={busy}
                   className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-navy-700 hover:bg-slate-50 disabled:opacity-40 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
                 >
-                  🔔 Envoyer un test
+                  Envoyer un test
                 </button>
                 <button
                   type="button"
@@ -187,7 +187,7 @@ export default function PushNotifications() {
               </>
             ) : state === "denied" ? (
               <p className="text-sm text-amber-600">
-                Refusé : réactivez les notifications dans les réglages du site (constante 🔒 dans la barre d'adresse).
+                Refusé : réactivez les notifications dans les réglages du site (constante dans la barre d'adresse).
               </p>
             ) : (
               <button
@@ -196,7 +196,7 @@ export default function PushNotifications() {
                 disabled={busy}
                 className="rounded-xl bg-navy-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-navy-800 disabled:opacity-40"
               >
-                {busy ? "Activation…" : "🔔 Activer les notifications"}
+                {busy ? "Activation…" : "Activer les notifications"}
               </button>
             )}
           </div>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { sendWebPush } from "@/lib/webpush/send";
+import { listAudienceByRoles, notifyUsers } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -71,23 +71,20 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ ok: false, error: "Enregistrement impossible : " + (insertErr?.message ?? "?") }, { status: 500 });
   }
 
-  // Notification push au staff (admin + dispatchers)
+  // Notification in-app + push au staff (admin + dispatchers)
   if (me.role === "partner") {
     try {
-      const { data: staff } = await supabase
-        .from("profiles")
-        .select("id")
-        .in("role", ["admin", "dispatcher"]);
-      for (const s of staff ?? []) {
-        void sendWebPush(s.id, {
-          title: "Nouvel apport d'affaires 🤝",
-          body: `${me.full_name || me.email} → ${contactName} : ${need.slice(0, 80)}`,
-          url: "/dashboard/partners",
-          tag: `referral-${inserted.id}`,
-        });
-      }
+      const staff = await listAudienceByRoles(["admin", "dispatcher"]);
+      await notifyUsers(staff, {
+        type: "referral_received",
+        title: "Nouvel apport d'affaires",
+        body: `${me.full_name || me.email} → ${contactName} : ${need.slice(0, 80)}`,
+        url: "/dashboard/partners",
+        tag: `referral-${inserted.id}`,
+        data: { contact_id: inserted.id },
+      });
     } catch {
-      /* push Best Effort */
+      /* notification Best Effort */
     }
   }
 

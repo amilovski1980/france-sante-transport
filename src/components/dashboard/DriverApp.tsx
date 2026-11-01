@@ -92,7 +92,7 @@ export default function DriverApp({
 
       {active.length === 0 ? (
         <div className="card-pro p-10 text-center">
-          <p className="text-4xl" aria-hidden="true">🏍️</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600"><rect x="1" y="4" width="14" height="11" rx="1"/><path d="M15 8h4l3 3v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           <p className="mt-3 font-display text-lg font-semibold text-navy-900 dark:text-slate-100">Aucune mission active</p>
           <p className="mx-auto mt-2 max-w-xs text-sm text-slate-400">
             Les nouvelles missions proposées par le dispatch apparaîtront ici en temps réel, avec une notification push.

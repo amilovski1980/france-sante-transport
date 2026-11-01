@@ -1,22 +1,56 @@
-/* ============================================================
-   France Santé Transport — Service Worker
-   Notifications push navigateur (Web Push VAPID) + manifeste.
-   ============================================================ */
 const APP = "France Santé Transport";
+const STATIC_CACHE = "fst-static-v2";
+const STATIC_ASSETS = ["/manifest.webmanifest", "/logo.png"];
 
-self.addEventListener("install", () => {
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches
+      .open(STATIC_CACHE)
+      .then((cache) => cache.addAll(STATIC_ASSETS))
+      .catch(() => undefined)
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((key) => key !== STATIC_CACHE).map((key) => caches.delete(key)));
+      await self.clients.claim();
+    })(),
+  );
 });
 
-/**
- * Évènement push : le serveur envoie { title, body, url } chiffré.
- * Sur mobile (Android/Chrome) la notification doit être affichée
- * depuis ce worker pour apparaître hors de la page.
- */
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
+
+  if (
+    request.destination === "image" ||
+    request.destination === "style" ||
+    request.destination === "script" ||
+    request.destination === "font"
+  ) {
+    event.respondWith(
+      caches.match(request).then(
+        (cached) =>
+          cached ||
+          fetch(request).then((response) => {
+            if (response.ok) {
+              const copy = response.clone();
+              void caches.open(STATIC_CACHE).then((cache) => cache.put(request, copy));
+            }
+            return response;
+          }),
+      ),
+    );
+  }
+});
+
 self.addEventListener("push", (event) => {
   let payload = { title: APP, body: "Vous avez une nouvelle notification.", url: "/dashboard/notifications" };
   try {
@@ -25,15 +59,17 @@ self.addEventListener("push", (event) => {
       if (data && typeof data === "object") payload = { ...payload, ...data };
     }
   } catch {
-    // payload texte brut
-    try { payload.body = event.data ? event.data.text() : payload.body; } catch { /* noop */ }
+    try {
+      payload.body = event.data ? event.data.text() : payload.body;
+    } catch {
+    }
   }
 
   event.waitUntil(
     self.registration.showNotification(payload.title || APP, {
       body: payload.body,
-      icon: "/logo.png",
-      badge: "/logo.png",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
       tag: payload.tag || undefined,
       renotify: Boolean(payload.tag),
       data: { url: payload.url || "/dashboard/notifications" },
@@ -42,7 +78,6 @@ self.addEventListener("push", (event) => {
   );
 });
 
-// Clic sur la notification → ouverture/focus de la cible
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url = (event.notification.data && event.notification.data.url) || "/dashboard/notifications";

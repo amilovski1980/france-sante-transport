@@ -99,7 +99,7 @@ export default async function InvoicePage({
             <dl className="mt-2 space-y-1 text-slate-700">
               <dt className="font-semibold text-navy-900">{client?.full_name || client?.email}</dt>
               {client?.email && <dd>{client.email}</dd>}
-              {client?.phone && <dd>📍 {client.phone}</dd>}
+              {client?.phone && <dd>{client.phone}</dd>}
               {client?.address && <dd>{client.address}</dd>}
             </dl>
           </div>

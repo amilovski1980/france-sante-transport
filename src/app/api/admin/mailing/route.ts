@@ -112,8 +112,20 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const { error: logError } = await supabase.from("email_log").insert(logRows);
   const sent = results.filter((r) => r.ok).length;
+  const consoleCount = logRows.filter((row) => row.provider === "console").length;
   return NextResponse.json(
-    { ok: true, sent, failed: results.length - sent, results, logged: !logError },
+    {
+      ok: true,
+      sent,
+      failed: results.length - sent,
+      results,
+      logged: !logError,
+      provider: consoleCount > 0 ? "console" : null,
+      warning:
+        consoleCount > 0
+          ? "Aucun serveur SMTP/Resend configuré : les e-mails ont été simulés (consignés, mais jamais réellement envoyés). Renseignez SMTP ou Resend dans Services & intégrations."
+          : null,
+    },
     { status: 200 },
   );
 }

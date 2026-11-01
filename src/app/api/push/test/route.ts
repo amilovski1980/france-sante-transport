@@ -16,7 +16,7 @@ export async function POST(): Promise<NextResponse> {
   }
 
   const result = await sendWebPush(user.id, {
-    title: "France Santé Transport 🔔",
+    title: "France Santé Transport ",
     body: "Notifications push activées ! Vous recevrez les alertes ici, même en arrière-plan.",
     url: "/dashboard/notifications",
     tag: "push-test",

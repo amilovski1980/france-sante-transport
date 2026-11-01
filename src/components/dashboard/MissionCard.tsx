@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import DeliveryValidation from "@/components/dashboard/DeliveryValidation";
+import LabelScanner from "@/components/dashboard/LabelScanner";
 import { formatDateTime } from "@/components/dashboard/ClientDashboard";
 import type { DriverAssignment, Shipment, TransportRequest, Vehicle } from "@/lib/types";
 
@@ -12,6 +13,14 @@ const PHASE_STEPS = [
   { key: "in_progress", label: "En course" },
   { key: "completed", label: "Terminée" },
 ] as const;
+
+function mapsDirectionsUrl(pickup: string, dropoff: string) {
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(dropoff)}&units=metric`;
+}
+
+function wazeUrl(query: string) {
+  return `https://waze.com/ul?q=${encodeURIComponent(query)}&navigate=yes`;
+}
 
 export default function MissionCard({
   a,
@@ -34,8 +43,34 @@ export default function MissionCard({
   const proposed = a.status === "proposed";
   const router = useRouter();
   const [podOpen, setPodOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
+  const [shareState, setShareState] = useState<string | null>(null);
   const currentStep = s?.status === "completed" ? 2 : s?.status === "in_progress" ? 1 : 0;
   const deliverable = !proposed && a.status === "accepted" && s && (s.status === "confirmed" || s.status === "in_progress");
+  const labelRef = s ? `FST-${String(s.id).replace(/-/g, "").slice(0, 8).toUpperCase()}` : "";
+  const pickupAddress = r?.pickup_address ?? "";
+  const dropoffAddress = r?.dropoff_address ?? "";
+  const currentTarget = currentStep >= 1 ? dropoffAddress : pickupAddress;
+
+  async function shareItinerary() {
+    const link = mapsDirectionsUrl(pickupAddress, dropoffAddress);
+    const text = `Itinéraire de votre course France Santé Transport : ${pickupAddress} → ${dropoffAddress}\n${link}`;
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: "Itinéraire de votre course", text });
+        setShareState("Itinéraire partagé.");
+        return;
+      } catch {
+        // partage annulé : on bascule sur copie presse-papiers
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      setShareState("Itinéraire copié : envoyez-le au client.");
+    } catch {
+      setShareState(link);
+    }
+  }
 
   return (
     <div className="card-pro overflow-hidden">
@@ -104,7 +139,7 @@ export default function MissionCard({
             onClick={() => respond(a.id, true)}
             className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
           >
-            {pendingId === a.id ? "…" : "✓ Accepter"}
+            {pendingId === a.id ? "…" : "Accepter"}
           </button>
           <button
             type="button"
@@ -118,26 +153,65 @@ export default function MissionCard({
       )}
 
       {!proposed && s && (
-        <div className="flex gap-2 border-t border-slate-100 px-5 py-3 dark:border-white/10">
-          <Link
-            href={`/dashboard/labels/${s.id}`}
-            target="_blank"
-            className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
-          >
-            🏷️ Étiquette
-          </Link>
+        <div className="space-y-2 border-t border-slate-100 px-5 py-3 dark:border-white/10">
+          {r && (
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={wazeUrl(currentTarget)}
+                className="flex-1 rounded-xl bg-navy-800 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-navy-700"
+              >
+                Navigation Waze
+              </a>
+              <a
+                href={mapsDirectionsUrl(pickupAddress, dropoffAddress)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
+              >
+                Google Maps
+              </a>
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setScanOpen(true)}
+              className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
+            >
+              Scanner l&apos;étiquette
+            </button>
+            <button
+              type="button"
+              onClick={() => void shareItinerary()}
+              className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
+            >
+              Partager au client
+            </button>
+            <Link
+              href={`/dashboard/labels/${s.id}`}
+              target="_blank"
+              className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
+            >
+              Étiquette
+            </Link>
+          </div>
+          {shareState && (
+            <p role="status" className="break-all rounded-xl bg-navy-50 px-3 py-2 text-xs font-medium text-navy-700 dark:bg-white/5 dark:text-slate-300">
+              {shareState}
+            </p>
+          )}
           {deliverable && (
             <button
               type="button"
               onClick={() => setPodOpen(true)}
-              className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              className="w-full rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
-              ✅ Valider la livraison
+              Valider la livraison
             </button>
           )}
           {s?.status === "completed" && (
-            <span className="flex-1 rounded-xl bg-emerald-50 py-2.5 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-              ✓ Livraison validée
+            <span className="block w-full rounded-xl bg-emerald-50 py-2.5 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+              Livraison validée
             </span>
           )}
         </div>
@@ -151,6 +225,18 @@ export default function MissionCard({
           onConfirmed={() => {
             setPodOpen(false);
             router.refresh();
+          }}
+        />
+      )}
+
+      {scanOpen && r && (
+        <LabelScanner
+          expectedRef={labelRef}
+          onClose={() => setScanOpen(false)}
+          onValidate={() => {
+            // Étiquette validée : ouverture directe de la navigation
+            // (deep link Waze, l'app mobile se lance automatiquement).
+            window.location.href = wazeUrl(currentTarget);
           }}
         />
       )}

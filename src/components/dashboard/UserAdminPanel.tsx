@@ -133,7 +133,7 @@ export default function UserAdminPanel() {
             onClick={() => { setDraft({ email: "", password: "", full_name: "", role: "client" }); setCreating(true); }}
             className="rounded-full bg-navy-800 px-4 py-2 text-xs font-semibold text-white hover:bg-navy-700"
           >
-            ➕ Nouveau compte
+            Nouveau compte
           </button>
           <input
             value={query}
@@ -175,8 +175,8 @@ export default function UserAdminPanel() {
                   </span>
                 </div>
                 <p className="truncate text-xs text-slate-500">{u.email}</p>
-                {u.phone && <p className="mt-1 text-xs text-slate-600">☎ {u.phone}</p>}
-                {u.address && <p className="truncate text-xs text-slate-400">📍 {u.address}</p>}
+                {u.phone && <p className="mt-1 text-xs text-slate-600">{u.phone}</p>}
+                {u.address && <p className="truncate text-xs text-slate-400">{u.address}</p>}
                 <button
                   type="button"
                   onClick={() => setEditing(u)}
@@ -242,7 +242,7 @@ export default function UserAdminPanel() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" role="dialog" aria-modal="true">
           <form onSubmit={createUser} className="w-full max-w-md space-y-3 rounded-2xl bg-white p-6 shadow-xl">
             <div>
-              <h3 className="font-semibold text-slate-900">➕ Créer un compte</h3>
+              <h3 className="font-semibold text-slate-900">Créer un compte</h3>
               <p className="text-xs text-slate-500">Le compte est immédiatement actif (e-mail confirmé, mot de passe fixé ici).</p>
             </div>
             <div>

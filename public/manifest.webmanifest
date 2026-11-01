@@ -1,19 +1,49 @@
 {
+  "id": "/dashboard",
   "name": "France Santé Transport",
   "short_name": "FST",
   "description": "Le transport qui fait avancer la santé — espace client, dispatch et chauffeurs.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "background_color": "#0a1f44",
   "theme_color": "#0a1f44",
   "lang": "fr",
+  "categories": ["medical", "business", "productivity"],
   "icons": [
     {
-      "src": "/logo.png",
-      "sizes": "192x192 512x512 1008x1139",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mes demandes",
+      "short_name": "Demandes",
+      "url": "/dashboard/requests",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Notifications",
+      "short_name": "Notifications",
+      "url": "/dashboard/notifications",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
