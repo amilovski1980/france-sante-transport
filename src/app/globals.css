@@ -18,10 +18,11 @@
   --color-flagred-50: #fdf1f1;
 
   --font-display: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-pjs), ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   --shadow-card: 0 1px 2px rgb(6 26 51 / 0.06), 0 12px 32px -16px rgb(6 26 51 / 0.22);
   --shadow-elevated: 0 2px 4px rgb(6 26 51 / 0.06), 0 24px 48px -24px rgb(6 26 51 / 0.35);
+  --shadow-soft: 0 10px 40px -10px rgb(0 0 0 / 0.08), 0 2px 10px -5px rgb(0 0 0 / 0.04);
 }
 
 :root {
@@ -38,8 +39,10 @@ html {
 
 body {
   background-color: #f6f7f9;
+  background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
   color: var(--color-navy-900);
   font-family: var(--font-sans);
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -56,7 +59,7 @@ body {
   padding-inline: 1.25rem;
 }
 
-@utility surface { border: 1px solid #eef1f6; background-color: #ffffff; border-radius: 1.25rem; box-shadow: 0 8px 30px rgb(6 26 51 / 0.05); }
+@utility surface { border: 1px solid #eef1f6; background-color: #ffffff; border-radius: 1.5rem; box-shadow: var(--shadow-soft); backdrop-filter: blur(12px); }
 
 @utility section-pad {
   padding-block: 4.5rem;
@@ -64,7 +67,22 @@ body {
 
 @utility dash-bg { background-color: #f4f6fb; }
 
-@utility card-pro { border: 1px solid #e9edf5; background-color: #ffffff; border-radius: 1rem; box-shadow: 0 8px 30px rgb(6 26 51 / 0.04); }
+@utility card-pro { border: 1px solid #e9edf5; background-color: #ffffff; border-radius: 1.5rem; box-shadow: var(--shadow-soft); backdrop-filter: blur(8px); transition: transform 0.3s ease; }
+.card-pro:hover { transform: translateY(-4px); }
+@utility shadow-soft { box-shadow: var(--shadow-soft); }
+
+@utility nav-underline { position: relative; text-decoration: none; }
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+.nav-underline:hover::after { width: 100%; }
 
 @media (max-width: 640px) {
   .container-x { padding-inline: 0.9rem; }
@@ -117,7 +135,7 @@ body {
   .aminia-pop, .aminia-reveal { animation: none; }
 }
 
-h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: inherit; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.25; color: inherit; }
 h1 { font-size: 1.6rem; }
 h2 { font-size: 1.25rem; }
 h3 { font-size: 1rem; }

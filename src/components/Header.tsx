@@ -147,7 +147,7 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
   if (pathname.startsWith("/dashboard")) return null;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-navy-100 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/20 bg-white/40 backdrop-blur-2xl backdrop-saturate-150">
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left bg-gradient-to-r from-navy-600 via-flagred-600 to-flagred-500 will-change-transform"
@@ -161,7 +161,7 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+              className={`nav-underline rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
                 isActive(link.href)
                   ? "bg-navy-50 text-navy-800"
                   : "text-navy-700 hover:bg-navy-50 hover:text-navy-900"
@@ -226,7 +226,7 @@ export default function Header({ branding }: { branding?: BrandingSettings }) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-lg px-3 py-3 text-sm font-medium ${
+                className={`nav-underline rounded-lg px-3 py-3 text-sm font-medium ${
                   isActive(link.href) ? "bg-navy-50 text-navy-900" : "text-navy-700 hover:bg-navy-50"
                 }`}
               >
