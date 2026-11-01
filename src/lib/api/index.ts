@@ -3,16 +3,35 @@ import { AppError, mapError } from "@/lib/errors";
 import type {
   ContactMessage,
   ContactTopic,
+  Delivery,
+  DeliveryItem,
+  DeliveryReminder,
+  DeliverySchedule,
+  DeliveryScheduleLine,
   DriverAssignment,
+  Lot,
+  OrganizationMember,
+  OrgRole,
+  PreparationOrder,
+  PreparationOrderLine,
+  Product,
+  ProductReference,
   Profile,
+  PurchaseInvoice,
+  PurchaseInvoiceLine,
   Quote,
   QuoteLine,
+  Recipient,
   ServiceType,
   Shipment,
   ShipmentEvent,
   SiteSettings,
+  StockLevel,
+  StockMovement,
+  Supplier,
   TransportRequest,
   Vehicle,
+  Warehouse,
 } from "@/lib/types";
 
 export interface CreateRequestInput {
@@ -587,4 +606,514 @@ export async function updateSiteSettings(input: {
     const supabase = createClient();
     return supabase.from("site_settings").update(input).eq("id", 1).select().single();
   });
+}
+
+// ------------------------------------------------------------
+// Supply chain : fournisseurs, entrepôts, catalogue, stock
+// ------------------------------------------------------------
+
+export async function listSuppliers(): Promise<Supplier[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("suppliers").select("*").order("code");
+  });
+}
+
+export async function adminCreateSupplier(input: {
+  organization_name: string;
+  code: string;
+  contact_email?: string | null;
+  contact_phone?: string | null;
+  siret?: string | null;
+  address?: string | null;
+}): Promise<Supplier> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("admin_create_supplier", {
+      p_organization_name: input.organization_name,
+      p_code: input.code,
+      p_contact_email: input.contact_email ?? null,
+      p_contact_phone: input.contact_phone ?? null,
+      p_siret: input.siret ?? null,
+      p_address: input.address ?? null,
+    });
+  });
+}
+
+export async function adminAttachSupplierMember(
+  supplierId: string,
+  userId: string,
+  orgRole: OrgRole = "member",
+): Promise<OrganizationMember> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("admin_attach_supplier_member", {
+      p_supplier_id: supplierId,
+      p_user_id: userId,
+      p_org_role: orgRole,
+    });
+  });
+}
+
+export async function listWarehouses(): Promise<Warehouse[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("warehouses").select("*").order("name");
+  });
+}
+
+export async function createWarehouse(input: {
+  name: string;
+  code: string;
+  address?: string | null;
+  capacity_m3?: number | null;
+}): Promise<Warehouse> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("warehouses").insert(input).select().single();
+  });
+}
+
+export async function updateWarehouse(
+  id: string,
+  input: Partial<Pick<Warehouse, "name" | "code" | "address" | "capacity_m3" | "active">>,
+): Promise<Warehouse> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("warehouses").update(input).eq("id", id).select().single();
+  });
+}
+
+export async function listProducts(): Promise<Product[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("products").select("*").order("name");
+  });
+}
+
+export async function createProduct(input: {
+  supplier_id: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  unit?: string;
+  requires_cold_chain?: boolean;
+  temp_min?: number | null;
+  temp_max?: number | null;
+}): Promise<Product> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("products").insert(input).select().single();
+  });
+}
+
+export async function updateProduct(
+  id: string,
+  input: Partial<Pick<Product, "name" | "description" | "category" | "unit" | "requires_cold_chain" | "temp_min" | "temp_max" | "active">>,
+): Promise<Product> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("products").update(input).eq("id", id).select().single();
+  });
+}
+
+export async function listProductReferences(): Promise<ProductReference[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("product_references").select("*").order("reference_code");
+  });
+}
+
+export async function createProductReference(input: {
+  product_id: string;
+  reference_code: string;
+  gtin?: string | null;
+  packaging?: string | null;
+  unit?: string | null;
+}): Promise<ProductReference> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("product_references").insert(input).select().single();
+  });
+}
+
+export async function listLots(): Promise<Lot[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("lots").select("*").order("expiry_date", { ascending: true, nullsFirst: false });
+  });
+}
+
+export async function listStockLevels(): Promise<StockLevel[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("stock_levels").select("*");
+  });
+}
+
+export async function listStockMovements(limit = 100): Promise<StockMovement[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase
+      .from("stock_movements")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+  });
+}
+
+export async function receiveStock(input: {
+  supplier_id: string;
+  warehouse_id: string;
+  product_reference_id: string;
+  lot_number: string;
+  quantity: number;
+  expiry_date?: string | null;
+  reference_type?: string | null;
+  reference_id?: string | null;
+  note?: string | null;
+}): Promise<StockLevel> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("receive_stock", {
+      p_supplier_id: input.supplier_id,
+      p_warehouse_id: input.warehouse_id,
+      p_product_reference_id: input.product_reference_id,
+      p_lot_number: input.lot_number,
+      p_quantity: input.quantity,
+      p_expiry_date: input.expiry_date ?? null,
+      p_reference_type: input.reference_type ?? "manual",
+      p_reference_id: input.reference_id ?? null,
+      p_note: input.note ?? null,
+    });
+  });
+}
+
+// ------------------------------------------------------------
+// Destinataires
+// ------------------------------------------------------------
+
+export async function listRecipients(): Promise<Recipient[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("recipients").select("*").order("name");
+  });
+}
+
+export async function createRecipient(input: {
+  supplier_id: string | null;
+  name: string;
+  type: Recipient["type"];
+  contact_name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  postal_code?: string | null;
+  notes?: string | null;
+}): Promise<Recipient> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("recipients").insert(input).select().single();
+  });
+}
+
+export async function updateRecipient(
+  id: string,
+  input: Partial<Omit<Recipient, "id" | "created_at" | "updated_at" | "created_by">>,
+): Promise<Recipient> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("recipients").update(input).eq("id", id).select().single();
+  });
+}
+
+export async function deleteRecipient(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from("recipients").delete().eq("id", id);
+  if (error) throw mapError(error);
+}
+
+// ------------------------------------------------------------
+// Plannings de livraison
+// ------------------------------------------------------------
+
+export async function listDeliverySchedules(): Promise<DeliverySchedule[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase
+      .from("delivery_schedules")
+      .select("*")
+      .order("requested_date", { ascending: false });
+  });
+}
+
+export async function listDeliveryScheduleLines(): Promise<DeliveryScheduleLine[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("delivery_schedule_lines").select("*");
+  });
+}
+
+export async function createDeliverySchedule(input: {
+  supplier_id: string;
+  warehouse_id: string;
+  requested_date: string;
+  label?: string | null;
+  notes?: string | null;
+}): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("create_delivery_schedule", {
+      p_supplier_id: input.supplier_id,
+      p_warehouse_id: input.warehouse_id,
+      p_requested_date: input.requested_date,
+      p_label: input.label ?? null,
+      p_notes: input.notes ?? null,
+    });
+  });
+}
+
+export async function addDeliveryScheduleLine(input: {
+  schedule_id: string;
+  recipient_id: string;
+  lot_id: string;
+  quantity: number;
+  unit?: string | null;
+  notes?: string | null;
+}): Promise<DeliveryScheduleLine> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("add_delivery_schedule_line", {
+      p_schedule_id: input.schedule_id,
+      p_recipient_id: input.recipient_id,
+      p_lot_id: input.lot_id,
+      p_quantity: input.quantity,
+      p_unit: input.unit ?? null,
+      p_notes: input.notes ?? null,
+    });
+  });
+}
+
+export async function updateDeliverySchedule(input: {
+  schedule_id: string;
+  label?: string | null;
+  notes?: string | null;
+  requested_date?: string | null;
+  warehouse_id?: string | null;
+}): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("update_delivery_schedule", {
+      p_schedule_id: input.schedule_id,
+      p_label: input.label ?? null,
+      p_notes: input.notes ?? null,
+      p_requested_date: input.requested_date ?? null,
+      p_warehouse_id: input.warehouse_id ?? null,
+    });
+  });
+}
+
+export async function deleteDeliverySchedule(scheduleId: string): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("delete_delivery_schedule", { p_schedule_id: scheduleId });
+  });
+}
+
+export async function removeDeliveryScheduleLine(lineId: string): Promise<DeliveryScheduleLine> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("remove_delivery_schedule_line", { p_line_id: lineId });
+  });
+}
+
+export async function validateDeliverySchedule(scheduleId: string): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("validate_delivery_schedule", { p_schedule_id: scheduleId });
+  });
+}
+
+export async function transmitDeliverySchedule(scheduleId: string): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("transmit_delivery_schedule", { p_schedule_id: scheduleId });
+  });
+}
+
+export async function cancelDeliverySchedule(scheduleId: string): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("cancel_delivery_schedule", { p_schedule_id: scheduleId });
+  });
+}
+
+// ------------------------------------------------------------
+// Préparation et livraisons
+// ------------------------------------------------------------
+
+export async function listPreparationOrders(): Promise<PreparationOrder[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("preparation_orders").select("*").order("created_at", { ascending: false });
+  });
+}
+
+export async function listPreparationOrderLines(): Promise<PreparationOrderLine[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("preparation_order_lines").select("*");
+  });
+}
+
+export async function setPreparationOrderStatus(
+  orderId: string,
+  status: PreparationOrder["status"],
+  note?: string | null,
+): Promise<PreparationOrder> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("set_preparation_order_status", {
+      p_order_id: orderId,
+      p_status: status,
+      p_note: note ?? null,
+    });
+  });
+}
+
+export async function recordPreparationProgress(
+  lineId: string,
+  quantityPrepared: number,
+): Promise<PreparationOrderLine> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("record_preparation_progress", {
+      p_line_id: lineId,
+      p_quantity_prepared: quantityPrepared,
+    });
+  });
+}
+
+export async function listDeliveries(): Promise<Delivery[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("deliveries").select("*").order("scheduled_at", { ascending: true, nullsFirst: false });
+  });
+}
+
+export async function listDeliveryItems(): Promise<DeliveryItem[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("delivery_items").select("*");
+  });
+}
+
+export async function assignDeliveryMission(
+  deliveryId: string,
+  driverId: string,
+  vehicleId: string,
+): Promise<DriverAssignment> {
+  const assignment = await call<DriverAssignment>(async () => {
+    const supabase = createClient();
+    return supabase.rpc("assign_delivery_mission", {
+      p_delivery_id: deliveryId,
+      p_driver_id: driverId,
+      p_vehicle_id: vehicleId,
+    });
+  });
+  void notify("assignment_proposed", assignment.id);
+  return assignment;
+}
+
+export async function confirmDeliveryWithProof(input: {
+  delivery_id: string;
+  recipient_name: string;
+  signature_data: string;
+  note?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}): Promise<Delivery> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("confirm_delivery_with_proof", {
+      p_delivery_id: input.delivery_id,
+      p_recipient_name: input.recipient_name,
+      p_signature_data: input.signature_data,
+      p_note: input.note ?? null,
+      p_latitude: input.latitude ?? null,
+      p_longitude: input.longitude ?? null,
+    });
+  });
+}
+
+export async function listDeliveryReminders(): Promise<DeliveryReminder[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("delivery_reminders").select("*").order("scheduled_for", { ascending: true });
+  });
+}
+
+// ------------------------------------------------------------
+// Factures d'achat
+// ------------------------------------------------------------
+
+export async function listPurchaseInvoices(): Promise<PurchaseInvoice[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("purchase_invoices").select("*").order("created_at", { ascending: false });
+  });
+}
+
+export async function createPurchaseInvoice(input: {
+  supplier_id: string;
+  invoice_number: string;
+  invoice_date?: string | null;
+  total_amount?: number | null;
+  file_path?: string | null;
+  file_name?: string | null;
+  mime_type?: string | null;
+}): Promise<PurchaseInvoice> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("purchase_invoices").insert(input).select().single();
+  });
+}
+
+export async function updatePurchaseInvoice(
+  id: string,
+  input: Partial<Pick<PurchaseInvoice, "invoice_number" | "invoice_date" | "total_amount" | "file_path" | "file_name" | "mime_type" | "extraction_status" | "extracted_data">>,
+): Promise<PurchaseInvoice> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("purchase_invoices").update(input).eq("id", id).select().single();
+  });
+}
+
+export async function listPurchaseInvoiceLines(): Promise<PurchaseInvoiceLine[]> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("purchase_invoice_lines").select("*").order("created_at", { ascending: true });
+  });
+}
+
+export async function createPurchaseInvoiceLine(input: {
+  purchase_invoice_id: string;
+  product_reference_id?: string | null;
+  description: string;
+  quantity: number;
+  unit_price?: number | null;
+  lot_number?: string | null;
+  expiry_date?: string | null;
+}): Promise<PurchaseInvoiceLine> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.from("purchase_invoice_lines").insert(input).select().single();
+  });
+}
+
+export async function deletePurchaseInvoiceLine(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from("purchase_invoice_lines").delete().eq("id", id);
+  if (error) throw mapError(error);
 }

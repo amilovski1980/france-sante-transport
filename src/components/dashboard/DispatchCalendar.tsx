@@ -123,7 +123,9 @@ export default function DispatchCalendar({
   }, [sorted]);
 
   const openShipment = openId ? shipments.find((s) => s.id === openId) ?? null : null;
-  const openRequest = openShipment ? requestById.get(openShipment.transport_request_id) : undefined;
+  const openRequest = openShipment?.transport_request_id
+    ? requestById.get(openShipment.transport_request_id)
+    : undefined;
   const openAssignment = openShipment ? assignmentByShipment.get(openShipment.id) : undefined;
   const openDriver = openAssignment ? driverById.get(openAssignment.driver_id) : undefined;
   const openVehicle = openAssignment ? vehicleById.get(openAssignment.vehicle_id) : undefined;
@@ -207,7 +209,9 @@ export default function DispatchCalendar({
   }
 
   function renderShipment(shipment: Shipment, compact: boolean) {
-    const request = requestById.get(shipment.transport_request_id);
+    const request = shipment.transport_request_id
+      ? requestById.get(shipment.transport_request_id)
+      : undefined;
     const assignment = assignmentByShipment.get(shipment.id);
     const driver = assignment ? driverById.get(assignment.driver_id) : undefined;
     const vehicle = assignment ? vehicleById.get(assignment.vehicle_id) : undefined;
@@ -332,7 +336,9 @@ export default function DispatchCalendar({
                   ) : (
                     <div className="space-y-1">
                       {dayItems.slice(0, 3).map((s) => {
-                        const request = requestById.get(s.transport_request_id);
+                        const request = s.transport_request_id
+                          ? requestById.get(s.transport_request_id)
+                          : undefined;
                         return (
                           <button
                             key={s.id}
@@ -399,7 +405,9 @@ export default function DispatchCalendar({
             <li className="p-8 text-center text-sm text-navy-500">{t("cal.empty")}</li>
           ) : (
             sorted.map((s) => {
-              const request = requestById.get(s.transport_request_id);
+              const request = s.transport_request_id
+                ? requestById.get(s.transport_request_id)
+                : undefined;
               const assignment = assignmentByShipment.get(s.id);
               const driver = assignment ? driverById.get(assignment.driver_id) : undefined;
               return (

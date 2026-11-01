@@ -2,9 +2,9 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { notify } from "@/lib/api";
+import { confirmDeliveryWithProof, notify } from "@/lib/api";
 import { toUserMessage } from "@/lib/errors";
-import type { Shipment, TransportRequest } from "@/lib/types";
+import type { Delivery, Shipment, TransportRequest } from "@/lib/types";
 
 /**
  * Validation de livraison (POD) : nom du destinataire + signature
@@ -14,11 +14,13 @@ import type { Shipment, TransportRequest } from "@/lib/types";
 export default function DeliveryValidation({
   shipment,
   request,
+  delivery,
   onClose,
   onConfirmed,
 }: {
   shipment: Shipment;
   request: TransportRequest | null;
+  delivery?: Delivery | null;
   onClose: () => void;
   onConfirmed: (s: Shipment) => void;
 }) {
@@ -109,18 +111,30 @@ export default function DeliveryValidation({
     setError(null);
     try {
       const signature = canvasRef.current?.toDataURL("image/png") ?? "";
-      const supabase = createClient();
-      const { data, error: err } = await supabase.rpc("confirm_delivery", {
-        p_shipment_id: shipment.id,
-        p_recipient_name: recipient.trim(),
-        p_signature_data: signature,
-        p_note: note.trim() || null,
-        p_latitude: useGps && coords ? coords.lat : null,
-        p_longitude: useGps && coords ? coords.lng : null,
-      });
-      if (err) throw err;
-      const s = Array.isArray(data) ? data[0] : (data as Shipment);
-      onConfirmed(s);
+      if (delivery) {
+        await confirmDeliveryWithProof({
+          delivery_id: delivery.id,
+          recipient_name: recipient.trim(),
+          signature_data: signature,
+          note: note.trim() || null,
+          latitude: useGps && coords ? coords.lat : null,
+          longitude: useGps && coords ? coords.lng : null,
+        });
+        onConfirmed(shipment);
+      } else {
+        const supabase = createClient();
+        const { data, error: err } = await supabase.rpc("confirm_delivery", {
+          p_shipment_id: shipment.id,
+          p_recipient_name: recipient.trim(),
+          p_signature_data: signature,
+          p_note: note.trim() || null,
+          p_latitude: useGps && coords ? coords.lat : null,
+          p_longitude: useGps && coords ? coords.lng : null,
+        });
+        if (err) throw err;
+        const s = Array.isArray(data) ? data[0] : (data as Shipment);
+        onConfirmed(s);
+      }
       void notify("delivery_proved", shipment.id);
     } catch (err) {
       setError(toUserMessage(err));
@@ -134,7 +148,13 @@ export default function DeliveryValidation({
       <form onSubmit={submit} className="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
         <h3 className="font-display text-lg font-semibold text-navy-900">Valider la livraison</h3>
         <p className="mt-1 text-xs text-slate-500">
-          {request?.pickup_address ? <>Traversée {request.pickup_address} → {request.dropoff_address}</> : `Mission ${shipment.id.slice(0, 8)}`}
+          {request?.pickup_address ? (
+            <>Traversée {request.pickup_address} → {request.dropoff_address}</>
+          ) : delivery ? (
+            <>Livraison de marchandises · mission {shipment.id.slice(0, 8)}</>
+          ) : (
+            `Mission ${shipment.id.slice(0, 8)}`
+          )}
         </p>
 
         <div className="mt-4 space-y-3">

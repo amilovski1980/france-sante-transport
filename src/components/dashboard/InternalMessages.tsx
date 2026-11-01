@@ -12,6 +12,7 @@ const ROLE_LABELS: Record<AppRole, string> = {
   driver: "Chauffeur",
   client: "Client",
   partner: "Partenaire",
+  supplier: "Fournisseur",
 };
 
 const ROLE_BADGES: Record<AppRole, string> = {
@@ -20,6 +21,7 @@ const ROLE_BADGES: Record<AppRole, string> = {
   driver: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
   client: "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300",
   partner: "bg-violet-50 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+  supplier: "bg-teal-50 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300",
 };
 
 const AVATAR_TONES = ["bg-navy-600", "bg-flagred-600", "bg-emerald-600", "bg-amber-600", "bg-blue-600"];

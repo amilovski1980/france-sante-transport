@@ -14,9 +14,10 @@ const ROLE_TONES: Record<AppRole, string> = {
   driver: "bg-emerald-100 text-emerald-700 border-emerald-200",
   client: "bg-slate-100 text-slate-600 border-slate-200",
   partner: "bg-amber-100 text-amber-700 border-amber-200",
+  supplier: "bg-teal-100 text-teal-700 border-teal-200",
 };
 
-const ROLES: AppRole[] = ["client", "driver", "dispatcher", "admin", "partner"];
+const ROLES: AppRole[] = ["client", "driver", "dispatcher", "admin", "partner", "supplier"];
 
 function roleLabel(labels: { roles: readonly { value: string; label: string }[] }, role: AppRole): string {
   return labels.roles.find((r) => r.value === role)?.label ?? role;

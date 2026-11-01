@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import ClientDashboard from "@/components/dashboard/ClientDashboard";
 import DriverApp from "@/components/dashboard/DriverApp";
 import HomeHero from "@/components/dashboard/HomeHero";
+import SupplierDashboard from "@/components/dashboard/SupplierDashboard";
+import { loadSupplierWorkspace } from "@/lib/supplier-data";
 import type { Profile } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -34,13 +36,33 @@ export default async function DashboardPage() {
   const role: Profile["role"] = profile.role;
 
   if (role === "driver") {
-    const [{ data: assignments }, { data: shipments }, { data: requests }, { data: vehicles }] =
-      await Promise.all([
-        supabase.from("driver_assignments").select("*").order("assigned_at", { ascending: false }),
-        supabase.from("shipments").select("*"),
-        supabase.from("transport_requests").select("*"),
-        supabase.from("vehicles").select("*"),
-      ]);
+    const [
+      { data: assignments },
+      { data: shipments },
+      { data: requests },
+      { data: vehicles },
+      { data: deliveries },
+      { data: schedules },
+      { data: recipients },
+      { data: deliveryItems },
+      { data: lots },
+      { data: references },
+      { data: products },
+      { data: warehouses },
+    ] = await Promise.all([
+      supabase.from("driver_assignments").select("*").order("assigned_at", { ascending: false }),
+      supabase.from("shipments").select("*"),
+      supabase.from("transport_requests").select("*"),
+      supabase.from("vehicles").select("*"),
+      supabase.from("deliveries").select("*"),
+      supabase.from("delivery_schedules").select("*"),
+      supabase.from("recipients").select("*"),
+      supabase.from("delivery_items").select("*"),
+      supabase.from("lots").select("*"),
+      supabase.from("product_references").select("*"),
+      supabase.from("products").select("*"),
+      supabase.from("warehouses").select("*"),
+    ]);
 
     return (
       <DriverApp
@@ -49,8 +71,21 @@ export default async function DashboardPage() {
         shipments={shipments ?? []}
         requests={requests ?? []}
         vehicles={vehicles ?? []}
+        deliveries={deliveries ?? []}
+        schedules={schedules ?? []}
+        recipients={recipients ?? []}
+        deliveryItems={deliveryItems ?? []}
+        lots={lots ?? []}
+        references={references ?? []}
+        products={products ?? []}
+        warehouses={warehouses ?? []}
       />
     );
+  }
+
+  if (role === "supplier") {
+    const workspace = await loadSupplierWorkspace(supabase);
+    return <SupplierDashboard workspace={workspace} />;
   }
 
   if (role === "admin" || role === "dispatcher") {

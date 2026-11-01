@@ -6,7 +6,26 @@ import { useRouter } from "next/navigation";
 import DeliveryValidation from "@/components/dashboard/DeliveryValidation";
 import LabelScanner from "@/components/dashboard/LabelScanner";
 import { formatDateTime } from "@/components/dashboard/ClientDashboard";
-import type { DriverAssignment, Shipment, TransportRequest, Vehicle } from "@/lib/types";
+import type {
+  Delivery,
+  DeliverySchedule,
+  DriverAssignment,
+  Recipient,
+  Shipment,
+  TransportRequest,
+  Vehicle,
+  Warehouse,
+} from "@/lib/types";
+
+export type DriverDeliveryInfo = {
+  delivery: Delivery;
+  schedule: DeliverySchedule | null;
+  recipient: Recipient | null;
+  warehouse: Warehouse | null;
+  items: { id: string; productName: string; lotNumber: string; quantity: number; unit: string | null }[];
+};
+
+const nf = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 });
 
 const PHASE_STEPS = [
   { key: "confirmed", label: "Confirmée" },
@@ -29,6 +48,7 @@ export default function MissionCard({
   pendingId,
   respond,
   vehicles = [],
+  deliveryByShipment,
 }: {
   a: DriverAssignment;
   requestById: Map<string, TransportRequest>;
@@ -36,9 +56,11 @@ export default function MissionCard({
   pendingId: string | null;
   respond: (id: string, accept: boolean) => void;
   vehicles?: Vehicle[];
+  deliveryByShipment: Map<string, DriverDeliveryInfo>;
 }) {
   const s = shipmentById.get(a.shipment_id);
-  const r = s ? requestById.get(s.transport_request_id) : undefined;
+  const r = s?.transport_request_id ? requestById.get(s.transport_request_id) : undefined;
+  const deliveryInfo = s ? deliveryByShipment.get(s.id) : undefined;
   const vehicle = vehicles.find((v) => v.id === a.vehicle_id);
   const proposed = a.status === "proposed";
   const router = useRouter();
@@ -48,16 +70,18 @@ export default function MissionCard({
   const currentStep = s?.status === "completed" ? 2 : s?.status === "in_progress" ? 1 : 0;
   const deliverable = !proposed && a.status === "accepted" && s && (s.status === "confirmed" || s.status === "in_progress");
   const labelRef = s ? `FST-${String(s.id).replace(/-/g, "").slice(0, 8).toUpperCase()}` : "";
-  const pickupAddress = r?.pickup_address ?? "";
-  const dropoffAddress = r?.dropoff_address ?? "";
+  const pickupAddress = r?.pickup_address ?? deliveryInfo?.warehouse?.address ?? "";
+  const dropoffAddress = r?.dropoff_address ?? deliveryInfo?.recipient?.address ?? "";
   const currentTarget = currentStep >= 1 ? dropoffAddress : pickupAddress;
+  const hasItinerary = Boolean(pickupAddress || dropoffAddress);
 
   async function shareItinerary() {
     const link = mapsDirectionsUrl(pickupAddress, dropoffAddress);
-    const text = `Itinéraire de votre course France Santé Transport : ${pickupAddress} → ${dropoffAddress}\n${link}`;
+    const label = deliveryInfo ? "livraison" : "course";
+    const text = `Itinéraire de votre ${label} France Santé Transport : ${pickupAddress} → ${dropoffAddress}\n${link}`;
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: "Itinéraire de votre course", text });
+        await navigator.share({ title: `Itinéraire de votre ${label}`, text });
         setShareState("Itinéraire partagé.");
         return;
       } catch {
@@ -66,7 +90,7 @@ export default function MissionCard({
     }
     try {
       await navigator.clipboard.writeText(text);
-      setShareState("Itinéraire copié : envoyez-le au client.");
+      setShareState(deliveryInfo ? "Itinéraire copié : envoyez-le au destinataire." : "Itinéraire copié : envoyez-le au client.");
     } catch {
       setShareState(link);
     }
@@ -102,14 +126,49 @@ export default function MissionCard({
               <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{r.dropoff_address}</p>
             </div>
           </div>
+        ) : deliveryInfo ? (
+          <div className="space-y-2.5">
+            <div className="flex items-start gap-2.5">
+              <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">A</span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Départ</p>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{deliveryInfo.warehouse?.name ?? "Entrepôt"}</p>
+                <p className="text-xs text-slate-500">{pickupAddress || "Adresse à confirmer"}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-navy-100 text-[10px] font-bold text-navy-700 dark:bg-white/10 dark:text-slate-200">B</span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Destinataire</p>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{deliveryInfo.recipient?.name ?? "Destinataire"}</p>
+                <p className="text-xs text-slate-500">{dropoffAddress || "Adresse à confirmer"}</p>
+                {deliveryInfo.recipient?.contact_name && (
+                  <p className="text-xs text-slate-500">{deliveryInfo.recipient.contact_name} · {deliveryInfo.recipient.phone ?? ""}</p>
+                )}
+              </div>
+            </div>
+          </div>
         ) : (
           <p className="text-sm italic text-slate-400">Détails de la mission à venir…</p>
         )}
 
-        {(r?.patient_name || r?.mobility_notes || vehicle) && (
+        {(r?.patient_name || r?.mobility_notes || vehicle || deliveryInfo) && (
           <div className="mt-3 rounded-xl bg-slate-50 px-3.5 py-2.5 text-xs leading-relaxed text-slate-600 dark:bg-white/5 dark:text-slate-300">
             {r?.patient_name && <p><span className="font-semibold">Produit :</span> {r.patient_name}</p>}
             {r?.mobility_notes && <p><span className="font-semibold">Mobilité :</span> {r.mobility_notes}</p>}
+            {deliveryInfo?.schedule?.label && <p><span className="font-semibold">Planning :</span> {deliveryInfo.schedule.label}</p>}
+            {deliveryInfo && deliveryInfo.items.length > 0 && (
+              <div className="mt-1">
+                <p className="font-semibold">Colis à livrer :</p>
+                <ul className="mt-0.5 space-y-0.5">
+                  {deliveryInfo.items.map((item) => (
+                    <li key={item.id}>
+                      {item.productName} · lot <span className="font-mono">{item.lotNumber}</span> · {nf.format(item.quantity)} {item.unit ?? ""}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {vehicle && <p><span className="font-semibold">Véhicule :</span> {vehicle.label || vehicle.registration_plate} · {vehicle.registration_plate}</p>}
           </div>
         )}
@@ -154,7 +213,7 @@ export default function MissionCard({
 
       {!proposed && s && (
         <div className="space-y-2 border-t border-slate-100 px-5 py-3 dark:border-white/10">
-          {r && (
+          {hasItinerary && (
             <div className="flex flex-wrap gap-2">
               <a
                 href={wazeUrl(currentTarget)}
@@ -185,7 +244,7 @@ export default function MissionCard({
               onClick={() => void shareItinerary()}
               className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-navy-700 transition hover:bg-slate-50 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/5"
             >
-              Partager au client
+              {deliveryInfo ? "Partager au destinataire" : "Partager au client"}
             </button>
             <Link
               href={`/dashboard/labels/${s.id}`}
@@ -221,6 +280,7 @@ export default function MissionCard({
         <DeliveryValidation
           shipment={s}
           request={r ?? null}
+          delivery={deliveryInfo?.delivery ?? null}
           onClose={() => setPodOpen(false)}
           onConfirmed={() => {
             setPodOpen(false);
@@ -229,7 +289,7 @@ export default function MissionCard({
         />
       )}
 
-      {scanOpen && r && (
+      {scanOpen && (r || deliveryInfo) && (
         <LabelScanner
           expectedRef={labelRef}
           onClose={() => setScanOpen(false)}

@@ -22,6 +22,7 @@ export default async function RequestsPage() {
 
   if (role === "driver") redirect("/dashboard");
   if (role === "partner") redirect("/dashboard/partners");
+  if (role === "supplier") redirect("/dashboard");
 
   if (role === "admin" || role === "dispatcher") {
     const ws = await loadStaffWorkspace(supabase);
