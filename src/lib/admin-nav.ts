@@ -31,6 +31,16 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
     ],
   },
   {
+    label: "Logistique",
+    items: [
+      { href: "/dashboard/admin/suppliers", label: "Fournisseurs", icon: "🏭" },
+      { href: "/dashboard/admin/warehouses", label: "Entrepôts", icon: "📦" },
+      { href: "/dashboard/admin/recipients", label: "Destinataires", icon: "📍" },
+      { href: "/dashboard/admin/preparation", label: "Préparations", icon: "📝" },
+      { href: "/dashboard/admin/deliveries", label: "Livraisons", icon: "🚚" },
+    ],
+  },
+  {
     label: "Exploitation",
     items: [
       { href: "/dashboard/admin/fleet", label: "Flotte", icon: "🏍️" },

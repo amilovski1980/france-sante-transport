@@ -77,6 +77,7 @@ export const ASSIGNABLE_ROLES = [
   { value: "driver", label: "Chauffeur" },
   { value: "dispatcher", label: "Dispatcheur" },
   { value: "client", label: "Client" },
+  { value: "supplier", label: "Fournisseur" },
 ] as const;
 
 // ------------------------------------------------------------
@@ -153,6 +154,7 @@ export const ASSIGNABLE_ROLES_EN = [
   { value: "driver", label: "Driver" },
   { value: "dispatcher", label: "Dispatcher" },
   { value: "client", label: "Client" },
+  { value: "supplier", label: "Supplier" },
 ] as const;
 
 export interface Labels {

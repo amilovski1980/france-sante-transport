@@ -5,8 +5,22 @@ import { respondToAssignment } from "@/lib/api";
 import { toUserMessage } from "@/lib/errors";
 import { useLiveRefresh } from "@/lib/useLiveRefresh";
 import PositionShareToggle from "@/components/dashboard/PositionShareToggle";
-import MissionCard from "@/components/dashboard/MissionCard";
-import type { DriverAssignment, Profile, Shipment, TransportRequest, Vehicle } from "@/lib/types";
+import MissionCard, { type DriverDeliveryInfo } from "@/components/dashboard/MissionCard";
+import type {
+  Delivery,
+  DeliveryItem,
+  DeliverySchedule,
+  DriverAssignment,
+  Lot,
+  Product,
+  ProductReference,
+  Profile,
+  Recipient,
+  Shipment,
+  TransportRequest,
+  Vehicle,
+  Warehouse,
+} from "@/lib/types";
 
 /**
  * Écran missions du chauffeur. La navigation (Missions · Alertes · Messages ·
@@ -19,20 +33,72 @@ export default function DriverApp({
   shipments,
   requests,
   vehicles,
+  deliveries,
+  schedules,
+  recipients,
+  deliveryItems,
+  lots,
+  references,
+  products,
+  warehouses,
 }: {
   driver: Profile;
   assignments: DriverAssignment[];
   shipments: Shipment[];
   requests: TransportRequest[];
   vehicles: Vehicle[];
+  deliveries: Delivery[];
+  schedules: DeliverySchedule[];
+  recipients: Recipient[];
+  deliveryItems: DeliveryItem[];
+  lots: Lot[];
+  references: ProductReference[];
+  products: Product[];
+  warehouses: Warehouse[];
 }) {
   const driverName = driver.full_name || driver.email;
   const router = useRouter();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { mode } = useLiveRefresh(["driver_assignments", "shipments"]);
+  const { mode } = useLiveRefresh(["driver_assignments", "shipments", "deliveries"]);
   const requestById = useMemo(() => new Map(requests.map((r) => [r.id, r])), [requests]);
   const shipmentById = useMemo(() => new Map(shipments.map((s) => [s.id, s])), [shipments]);
+  const deliveryByShipment = useMemo(() => {
+    const scheduleById = new Map(schedules.map((schedule) => [schedule.id, schedule]));
+    const recipientById = new Map(recipients.map((recipient) => [recipient.id, recipient]));
+    const lotById = new Map(lots.map((lot) => [lot.id, lot]));
+    const referenceById = new Map(references.map((reference) => [reference.id, reference]));
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const warehouseById = new Map(warehouses.map((warehouse) => [warehouse.id, warehouse]));
+    const itemsByDelivery = new Map<string, DeliveryItem[]>();
+    for (const item of deliveryItems) {
+      const list = itemsByDelivery.get(item.delivery_id) ?? [];
+      list.push(item);
+      itemsByDelivery.set(item.delivery_id, list);
+    }
+
+    const map = new Map<string, DriverDeliveryInfo>();
+    for (const delivery of deliveries) {
+      if (!delivery.shipment_id) continue;
+      const schedule = scheduleById.get(delivery.delivery_schedule_id) ?? null;
+      const recipient = recipientById.get(delivery.recipient_id) ?? null;
+      const warehouse = schedule ? warehouseById.get(schedule.warehouse_id) ?? null : null;
+      const items = (itemsByDelivery.get(delivery.id) ?? []).map((item) => {
+        const lot = lotById.get(item.lot_id);
+        const reference = lot ? referenceById.get(lot.product_reference_id) : undefined;
+        const product = reference ? productById.get(reference.product_id) : undefined;
+        return {
+          id: item.id,
+          productName: product?.name ?? "Produit",
+          lotNumber: lot?.lot_number ?? "—",
+          quantity: item.quantity,
+          unit: item.unit,
+        };
+      });
+      map.set(delivery.shipment_id, { delivery, schedule, recipient, warehouse, items });
+    }
+    return map;
+  }, [deliveries, schedules, recipients, deliveryItems, lots, references, products, warehouses]);
   const active = useMemo(() => assignments.filter((a) => a.status === "proposed" || a.status === "accepted").sort((a, b) => {
     const sa = shipmentById.get(a.shipment_id);
     const sb = shipmentById.get(b.shipment_id);
@@ -109,6 +175,7 @@ export default function DriverApp({
               pendingId={pendingId}
               respond={respond}
               vehicles={vehicles}
+              deliveryByShipment={deliveryByShipment}
             />
           ))}
         </div>

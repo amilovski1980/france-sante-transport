@@ -166,8 +166,10 @@ export default function DispatchLiveBoard({
           ) : (
             <ul className="divide-y divide-navy-100">
               {activeMissions.map((shipment) => {
-                const request = requestById.get(shipment.transport_request_id);
-                const quote = quoteById.get(shipment.quote_id);
+                const request = shipment.transport_request_id
+                  ? requestById.get(shipment.transport_request_id)
+                  : undefined;
+                const quote = shipment.quote_id ? quoteById.get(shipment.quote_id) : undefined;
                 const assignment = assignmentByShipment.get(shipment.id);
                 const driver = assignment ? driverById.get(assignment.driver_id) : undefined;
                 const vehicle = assignment ? vehicleById.get(assignment.vehicle_id) : undefined;
@@ -237,7 +239,9 @@ export default function DispatchLiveBoard({
               {drivers.map((driver) => {
                 const engaged = driverStatus.get(driver.id);
                 const shipment = engaged?.shipment;
-                const request = shipment ? requestById.get(shipment.transport_request_id) : undefined;
+                const request = shipment?.transport_request_id
+                  ? requestById.get(shipment.transport_request_id)
+                  : undefined;
 
                 return (
                   <li key={driver.id} className="px-5 py-3.5">

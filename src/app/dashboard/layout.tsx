@@ -13,6 +13,7 @@ const ROLE_LABELS: Record<Profile["role"], { label: string; hint: string }> = {
   dispatcher: { label: "Espace exploitation", hint: "Instruction des demandes et missions" },
   driver: { label: "Espace chauffeur", hint: "Vos affectations de mission" },
   partner: { label: "Espace partenaire", hint: "Vos dossiers partenaires" },
+  supplier: { label: "Espace fournisseur", hint: "Stock, plannings et livraisons" },
 };
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -52,7 +53,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const roleInfo = ROLE_LABELS[profile.role as Profile["role"]];
   // Staff (admin / dispatcher) : console plein écran avec latérale desktop.
   const isStaff = profile.role === "admin" || profile.role === "dispatcher";
-  const contentWidth = isStaff ? "mx-auto max-w-7xl" : "mx-auto max-w-2xl";
+  const isSupplier = profile.role === "supplier";
+  const contentWidth = isStaff ? "mx-auto max-w-7xl" : isSupplier ? "mx-auto max-w-6xl" : "mx-auto max-w-2xl";
 
   const TopBar = (
     <div className="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#0f131b]">

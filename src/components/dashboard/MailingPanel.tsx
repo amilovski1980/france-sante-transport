@@ -11,6 +11,7 @@ const SEGMENTS: Array<{ key: AppRole; label: string }> = [
   { key: "partner", label: "Partenaires" },
   { key: "driver", label: "Chauffeurs" },
   { key: "dispatcher", label: "Dispatch" },
+  { key: "supplier", label: "Fournisseurs" },
 ];
 
 const ROLE_LABELS: Record<AppRole, string> = {
@@ -19,6 +20,7 @@ const ROLE_LABELS: Record<AppRole, string> = {
   driver: "Chauffeur",
   dispatcher: "Dispatch",
   admin: "Administration",
+  supplier: "Fournisseur",
 };
 
 const STATUS_STYLES: Record<EmailLog["status"], string> = {

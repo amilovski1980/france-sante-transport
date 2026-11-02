@@ -1,5 +1,5 @@
-export type AppRole = "client" | "admin" | "dispatcher" | "driver" | "partner";
-export type OrgKind = "client_company" | "facility" | "partner";
+export type AppRole = "client" | "admin" | "dispatcher" | "driver" | "partner" | "supplier";
+export type OrgKind = "client_company" | "facility" | "partner" | "supplier";
 export type OrgRole = "owner" | "member" | "contact";
 export type RequestStatus =
   | "draft"
@@ -50,6 +50,32 @@ export type ShipmentEventType =
 export type VehicleType = "sedan" | "van" | "minibus" | "stretcher_van" | "ambulance" | "moto";
 export type AssignmentStatus = "proposed" | "accepted" | "declined" | "completed" | "cancelled";
 export type ContactTopic = "contact" | "referral" | "quote_request" | "other";
+export type MissionKind = "patient_transport" | "goods_delivery";
+export type StockMovementType =
+  | "receipt"
+  | "reservation"
+  | "release"
+  | "shipment"
+  | "adjustment"
+  | "return";
+export type DeliveryScheduleStatus =
+  | "draft"
+  | "validated"
+  | "transmitted"
+  | "planned"
+  | "in_progress"
+  | "completed"
+  | "cancelled";
+export type PreparationOrderStatus = "pending" | "preparing" | "ready" | "cancelled";
+export type DeliveryStatus =
+  | "pending"
+  | "scheduled"
+  | "in_progress"
+  | "delivered"
+  | "failed"
+  | "cancelled";
+export type PurchaseInvoiceExtractionStatus = "pending" | "parsed" | "failed" | "manual";
+export type RecipientType = "laboratory" | "hospital" | "pharmacy" | "clinic" | "other";
 
 /** Bloc « client » réutilisé par le générateur PDF (nom, e-mail, téléphone). */
 export interface QuoteClient {
@@ -79,13 +105,252 @@ export interface EsignDocument {
 /** Preuve de livraison : destinataire + signature manuscrite (PNG data URI). */
 export interface DeliveryProof {
   id: string;
-  shipment_id: string;
+  shipment_id: string | null;
+  delivery_id: string | null;
   recipient_name: string;
   signature_data: string;
+  signature_hash: string | null;
   note: string | null;
   latitude: number | null;
   longitude: number | null;
+  ip_address: string | null;
+  user_agent: string | null;
   recorded_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Supplier {
+  id: string;
+  organization_id: string;
+  code: string;
+  contact_email: string | null;
+  contact_phone: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Warehouse {
+  id: string;
+  name: string;
+  code: string;
+  address: string | null;
+  capacity_m3: number | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Product {
+  id: string;
+  supplier_id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  unit: string;
+  requires_cold_chain: boolean;
+  temp_min: number | null;
+  temp_max: number | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductReference {
+  id: string;
+  product_id: string;
+  reference_code: string;
+  gtin: string | null;
+  packaging: string | null;
+  unit: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Lot {
+  id: string;
+  product_reference_id: string;
+  supplier_id: string;
+  warehouse_id: string;
+  lot_number: string;
+  expiry_date: string | null;
+  received_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StockLevel {
+  id: string;
+  lot_id: string;
+  warehouse_id: string;
+  qty_on_hand: number;
+  qty_reserved: number;
+  qty_shipped: number;
+  updated_at: string;
+}
+
+export interface StockMovement {
+  id: string;
+  lot_id: string;
+  warehouse_id: string;
+  movement_type: StockMovementType;
+  quantity: number;
+  reference_type: string | null;
+  reference_id: string | null;
+  note: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface PurchaseInvoice {
+  id: string;
+  supplier_id: string;
+  invoice_number: string;
+  invoice_date: string | null;
+  total_amount: number | null;
+  currency: string;
+  file_path: string | null;
+  file_name: string | null;
+  mime_type: string | null;
+  extraction_status: PurchaseInvoiceExtractionStatus;
+  extracted_data: Record<string, unknown>;
+  uploaded_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PurchaseInvoiceLine {
+  id: string;
+  purchase_invoice_id: string;
+  product_reference_id: string | null;
+  description: string;
+  quantity: number;
+  unit_price: number | null;
+  lot_number: string | null;
+  expiry_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Recipient {
+  id: string;
+  supplier_id: string | null;
+  name: string;
+  type: RecipientType;
+  contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  notes: string | null;
+  active: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliverySchedule {
+  id: string;
+  supplier_id: string;
+  warehouse_id: string;
+  label: string | null;
+  requested_date: string;
+  status: DeliveryScheduleStatus;
+  validated_at: string | null;
+  validated_by: string | null;
+  transmitted_at: string | null;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliveryScheduleLine {
+  id: string;
+  delivery_schedule_id: string;
+  recipient_id: string;
+  product_reference_id: string;
+  lot_id: string;
+  quantity: number;
+  unit: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PreparationOrder {
+  id: string;
+  delivery_schedule_id: string;
+  warehouse_id: string;
+  status: PreparationOrderStatus;
+  prepared_by: string | null;
+  prepared_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PreparationOrderLine {
+  id: string;
+  preparation_order_id: string;
+  schedule_line_id: string;
+  quantity_to_prepare: number;
+  quantity_prepared: number;
+  status: "pending" | "partial" | "prepared";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Delivery {
+  id: string;
+  delivery_schedule_id: string;
+  recipient_id: string;
+  shipment_id: string | null;
+  status: DeliveryStatus;
+  scheduled_at: string | null;
+  delivered_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeliveryItem {
+  id: string;
+  delivery_id: string;
+  schedule_line_id: string | null;
+  lot_id: string;
+  quantity: number;
+  unit: string | null;
+  created_at: string;
+}
+
+export interface Signature {
+  id: string;
+  delivery_id: string | null;
+  shipment_id: string | null;
+  proof_id: string | null;
+  signer_name: string;
+  signature_data: string;
+  signature_hash: string;
+  signed_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+}
+
+export interface DeliveryReminder {
+  id: string;
+  delivery_id: string;
+  channel: "email" | "sms";
+  target: "recipient" | "supplier" | "admin";
+  scheduled_for: string;
+  status: "pending" | "sent" | "failed";
+  sent_at: string | null;
+  payload: Record<string, unknown>;
   created_at: string;
 }
 
@@ -183,8 +448,12 @@ export interface DriverLocation {
 
 export interface Shipment {
   id: string;
-  transport_request_id: string;
-  quote_id: string;
+  transport_request_id: string | null;
+  quote_id: string | null;
+  mission_kind: MissionKind;
+  delivery_schedule_id: string | null;
+  warehouse_id: string | null;
+  supplier_id: string | null;
   organization_id: string | null;
   status: ShipmentStatus;
   scheduled_at: string;
@@ -461,6 +730,64 @@ export interface Database {
         Insert: Insert<AppNotification>;
         Update: Update<AppNotification>;
       };
+      suppliers: { Row: Row<Supplier>; Insert: Insert<Supplier>; Update: Update<Supplier> };
+      warehouses: { Row: Row<Warehouse>; Insert: Insert<Warehouse>; Update: Update<Warehouse> };
+      products: { Row: Row<Product>; Insert: Insert<Product>; Update: Update<Product> };
+      product_references: {
+        Row: Row<ProductReference>;
+        Insert: Insert<ProductReference>;
+        Update: Update<ProductReference>;
+      };
+      lots: { Row: Row<Lot>; Insert: Insert<Lot>; Update: Update<Lot> };
+      stock_levels: { Row: Row<StockLevel>; Insert: Insert<StockLevel>; Update: Update<StockLevel> };
+      stock_movements: {
+        Row: Row<StockMovement>;
+        Insert: Insert<StockMovement>;
+        Update: Update<StockMovement>;
+      };
+      purchase_invoices: {
+        Row: Row<PurchaseInvoice>;
+        Insert: Insert<PurchaseInvoice>;
+        Update: Update<PurchaseInvoice>;
+      };
+      purchase_invoice_lines: {
+        Row: Row<PurchaseInvoiceLine>;
+        Insert: Insert<PurchaseInvoiceLine>;
+        Update: Update<PurchaseInvoiceLine>;
+      };
+      recipients: { Row: Row<Recipient>; Insert: Insert<Recipient>; Update: Update<Recipient> };
+      delivery_schedules: {
+        Row: Row<DeliverySchedule>;
+        Insert: Insert<DeliverySchedule>;
+        Update: Update<DeliverySchedule>;
+      };
+      delivery_schedule_lines: {
+        Row: Row<DeliveryScheduleLine>;
+        Insert: Insert<DeliveryScheduleLine>;
+        Update: Update<DeliveryScheduleLine>;
+      };
+      preparation_orders: {
+        Row: Row<PreparationOrder>;
+        Insert: Insert<PreparationOrder>;
+        Update: Update<PreparationOrder>;
+      };
+      preparation_order_lines: {
+        Row: Row<PreparationOrderLine>;
+        Insert: Insert<PreparationOrderLine>;
+        Update: Update<PreparationOrderLine>;
+      };
+      deliveries: { Row: Row<Delivery>; Insert: Insert<Delivery>; Update: Update<Delivery> };
+      delivery_items: {
+        Row: Row<DeliveryItem>;
+        Insert: Insert<DeliveryItem>;
+        Update: Update<DeliveryItem>;
+      };
+      signatures: { Row: Row<Signature>; Insert: Insert<Signature>; Update: Update<Signature> };
+      delivery_reminders: {
+        Row: Row<DeliveryReminder>;
+        Insert: Insert<DeliveryReminder>;
+        Update: Update<DeliveryReminder>;
+      };
     };
     Functions: {
       create_quote: {
@@ -535,6 +862,102 @@ export interface Database {
       };
       advance_mission_phase: { Args: { p_shipment_id: string; p_phase: MissionPhase }; Returns: Shipment };
       create_invoice_from_quote: { Args: { p_quote_id: string }; Returns: Invoice };
+      create_delivery_schedule: {
+        Args: {
+          p_supplier_id: string;
+          p_warehouse_id: string;
+          p_requested_date: string;
+          p_label?: string | null;
+          p_notes?: string | null;
+        };
+        Returns: DeliverySchedule;
+      };
+      add_delivery_schedule_line: {
+        Args: {
+          p_schedule_id: string;
+          p_recipient_id: string;
+          p_lot_id: string;
+          p_quantity: number;
+          p_unit?: string | null;
+          p_notes?: string | null;
+        };
+        Returns: DeliveryScheduleLine;
+      };
+      update_delivery_schedule: {
+        Args: {
+          p_schedule_id: string;
+          p_label?: string | null;
+          p_notes?: string | null;
+          p_requested_date?: string | null;
+          p_warehouse_id?: string | null;
+        };
+        Returns: DeliverySchedule;
+      };
+      delete_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
+      remove_delivery_schedule_line: { Args: { p_line_id: string }; Returns: DeliveryScheduleLine };
+      validate_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
+      transmit_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
+      cancel_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
+      receive_stock: {
+        Args: {
+          p_supplier_id: string;
+          p_warehouse_id: string;
+          p_product_reference_id: string;
+          p_lot_number: string;
+          p_quantity: number;
+          p_expiry_date?: string | null;
+          p_reference_type?: string | null;
+          p_reference_id?: string | null;
+          p_note?: string | null;
+        };
+        Returns: StockLevel;
+      };
+      schedule_delivery_reminders: {
+        Args: { p_delivery_id: string };
+        Returns: DeliveryReminder[];
+      };
+      assign_delivery_mission: {
+        Args: { p_delivery_id: string; p_driver_id: string; p_vehicle_id: string };
+        Returns: DriverAssignment;
+      };
+      confirm_delivery_with_proof: {
+        Args: {
+          p_delivery_id: string;
+          p_recipient_name: string;
+          p_signature_data: string;
+          p_note?: string | null;
+          p_latitude?: number | null;
+          p_longitude?: number | null;
+        };
+        Returns: Delivery;
+      };
+      set_preparation_order_status: {
+        Args: {
+          p_order_id: string;
+          p_status: PreparationOrderStatus;
+          p_note?: string | null;
+        };
+        Returns: PreparationOrder;
+      };
+      record_preparation_progress: {
+        Args: { p_line_id: string; p_quantity_prepared: number };
+        Returns: PreparationOrderLine;
+      };
+      admin_create_supplier: {
+        Args: {
+          p_organization_name: string;
+          p_code: string;
+          p_contact_email?: string | null;
+          p_contact_phone?: string | null;
+          p_siret?: string | null;
+          p_address?: string | null;
+        };
+        Returns: Supplier;
+      };
+      admin_attach_supplier_member: {
+        Args: { p_supplier_id: string; p_user_id: string; p_org_role?: OrgRole };
+        Returns: OrganizationMember;
+      };
     };
     Views: Record<string, never>;
     Enums: Record<string, never>;

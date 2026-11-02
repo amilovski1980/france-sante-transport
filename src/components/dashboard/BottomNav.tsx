@@ -9,6 +9,8 @@ const ICONS: Record<string, React.ReactNode> = {
   chat: <path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12Z" />,
   user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
   users: <><circle cx="9" cy="8" r="3.5" /><path d="M2.5 21a6.5 6.5 0 0 1 13 0" /><circle cx="17" cy="9" r="3" /><path d="M21.5 21a6 6 0 0 0-4.7-5.4" /></>,
+  box: <><path d="M21 8 12 3 3 8l9 5 9-5Z" /><path d="M3 8v8l9 5 9-5V8" /><path d="M12 13v8" /></>,
+  calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 11h18" /></>,
 };
 
 const ITEMS = [
@@ -41,6 +43,14 @@ const STAFF_ITEMS = [
   { href: "/dashboard/settings", label: "Compte", icon: "user" },
 ];
 
+const SUPPLIER_ITEMS = [
+  { href: "/dashboard", label: "Accueil", icon: "home" },
+  { href: "/dashboard/supplier/stock", label: "Stock", icon: "box" },
+  { href: "/dashboard/supplier/planning", label: "Planning", icon: "calendar" },
+  { href: "/dashboard/supplier/deliveries", label: "Livraisons", icon: "courses" },
+  { href: "/dashboard/settings", label: "Compte", icon: "user" },
+];
+
 export default function BottomNav({ role }: { role: string }) {
   const pathname = usePathname();
   const items =
@@ -50,7 +60,9 @@ export default function BottomNav({ role }: { role: string }) {
         ? DRIVER_ITEMS
         : role === "partner"
           ? PARTNER_ITEMS
-          : ITEMS;
+          : role === "supplier"
+            ? SUPPLIER_ITEMS
+            : ITEMS;
   // Le staff dispose d'une latérale sur écran md+ : la barre basse est
   // reservée au mobile.
   const hideOnDesktop = role === "admin" || role === "dispatcher" ? "md:hidden" : "";

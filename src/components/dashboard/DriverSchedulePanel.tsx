@@ -169,7 +169,9 @@ export default function DriverSchedulePanel({
               ) : (
                 <ul className="space-y-2">
                   {selectedAssignments.map(({ a, s }) => {
-                    const request = requestById.get(s.transport_request_id);
+                    const request = s.transport_request_id
+                      ? requestById.get(s.transport_request_id)
+                      : undefined;
                     return (
                       <li key={a.id} className="rounded-xl border border-navy-100 bg-white p-3 shadow-sm">
                         <div className="flex flex-wrap items-center justify-between gap-2">

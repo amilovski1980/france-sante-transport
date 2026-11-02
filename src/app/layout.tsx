@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Inter, Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import I18nProvider from "@/components/I18nProvider";
 import PwaInstaller from "@/components/PwaInstaller";
 import { sanitizeCustomCss } from "@/lib/branding";
@@ -16,6 +16,8 @@ const inter = Inter({
 });
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+
+const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-pjs", display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -51,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = await getLocale();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={`${inter.variable} ${manrope.variable} ${pjs.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         {customCss && <style dangerouslySetInnerHTML={{ __html: customCss }} />}
         <I18nProvider initialLocale={locale}>

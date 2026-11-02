@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
-const ROLES = new Set(["client", "driver", "dispatcher", "admin", "partner"]);
+const ROLES = new Set(["client", "driver", "dispatcher", "admin", "partner", "supplier"]);
 
 /**
  * POST /api/admin/users — crée un compte complet (auth + profil) :
