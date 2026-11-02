@@ -428,6 +428,30 @@ values
    '66111111-1111-4111-8111-111111111103', 4.000, 'dose', 'Chaîne du froid')
 on conflict (id) do nothing;
 
+-- Commande d'enlèvement fournisseur (à traiter par le staff)
+insert into public.pickup_orders
+  (id, supplier_id, warehouse_id, pickup_address, pickup_contact_name, pickup_contact_phone,
+   requested_pickup_date, requested_window, status, notes, created_by)
+values
+  ('6f111111-1111-4111-8111-111111111101', '62111111-1111-4111-8111-111111111101',
+   '63111111-1111-4111-8111-111111111101',
+   '45 avenue de la République, 75011 Paris', 'Marie Dupont', '01 44 55 66 77',
+   current_date + 3, '9h-12h', 'submitted',
+   'Merci de prévoir un véhicule réfrigéré pour la chaîne du froid.',
+   '11111111-1111-4111-8111-111111111107')
+on conflict (id) do nothing;
+
+insert into public.pickup_order_lines
+  (id, pickup_order_id, recipient_id, product_reference_id, lot_id, quantity, unit, notes)
+values
+  ('70111111-1111-4111-8111-111111111101', '6f111111-1111-4111-8111-111111111101',
+   '6a111111-1111-4111-8111-111111111101', '65111111-1111-4111-8111-111111111101',
+   '66111111-1111-4111-8111-111111111101', 30.000, 'boîte', 'Service logistique'),
+  ('70111111-1111-4111-8111-111111111102', '6f111111-1111-4111-8111-111111111101',
+   '6a111111-1111-4111-8111-111111111103', '65111111-1111-4111-8111-111111111102',
+   '66111111-1111-4111-8111-111111111102', 12.000, 'flacon', 'Réassort pharmacie')
+on conflict (id) do nothing;
+
 insert into public.preparation_orders
   (id, delivery_schedule_id, warehouse_id, status, prepared_by, notes)
 values

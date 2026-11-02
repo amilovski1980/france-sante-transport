@@ -6,6 +6,8 @@ import type {
   DeliverySchedule,
   DeliveryScheduleLine,
   Lot,
+  PickupOrder,
+  PickupOrderLine,
   PreparationOrder,
   PreparationOrderLine,
   Product,
@@ -61,6 +63,8 @@ export async function loadSupplierWorkspace(supabase: Supabase) {
     { data: invoiceLines },
     { data: preparationOrders },
     { data: preparationLines },
+    { data: pickupOrders },
+    { data: pickupOrderLines },
   ] = await Promise.all([
     supabase.from("products").select("*").order("name"),
     supabase.from("product_references").select("*").order("reference_code"),
@@ -77,6 +81,8 @@ export async function loadSupplierWorkspace(supabase: Supabase) {
     supabase.from("purchase_invoice_lines").select("*").order("created_at", { ascending: true }),
     supabase.from("preparation_orders").select("*").order("created_at", { ascending: false }),
     supabase.from("preparation_order_lines").select("*"),
+    supabase.from("pickup_orders").select("*").order("requested_pickup_date", { ascending: false }),
+    supabase.from("pickup_order_lines").select("*"),
   ]);
 
   return {
@@ -96,6 +102,8 @@ export async function loadSupplierWorkspace(supabase: Supabase) {
     invoiceLines: (invoiceLines ?? []) as PurchaseInvoiceLine[],
     preparationOrders: (preparationOrders ?? []) as PreparationOrder[],
     preparationLines: (preparationLines ?? []) as PreparationOrderLine[],
+    pickupOrders: (pickupOrders ?? []) as PickupOrder[],
+    pickupOrderLines: (pickupOrderLines ?? []) as PickupOrderLine[],
   };
 }
 

@@ -74,6 +74,7 @@ export type DeliveryStatus =
   | "delivered"
   | "failed"
   | "cancelled";
+export type PickupOrderStatus = "submitted" | "confirmed" | "planned" | "completed" | "cancelled";
 export type PurchaseInvoiceExtractionStatus = "pending" | "parsed" | "failed" | "manual";
 export type RecipientType = "laboratory" | "hospital" | "pharmacy" | "clinic" | "other";
 
@@ -272,6 +273,39 @@ export interface DeliverySchedule {
 export interface DeliveryScheduleLine {
   id: string;
   delivery_schedule_id: string;
+  recipient_id: string;
+  product_reference_id: string;
+  lot_id: string;
+  quantity: number;
+  unit: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PickupOrder {
+  id: string;
+  supplier_id: string;
+  warehouse_id: string;
+  pickup_address: string;
+  pickup_contact_name: string | null;
+  pickup_contact_phone: string | null;
+  requested_pickup_date: string;
+  requested_window: string | null;
+  status: PickupOrderStatus;
+  notes: string | null;
+  admin_notes: string | null;
+  delivery_schedule_id: string | null;
+  created_by: string;
+  confirmed_by: string | null;
+  confirmed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PickupOrderLine {
+  id: string;
+  pickup_order_id: string;
   recipient_id: string;
   product_reference_id: string;
   lot_id: string;
@@ -776,6 +810,16 @@ export interface Database {
         Insert: Insert<PreparationOrderLine>;
         Update: Update<PreparationOrderLine>;
       };
+      pickup_orders: {
+        Row: Row<PickupOrder>;
+        Insert: Insert<PickupOrder>;
+        Update: Update<PickupOrder>;
+      };
+      pickup_order_lines: {
+        Row: Row<PickupOrderLine>;
+        Insert: Insert<PickupOrderLine>;
+        Update: Update<PickupOrderLine>;
+      };
       deliveries: { Row: Row<Delivery>; Insert: Insert<Delivery>; Update: Update<Delivery> };
       delivery_items: {
         Row: Row<DeliveryItem>;
@@ -898,6 +942,35 @@ export interface Database {
       validate_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
       transmit_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
       cancel_delivery_schedule: { Args: { p_schedule_id: string }; Returns: DeliverySchedule };
+      create_pickup_order: {
+        Args: {
+          p_supplier_id: string;
+          p_warehouse_id: string;
+          p_pickup_address: string;
+          p_requested_pickup_date: string;
+          p_requested_window?: string | null;
+          p_contact_name?: string | null;
+          p_contact_phone?: string | null;
+          p_notes?: string | null;
+          p_lines?: Array<{
+            recipient_id: string;
+            product_reference_id: string;
+            lot_id: string;
+            quantity: number;
+            unit?: string | null;
+            notes?: string | null;
+          }>;
+        };
+        Returns: PickupOrder;
+      };
+      set_pickup_order_status: {
+        Args: { p_order_id: string; p_status: PickupOrderStatus; p_admin_notes?: string | null };
+        Returns: PickupOrder;
+      };
+      convert_pickup_order_to_schedule: {
+        Args: { p_order_id: string };
+        Returns: DeliverySchedule;
+      };
       receive_stock: {
         Args: {
           p_supplier_id: string;
