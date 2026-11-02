@@ -12,6 +12,7 @@ import type {
   Lot,
   OrganizationMember,
   OrgRole,
+  PickupOrder,
   PreparationOrder,
   PreparationOrderLine,
   Product,
@@ -946,6 +947,68 @@ export async function cancelDeliverySchedule(scheduleId: string): Promise<Delive
   return call(async () => {
     const supabase = createClient();
     return supabase.rpc("cancel_delivery_schedule", { p_schedule_id: scheduleId });
+  });
+}
+
+// ------------------------------------------------------------
+// Commandes d'enlèvement fournisseur
+// ------------------------------------------------------------
+
+export interface CreatePickupOrderInput {
+  supplier_id: string;
+  warehouse_id: string;
+  pickup_address: string;
+  requested_pickup_date: string;
+  requested_window?: string | null;
+  contact_name?: string | null;
+  contact_phone?: string | null;
+  notes?: string | null;
+  lines: Array<{
+    recipient_id: string;
+    product_reference_id: string;
+    lot_id: string;
+    quantity: number;
+    unit?: string | null;
+    notes?: string | null;
+  }>;
+}
+
+export async function createPickupOrder(input: CreatePickupOrderInput): Promise<PickupOrder> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("create_pickup_order", {
+      p_supplier_id: input.supplier_id,
+      p_warehouse_id: input.warehouse_id,
+      p_pickup_address: input.pickup_address,
+      p_requested_pickup_date: input.requested_pickup_date,
+      p_requested_window: input.requested_window ?? null,
+      p_contact_name: input.contact_name ?? null,
+      p_contact_phone: input.contact_phone ?? null,
+      p_notes: input.notes ?? null,
+      p_lines: input.lines,
+    });
+  });
+}
+
+export async function setPickupOrderStatus(
+  orderId: string,
+  status: PickupOrder["status"],
+  adminNotes?: string | null,
+): Promise<PickupOrder> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("set_pickup_order_status", {
+      p_order_id: orderId,
+      p_status: status,
+      p_admin_notes: adminNotes ?? null,
+    });
+  });
+}
+
+export async function convertPickupOrderToSchedule(orderId: string): Promise<DeliverySchedule> {
+  return call(async () => {
+    const supabase = createClient();
+    return supabase.rpc("convert_pickup_order_to_schedule", { p_order_id: orderId });
   });
 }
 

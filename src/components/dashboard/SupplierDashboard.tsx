@@ -11,6 +11,7 @@ function date(value: string | null | undefined) {
 
 const QUICK_LINKS = [
   { href: "/dashboard/supplier/stock", label: "Stock & catalogue", hint: "Lots, niveaux, réceptions" },
+  { href: "/dashboard/supplier/pickups", label: "Enlèvements", hint: "Commandes à enlever" },
   { href: "/dashboard/supplier/planning", label: "Plannings", hint: "Préparer et transmettre" },
   { href: "/dashboard/supplier/deliveries", label: "Livraisons", hint: "Suivi et preuves" },
   { href: "/dashboard/supplier/invoices", label: "Factures d'achat", hint: "Import et lignes" },
@@ -80,7 +81,7 @@ export default function SupplierDashboard({ workspace }: { workspace: SupplierWo
         <Stat label="Livraisons" value={String(activeDeliveries.length)} hint={`${lowStock} lot(s) en stock faible`} tone={lowStock > 0 ? "warn" : undefined} />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         {QUICK_LINKS.map((item) => (
           <Link
             key={item.href}
